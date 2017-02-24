@@ -10,11 +10,18 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HR_Test</RootNamespace>
     <AssemblyName>HS-Test</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ApplicationIcon>logo.ico</ApplicationIcon>
     <StartupObject>HR_Test.Program</StartupObject>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,13 +36,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,6 +46,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -388,6 +389,11 @@
     <EmbeddedResource Include="UC\RowMergeView.resx">
       <DependentUpon>RowMergeView.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="bin\Debug\EasyUSB1582.lib" />
+    <None Include="bin\Debug\HS-Test.exe.config" />
+    <None Include="bin\Debug\HS-Test.vshost.exe.config" />
+    <None Include="bin\Debug\HS-Test.vshost.exe.manifest" />
+    <None Include="bin\Debug\SIMLI.TTF" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -542,7 +548,7 @@
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
-      <ProductName>.NET Framework Client Profile</ProductName>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -636,6 +642,75 @@
     <None Include="Resources\bulianxu.ico" />
     <None Include="Resources\lianxu.ico" />
     <None Include="Resources\T48.png" />
+    <Content Include="bin\Debug\1.ico" />
+    <Content Include="bin\Debug\a.jpg" />
+    <Content Include="bin\Debug\CSkin.dll" />
+    <Content Include="bin\Debug\CSkin.XML" />
+    <Content Include="bin\Debug\CustomControl.OrientedTextControls.dll" />
+    <Content Include="bin\Debug\CustomControl.OrientedTextControls.pdb" />
+    <Content Include="bin\Debug\de\ZedGraph.resources.dll" />
+    <Content Include="bin\Debug\EasyUSB1582.dll" />
+    <Content Include="bin\Debug\es\ZedGraph.resources.dll" />
+    <Content Include="bin\Debug\Fireball.Core.dll" />
+    <Content Include="bin\Debug\Fireball.Win32.dll" />
+    <Content Include="bin\Debug\Fireball.Windows.Forms.dll" />
+    <Content Include="bin\Debug\fr\ZedGraph.resources.dll" />
+    <Content Include="bin\Debug\GBT228-2010.xml" />
+    <Content Include="bin\Debug\GBT23615-2009TensileHeng.xml" />
+    <Content Include="bin\Debug\GBT23615-2009TensileZong.xml" />
+    <Content Include="bin\Debug\GBT28289-2012.xml" />
+    <Content Include="bin\Debug\GBT28289-2012Shear.xml" />
+    <Content Include="bin\Debug\GBT28289-2012Tensile.xml" />
+    <Content Include="bin\Debug\GBT28289-2012Twist.xml" />
+    <Content Include="bin\Debug\GBT7314-2005.xml" />
+    <Content Include="bin\Debug\GridViewExtensions.dll" />
+    <Content Include="bin\Debug\GridViewExtensions.pdb" />
+    <Content Include="bin\Debug\GridViewExtensions.xml" />
+    <Content Include="bin\Debug\HR-Test.DBUtility.dll" />
+    <Content Include="bin\Debug\HR-Test.DBUtility.pdb" />
+    <Content Include="bin\Debug\HR-TestData.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="bin\Debug\HR_Test.BLL.dll" />
+    <Content Include="bin\Debug\HR_Test.BLL.pdb" />
+    <Content Include="bin\Debug\HR_Test.DAL.dll" />
+    <Content Include="bin\Debug\HR_Test.DAL.pdb" />
+    <Content Include="bin\Debug\HR_Test.Model.dll" />
+    <Content Include="bin\Debug\HR_Test.Model.pdb" />
+    <Content Include="bin\Debug\HS-Test.exe" />
+    <Content Include="bin\Debug\HS-Test.pdb" />
+    <Content Include="bin\Debug\HS-Test.vshost.exe" />
+    <Content Include="bin\Debug\hu\ZedGraph.resources.dll" />
+    <Content Include="bin\Debug\Interop.ADODB.dll" />
+    <Content Include="bin\Debug\it\ZedGraph.resources.dll" />
+    <Content Include="bin\Debug\JacksonSoft.CustomTabControl.dll" />
+    <Content Include="bin\Debug\JacksonSoft.CustomTabControl.pdb" />
+    <Content Include="bin\Debug\ja\ZedGraph.resources.dll" />
+    <Content Include="bin\Debug\Maticsoft.Common.dll" />
+    <Content Include="bin\Debug\msiexec.exe" />
+    <Content Include="bin\Debug\MySql.Data.dll" />
+    <Content Include="bin\Debug\Owf.Controls.A1Panel.dll" />
+    <Content Include="bin\Debug\Owf.Controls.A1Panel.pdb" />
+    <Content Include="bin\Debug\pt\ZedGraph.resources.dll" />
+    <Content Include="bin\Debug\report.xml" />
+    <Content Include="bin\Debug\ru\ZedGraph.resources.dll" />
+    <Content Include="bin\Debug\SkinFramework.dll" />
+    <Content Include="bin\Debug\SkinFramework.pdb" />
+    <Content Include="bin\Debug\sk\ZedGraph.resources.dll" />
+    <Content Include="bin\Debug\sv\ZedGraph.resources.dll" />
+    <Content Include="bin\Debug\System.Data.SQLite.dll" />
+    <Content Include="bin\Debug\TabStripControlLibrary.dll" />
+    <Content Include="bin\Debug\TabStripControlLibrary.pdb" />
+    <Content Include="bin\Debug\tr\ZedGraph.resources.dll" />
+    <Content Include="bin\Debug\UI.Glass.Panel.dll" />
+    <Content Include="bin\Debug\UI.xml" />
+    <Content Include="bin\Debug\XPExplorerBar.dll" />
+    <Content Include="bin\Debug\YBT5349-2006.xml" />
+    <Content Include="bin\Debug\ZedGraph.dll" />
+    <Content Include="bin\Debug\ZedGraph.pdb" />
+    <Content Include="bin\Debug\ZedGraph.XML" />
+    <Content Include="bin\Debug\zh-cn\ZedGraph.resources.dll" />
+    <Content Include="bin\Debug\zh-tw\ZedGraph.resources.dll" />
     <Content Include="EasyUSB1582.dll" />
     <Content Include="logo.ico" />
     <None Include="Resources\save.png" />

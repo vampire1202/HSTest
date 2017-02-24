@@ -35,8 +35,10 @@
             this.tsbtnExit = new System.Windows.Forms.ToolStripButton();
             this.tsbtnAccess = new System.Windows.Forms.ToolStripButton();
             this.palMain = new System.Windows.Forms.Panel();
+            this.gbtnParameter = new Glass.GlassButton();
             this.gbtnHelp = new Glass.GlassButton();
             this.gbtnTest = new Glass.GlassButton();
+            this.gbtnTestMethod = new Glass.GlassButton();
             this.gbtnReport = new Glass.GlassButton();
             this.glassButton4 = new Glass.GlassButton();
             this.glassButton8 = new Glass.GlassButton();
@@ -50,8 +52,6 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.gbtnParameter = new Glass.GlassButton();
-            this.gbtnTestMethod = new Glass.GlassButton();
             this.panelContainer.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             this.palMain.SuspendLayout();
@@ -154,10 +154,31 @@
             this.palMain.Size = new System.Drawing.Size(857, 364);
             this.palMain.TabIndex = 11;
             // 
+            // gbtnParameter
+            // 
+            this.gbtnParameter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
+            this.gbtnParameter.Font = new System.Drawing.Font("经典细隶书简", 18F);
+            this.gbtnParameter.GlowColor = System.Drawing.Color.White;
+            this.gbtnParameter.Image = global::HR_Test.Properties.Resources._20110704100834860_easyicon_cn_128;
+            this.gbtnParameter.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.gbtnParameter.InnerBorderColor = System.Drawing.Color.LightSkyBlue;
+            this.gbtnParameter.Location = new System.Drawing.Point(250, 14);
+            this.gbtnParameter.Name = "gbtnParameter";
+            this.gbtnParameter.OuterBorderColor = System.Drawing.Color.SteelBlue;
+            this.gbtnParameter.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.gbtnParameter.ShineColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
+            this.gbtnParameter.Size = new System.Drawing.Size(123, 134);
+            this.gbtnParameter.TabIndex = 10;
+            this.gbtnParameter.Text = "参数输入";
+            this.gbtnParameter.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.gbtnParameter.Click += new System.EventHandler(this.gbtnParameter_Click);
+            this.gbtnParameter.MouseEnter += new System.EventHandler(this.gbtnTestMethod_MouseEnter);
+            this.gbtnParameter.MouseLeave += new System.EventHandler(this.gbtnTestMethod_MouseLeave);
+            // 
             // gbtnHelp
             // 
             this.gbtnHelp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnHelp.Font = new System.Drawing.Font("隶书", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.gbtnHelp.Font = new System.Drawing.Font("经典细隶书简", 18F);
             this.gbtnHelp.GlowColor = System.Drawing.Color.White;
             this.gbtnHelp.Image = global::HR_Test.Properties.Resources.help2;
             this.gbtnHelp.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -177,7 +198,7 @@
             // gbtnTest
             // 
             this.gbtnTest.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnTest.Font = new System.Drawing.Font("隶书", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.gbtnTest.Font = new System.Drawing.Font("经典细隶书简", 18F);
             this.gbtnTest.GlowColor = System.Drawing.Color.White;
             this.gbtnTest.Image = global::HR_Test.Properties.Resources.testt;
             this.gbtnTest.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -195,10 +216,31 @@
             this.gbtnTest.MouseEnter += new System.EventHandler(this.gbtnTestMethod_MouseEnter);
             this.gbtnTest.MouseLeave += new System.EventHandler(this.gbtnTestMethod_MouseLeave);
             // 
+            // gbtnTestMethod
+            // 
+            this.gbtnTestMethod.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
+            this.gbtnTestMethod.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.gbtnTestMethod.GlowColor = System.Drawing.Color.White;
+            this.gbtnTestMethod.Image = global::HR_Test.Properties.Resources.testmethod;
+            this.gbtnTestMethod.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.gbtnTestMethod.InnerBorderColor = System.Drawing.Color.LightSkyBlue;
+            this.gbtnTestMethod.Location = new System.Drawing.Point(18, 14);
+            this.gbtnTestMethod.Name = "gbtnTestMethod";
+            this.gbtnTestMethod.OuterBorderColor = System.Drawing.Color.SteelBlue;
+            this.gbtnTestMethod.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.gbtnTestMethod.ShineColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
+            this.gbtnTestMethod.Size = new System.Drawing.Size(123, 134);
+            this.gbtnTestMethod.TabIndex = 10;
+            this.gbtnTestMethod.Text = "试验方法";
+            this.gbtnTestMethod.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.gbtnTestMethod.Click += new System.EventHandler(this.gbtnTestMethod_Click);
+            this.gbtnTestMethod.MouseEnter += new System.EventHandler(this.gbtnTestMethod_MouseLeave);
+            this.gbtnTestMethod.MouseLeave += new System.EventHandler(this.gbtnTestMethod_MouseLeave);
+            // 
             // gbtnReport
             // 
             this.gbtnReport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnReport.Font = new System.Drawing.Font("隶书", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.gbtnReport.Font = new System.Drawing.Font("经典细隶书简", 18F);
             this.gbtnReport.GlowColor = System.Drawing.Color.White;
             this.gbtnReport.Image = global::HR_Test.Properties.Resources.report;
             this.gbtnReport.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -219,7 +261,7 @@
             // glassButton4
             // 
             this.glassButton4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.glassButton4.Font = new System.Drawing.Font("隶书", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.glassButton4.Font = new System.Drawing.Font("经典细隶书简", 18F);
             this.glassButton4.GlowColor = System.Drawing.Color.White;
             this.glassButton4.Image = global::HR_Test.Properties.Resources.set1;
             this.glassButton4.InnerBorderColor = System.Drawing.Color.LightSkyBlue;
@@ -238,7 +280,7 @@
             // glassButton8
             // 
             this.glassButton8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.glassButton8.Font = new System.Drawing.Font("隶书", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.glassButton8.Font = new System.Drawing.Font("经典细隶书简", 18F);
             this.glassButton8.GlowColor = System.Drawing.Color.White;
             this.glassButton8.Image = global::HR_Test.Properties.Resources.about1;
             this.glassButton8.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -258,7 +300,7 @@
             // gbtnSet
             // 
             this.gbtnSet.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnSet.Font = new System.Drawing.Font("隶书", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.gbtnSet.Font = new System.Drawing.Font("经典细隶书简", 18F);
             this.gbtnSet.GlowColor = System.Drawing.Color.White;
             this.gbtnSet.Image = global::HR_Test.Properties.Resources.sets;
             this.gbtnSet.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -376,48 +418,6 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(998, 8);
             this.panel3.TabIndex = 21;
-            // 
-            // gbtnParameter
-            // 
-            this.gbtnParameter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnParameter.Font = new System.Drawing.Font("隶书", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.gbtnParameter.GlowColor = System.Drawing.Color.White;
-            this.gbtnParameter.Image = global::HR_Test.Properties.Resources._20110704100834860_easyicon_cn_128;
-            this.gbtnParameter.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.gbtnParameter.InnerBorderColor = System.Drawing.Color.LightSkyBlue;
-            this.gbtnParameter.Location = new System.Drawing.Point(250, 14);
-            this.gbtnParameter.Name = "gbtnParameter";
-            this.gbtnParameter.OuterBorderColor = System.Drawing.Color.SteelBlue;
-            this.gbtnParameter.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.gbtnParameter.ShineColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnParameter.Size = new System.Drawing.Size(123, 134);
-            this.gbtnParameter.TabIndex = 10;
-            this.gbtnParameter.Text = "参数输入";
-            this.gbtnParameter.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.gbtnParameter.Click += new System.EventHandler(this.gbtnParameter_Click);
-            this.gbtnParameter.MouseEnter += new System.EventHandler(this.gbtnTestMethod_MouseEnter);
-            this.gbtnParameter.MouseLeave += new System.EventHandler(this.gbtnTestMethod_MouseLeave);
-            // 
-            // gbtnTestMethod
-            // 
-            this.gbtnTestMethod.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnTestMethod.Font = new System.Drawing.Font("隶书", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.gbtnTestMethod.GlowColor = System.Drawing.Color.White;
-            this.gbtnTestMethod.Image = global::HR_Test.Properties.Resources.testmethod;
-            this.gbtnTestMethod.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.gbtnTestMethod.InnerBorderColor = System.Drawing.Color.LightSkyBlue;
-            this.gbtnTestMethod.Location = new System.Drawing.Point(18, 14);
-            this.gbtnTestMethod.Name = "gbtnTestMethod";
-            this.gbtnTestMethod.OuterBorderColor = System.Drawing.Color.SteelBlue;
-            this.gbtnTestMethod.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.gbtnTestMethod.ShineColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnTestMethod.Size = new System.Drawing.Size(123, 134);
-            this.gbtnTestMethod.TabIndex = 10;
-            this.gbtnTestMethod.Text = "试验方法";
-            this.gbtnTestMethod.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.gbtnTestMethod.Click += new System.EventHandler(this.gbtnTestMethod_Click);
-            this.gbtnTestMethod.MouseEnter += new System.EventHandler(this.gbtnTestMethod_MouseLeave);
-            this.gbtnTestMethod.MouseLeave += new System.EventHandler(this.gbtnTestMethod_MouseLeave);
             // 
             // frmMain
             // 

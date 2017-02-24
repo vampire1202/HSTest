@@ -51,6 +51,7 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel6 = new System.Windows.Forms.Panel();
+            this.pbChart = new System.Windows.Forms.PictureBox();
             this.zedGraphControl = new ZedGraph.ZedGraphControl();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridViewSum = new System.Windows.Forms.DataGridView();
@@ -86,8 +87,6 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.btnStop = new System.Windows.Forms.Button();
-            this.pbChart = new System.Windows.Forms.PictureBox();
             this.tsbtn_Start = new System.Windows.Forms.ToolStripButton();
             this.tsbtn_Zero = new System.Windows.Forms.ToolStripButton();
             this.tsbtn_Pause = new System.Windows.Forms.ToolStripButton();
@@ -102,13 +101,16 @@
             this.tsbtnMinimize = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.btnStop = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbChart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSum)).BeginInit();
             this.panel2.SuspendLayout();
@@ -118,7 +120,6 @@
             this.customPanel1.SuspendLayout();
             this.cmshear.SuspendLayout();
             this.toolStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbChart)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -255,6 +256,18 @@
             this.panel6.Size = new System.Drawing.Size(685, 375);
             this.panel6.TabIndex = 3;
             // 
+            // pbChart
+            // 
+            this.pbChart.BackColor = System.Drawing.Color.White;
+            this.pbChart.Location = new System.Drawing.Point(136, 23);
+            this.pbChart.Name = "pbChart";
+            this.pbChart.Size = new System.Drawing.Size(374, 229);
+            this.pbChart.TabIndex = 1;
+            this.pbChart.TabStop = false;
+            this.pbChart.Paint += new System.Windows.Forms.PaintEventHandler(this.pbChart_Paint);
+            this.pbChart.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
+            this.pbChart.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
+            // 
             // zedGraphControl
             // 
             this.zedGraphControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -265,11 +278,11 @@
             this.zedGraphControl.IsShowPointValues = true;
             this.zedGraphControl.Location = new System.Drawing.Point(0, 0);
             this.zedGraphControl.Name = "zedGraphControl";
-            this.zedGraphControl.ScrollGrace = 0;
-            this.zedGraphControl.ScrollMaxX = 0;
+            this.zedGraphControl.ScrollGrace = 0D;
+            this.zedGraphControl.ScrollMaxX = 0D;
             this.zedGraphControl.ScrollMaxY = double.NaN;
             this.zedGraphControl.ScrollMaxY2 = double.NaN;
-            this.zedGraphControl.ScrollMinX = 0;
+            this.zedGraphControl.ScrollMinX = 0D;
             this.zedGraphControl.ScrollMinY = double.NaN;
             this.zedGraphControl.ScrollMinY2 = double.NaN;
             this.zedGraphControl.Size = new System.Drawing.Size(685, 375);
@@ -416,7 +429,7 @@
             // label27
             // 
             this.label27.AutoSize = true;
-            this.label27.Font = new System.Drawing.Font("隶书", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label27.Font = new System.Drawing.Font("经典细隶书简", 21.75F);
             this.label27.ForeColor = System.Drawing.Color.Black;
             this.label27.Location = new System.Drawing.Point(3, 3);
             this.label27.Name = "label27";
@@ -499,8 +512,8 @@
             // 
             // lblUseExten
             // 
-            this.lblUseExten.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblUseExten.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblUseExten.Font = new System.Drawing.Font("宋体", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblUseExten.ForeColor = System.Drawing.Color.DarkOrange;
             this.lblUseExten.Location = new System.Drawing.Point(72, 3);
@@ -513,7 +526,7 @@
             // lblBx
             // 
             this.lblBx.AutoSize = true;
-            this.lblBx.Font = new System.Drawing.Font("隶书", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblBx.Font = new System.Drawing.Font("经典细隶书简", 21.75F);
             this.lblBx.ForeColor = System.Drawing.Color.Black;
             this.lblBx.Location = new System.Drawing.Point(3, 2);
             this.lblBx.Name = "lblBx";
@@ -574,7 +587,7 @@
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("隶书", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label21.Font = new System.Drawing.Font("经典细隶书简", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label21.ForeColor = System.Drawing.Color.Black;
             this.label21.Location = new System.Drawing.Point(3, 2);
             this.label21.Name = "label21";
@@ -683,7 +696,7 @@
             // lblFuhe
             // 
             this.lblFuhe.AutoSize = true;
-            this.lblFuhe.Font = new System.Drawing.Font("隶书", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblFuhe.Font = new System.Drawing.Font("经典细隶书简", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblFuhe.ForeColor = System.Drawing.Color.Black;
             this.lblFuhe.Location = new System.Drawing.Point(3, 2);
             this.lblFuhe.Margin = new System.Windows.Forms.Padding(0);
@@ -789,29 +802,6 @@
             this.toolStrip1.Text = "toolStrip2";
             this.toolStrip1.MouseHover += new System.EventHandler(this.toolStrip1_MouseHover);
             // 
-            // btnStop
-            // 
-            this.btnStop.Location = new System.Drawing.Point(670, 6);
-            this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(77, 52);
-            this.btnStop.TabIndex = 8;
-            this.btnStop.Text = "测试停止";
-            this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Visible = false;
-            this.btnStop.Click += new System.EventHandler(this.tsbtn_Stop_Click);
-            // 
-            // pbChart
-            // 
-            this.pbChart.BackColor = System.Drawing.Color.White;
-            this.pbChart.Location = new System.Drawing.Point(136, 23);
-            this.pbChart.Name = "pbChart";
-            this.pbChart.Size = new System.Drawing.Size(374, 229);
-            this.pbChart.TabIndex = 1;
-            this.pbChart.TabStop = false;
-            this.pbChart.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
-            this.pbChart.Paint += new System.Windows.Forms.PaintEventHandler(this.pbChart_Paint);
-            this.pbChart.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
-            // 
             // tsbtn_Start
             // 
             this.tsbtn_Start.Enabled = false;
@@ -827,9 +817,9 @@
             this.tsbtn_Start.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tsbtn_Start.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             this.tsbtn_Start.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tsbtn_Start.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
-            this.tsbtn_Start.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
             this.tsbtn_Start.Click += new System.EventHandler(this.tsbtn_Start_Click);
+            this.tsbtn_Start.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
+            this.tsbtn_Start.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
             // 
             // tsbtn_Zero
             // 
@@ -845,9 +835,9 @@
             this.tsbtn_Zero.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tsbtn_Zero.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             this.tsbtn_Zero.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tsbtn_Zero.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
-            this.tsbtn_Zero.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
             this.tsbtn_Zero.Click += new System.EventHandler(this.tsbtn_Zero_Click);
+            this.tsbtn_Zero.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
+            this.tsbtn_Zero.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
             // 
             // tsbtn_Pause
             // 
@@ -864,9 +854,9 @@
             this.tsbtn_Pause.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tsbtn_Pause.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             this.tsbtn_Pause.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tsbtn_Pause.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
-            this.tsbtn_Pause.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
             this.tsbtn_Pause.Click += new System.EventHandler(this.tsbtn_Pause_Click);
+            this.tsbtn_Pause.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
+            this.tsbtn_Pause.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
             // 
             // tsbtn_Return
             // 
@@ -882,9 +872,9 @@
             this.tsbtn_Return.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tsbtn_Return.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             this.tsbtn_Return.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tsbtn_Return.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
-            this.tsbtn_Return.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
             this.tsbtn_Return.Click += new System.EventHandler(this.tsbtn_Return_Click);
+            this.tsbtn_Return.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
+            this.tsbtn_Return.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
             // 
             // tsbtnYSJ
             // 
@@ -915,9 +905,9 @@
             this.tsbtn_Stop.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tsbtn_Stop.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             this.tsbtn_Stop.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tsbtn_Stop.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
-            this.tsbtn_Stop.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
             this.tsbtn_Stop.Click += new System.EventHandler(this.tsbtn_Stop_Click);
+            this.tsbtn_Stop.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
+            this.tsbtn_Stop.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
             // 
             // tsbtn_Curve
             // 
@@ -933,9 +923,9 @@
             this.tsbtn_Curve.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             this.tsbtn_Curve.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbtn_Curve.ToolTipText = "提示:默认为所选择的最后一根试样";
-            this.tsbtn_Curve.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
-            this.tsbtn_Curve.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
             this.tsbtn_Curve.Click += new System.EventHandler(this.tsbtn_Curve_Click);
+            this.tsbtn_Curve.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
+            this.tsbtn_Curve.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
             // 
             // tsbtnSetRealtimeCurve
             // 
@@ -950,9 +940,9 @@
             this.tsbtnSetRealtimeCurve.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             this.tsbtnSetRealtimeCurve.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbtnSetRealtimeCurve.Visible = false;
-            this.tsbtnSetRealtimeCurve.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
-            this.tsbtnSetRealtimeCurve.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
             this.tsbtnSetRealtimeCurve.Click += new System.EventHandler(this.tsbtnSetRealtimeCurve_Click);
+            this.tsbtnSetRealtimeCurve.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
+            this.tsbtnSetRealtimeCurve.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
             // 
             // tsbtnShowResultCurve
             // 
@@ -967,9 +957,9 @@
             this.tsbtnShowResultCurve.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
             this.tsbtnShowResultCurve.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.tsbtnShowResultCurve.Visible = false;
-            this.tsbtnShowResultCurve.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
-            this.tsbtnShowResultCurve.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
             this.tsbtnShowResultCurve.Click += new System.EventHandler(this.tsbtnShowResultCurve_Click);
+            this.tsbtnShowResultCurve.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
+            this.tsbtnShowResultCurve.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
             // 
             // tsbtn_Exit
             // 
@@ -1035,6 +1025,17 @@
             this.toolStripButton2.Visible = false;
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click_1);
             // 
+            // btnStop
+            // 
+            this.btnStop.Location = new System.Drawing.Point(838, 12);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(77, 52);
+            this.btnStop.TabIndex = 8;
+            this.btnStop.Text = "测试停止";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Visible = false;
+            this.btnStop.Click += new System.EventHandler(this.tsbtn_Stop_Click);
+            // 
             // frmTestResult
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1050,19 +1051,21 @@
             this.Name = "frmTestResult";
             this.ShowInTaskbar = false;
             this.Text = "HS-Test";
+            this.MaximumSizeChanged += new System.EventHandler(this.frmTestResult_MaximumSizeChanged);
             this.Load += new System.EventHandler(this.frmTestResult_Load);
             this.SizeChanged += new System.EventHandler(this.frmTestResult_SizeChanged);
             this.Resize += new System.EventHandler(this.frmTestResult_Resize);
             this.Validated += new System.EventHandler(this.frmTestResult_Validated);
-            this.MaximumSizeChanged += new System.EventHandler(this.frmTestResult_MaximumSizeChanged);
             this.panel1.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbChart)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSum)).EndInit();
             this.panel2.ResumeLayout(false);
@@ -1077,7 +1080,6 @@
             this.cmshear.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbChart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
