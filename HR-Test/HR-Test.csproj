@@ -644,6 +644,9 @@
     <None Include="Resources\T48.png" />
     <Content Include="bin\Debug\1.ico" />
     <Content Include="bin\Debug\a.jpg" />
+    <Content Include="bin\Debug\bin\Debug\HR-TestData.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="bin\Debug\CSkin.dll" />
     <Content Include="bin\Debug\CSkin.XML" />
     <Content Include="bin\Debug\CustomControl.OrientedTextControls.dll" />
@@ -765,6 +768,9 @@
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Release\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
