@@ -1,0 +1,1596 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using ZedGraph;
+using System.IO;
+using System.Security;
+using System.Security.Cryptography;
+using System.Runtime.InteropServices;
+
+namespace HR_Test
+{
+    public partial class frmAnalysiseCurve : Form
+    {
+
+        ZedGraph.GraphPane _ResultPanel;
+        private System.Windows.Forms.DataVisualization.Charting.Chart _ResultChart;
+        private frmMain _fmMain;
+
+        //读取曲线的数据
+        RollingPointPairList _RPPList_Read;
+        RollingPointPairList _RPPList0;
+
+        //时间
+        private double _time;
+        //力
+        private double _F1value;
+        //应力
+        private double _R1value;
+        //位移
+        private double _D1value;
+        //变形
+        private double _BX1value;
+        //应变
+        private double _YB1value;
+
+
+        //存储采集数据
+        private List<gdata> _List_Data;  
+        //曲线名数组
+        private string[] strCurveName = new string[6]; 
+
+        public frmAnalysiseCurve(frmMain fmMain)
+        {
+            InitializeComponent();
+            _ResultChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.panel2.Controls.Add(_ResultChart);
+            _ResultChart.Dock = DockStyle.Fill;
+
+            InitResultChart(_ResultChart);
+            
+           // initChart(this.zedGraphControl); 
+            _fmMain = fmMain;
+        }
+
+        void _ResultChart_Invalidated(object sender, InvalidateEventArgs e)
+        {
+            if (_ResultChart.ChartAreas.Count > 0)
+            {
+                System.Windows.Forms.DataVisualization.Charting.ChartArea cArea = _ResultChart.ChartAreas[0];
+                switch (this.cmbXr.SelectedIndex)//
+                //-请选择- X
+                //时间
+                //位移
+                //应变
+                //变形
+                //应力
+                {
+                    case 1:
+                        if (_time > cArea.AxisX.Maximum)
+                        {
+                            cArea.AxisX.Maximum = 2 * cArea.AxisX.Maximum;
+                            cArea.AxisX.Interval = cArea.AxisX.Maximum / 5.0d;
+                        }
+                        break;
+                    case 2:
+                        if (Math.Abs(_D1value) > Math.Abs(cArea.AxisX.Maximum))
+                        {
+                            cArea.AxisX.Maximum = 2 * cArea.AxisX.Maximum;
+                            cArea.AxisX.Interval = cArea.AxisX.Maximum / 5.0d;
+                            if (Math.Abs(cArea.AxisX.Maximum) > 1000.0)
+                            {
+                                cArea.AxisX.Maximum = ((int)cArea.AxisX.Maximum / 1000) * 1000;
+                                cArea.AxisX.Interval = cArea.AxisX.Maximum / 5.0d;
+                                cArea.AxisX.LabelStyle.Format = string.Format("0,.0##");
+                                //lblX1.Text = lblX1.Text.Replace("μm", "mm");
+                                //lblX1.Refresh();
+                            }
+                            //else
+                            //{
+                            //    cArea.AxisX.LabelStyle.Format = "f1";
+                            //    lblX1.Text = lblX1.Text.Replace("mm", "μm");
+                            //    lblX1.Refresh();
+                            //}
+                        }
+
+                        break;
+                    case 3:
+                        if (Math.Abs(_YB1value) > Math.Abs(cArea.AxisX.Maximum))
+                        {
+                            cArea.AxisX.Maximum = 2 * cArea.AxisX.Maximum;
+                            cArea.AxisX.Interval = cArea.AxisX.Maximum / 5.0d;
+                            if (Math.Abs(cArea.AxisX.Maximum) > 1000.0)
+                            {
+                                cArea.AxisX.Maximum = ((int)cArea.AxisX.Maximum / 1000) * 1000;
+                                cArea.AxisX.Interval = cArea.AxisX.Maximum / 5.0d;
+                                cArea.AxisX.LabelStyle.Format = string.Format("0,.0##");
+                                //lblX1.Text = lblX1.Text.Replace("μm", "mm");
+                                //lblX1.Refresh();
+                            }
+                            //else
+                            //{
+                            //    cArea.AxisX.LabelStyle.Format = "f1";
+                            //    lblX1.Text = lblX1.Text.Replace("mm", "μm");
+                            //    lblX1.Refresh();
+                            //}
+                        }
+                        break;
+                    case 4:
+                        if (Math.Abs(_BX1value) > Math.Abs(cArea.AxisX.Maximum))
+                        {
+                            cArea.AxisX.Maximum = 2 * cArea.AxisX.Maximum;
+                            cArea.AxisX.Interval = cArea.AxisX.Maximum / 5.0d;
+                            if (Math.Abs(cArea.AxisX.Maximum) > 1000.0)
+                            {
+                                cArea.AxisX.Maximum = ((int)cArea.AxisX.Maximum / 1000) * 1000;
+                                cArea.AxisX.Interval = cArea.AxisX.Maximum / 5.0d;
+                                cArea.AxisX.LabelStyle.Format = string.Format("0,.0##");
+                                //lblX1.Text = lblX1.Text.Replace("μm", "mm");
+                                //lblX1.Refresh();
+                            }
+                            //else
+                            //{
+                            //    cArea.AxisX.LabelStyle.Format = "f1";
+                            //    lblX1.Text = lblX1.Text.Replace("mm", "μm");
+                            //    lblX1.Refresh();
+                            //}
+                        }
+                        break;
+                    case 5:
+                        if (Math.Abs(_R1value) > Math.Abs(cArea.AxisX.Maximum))
+                        {
+                            cArea.AxisX.Maximum = 2 * cArea.AxisX.Maximum;
+                            cArea.AxisX.Interval = cArea.AxisX.Maximum / 5.0d;
+                            if (Math.Abs(cArea.AxisX.Maximum) > 1000.0)
+                            {
+                                cArea.AxisX.Maximum = ((int)cArea.AxisX.Maximum / 1000) * 1000;
+                                cArea.AxisX.Interval = cArea.AxisX.Maximum / 5.0d;
+                                cArea.AxisX.LabelStyle.Format = string.Format("0,.0##");
+                                //lblX1.Text = lblX1.Text.Replace("μm", "mm");
+                                //lblX1.Refresh();
+                            }
+                            //else
+                            //{
+                            //    cArea.AxisX.LabelStyle.Format = "f1";
+                            //    lblX1.Text = lblX1.Text.Replace("mm", "μm");
+                            //    lblX1.Refresh();
+                            //}
+                        }
+                        break;
+
+                }
+
+                //-请选择- Y
+                //负荷
+                //应力
+                //变形
+                //位移
+                switch (this.cmbYr.SelectedIndex)
+                {
+                    case 1:
+                        if (Math.Abs(_F1value) > Math.Abs(cArea.AxisY.Maximum))
+                        {
+                            cArea.AxisY.Maximum = 2 * cArea.AxisY.Maximum;
+                            cArea.AxisY.Interval = cArea.AxisY.Maximum / 5.0d;
+                            if (Math.Abs(cArea.AxisY.Maximum) > 1000.0)
+                            {
+                                cArea.AxisY.Maximum = ((int)cArea.AxisY.Maximum / 1000) * 1000;
+                                cArea.AxisY.Interval = cArea.AxisY.Maximum / 5.0d;
+
+                                cArea.AxisY.LabelStyle.Format = string.Format("0,.0##");
+                                //lblY1.Text = lblY1.Text.Replace("荷N", "荷kN");
+                                //lblY1.Refresh();
+                            }
+                            //else
+                            //{
+                            //    cArea.AxisY.LabelStyle.Format = "f1";
+                            //    lblY1.Text = lblY1.Text.Replace("荷kN", "荷N");
+                            //    lblY1.Refresh();
+                            //}
+                        }
+                        break;
+                    case 2:
+                        if (Math.Abs(_R1value) > Math.Abs(cArea.AxisY.Maximum))
+                        {
+                            cArea.AxisY.Maximum = 2 * cArea.AxisY.Maximum;
+                            cArea.AxisY.Interval = cArea.AxisY.Maximum / 5.0d;
+                        }
+                        break;
+                    case 3:
+                        if (Math.Abs(_BX1value) > Math.Abs(cArea.AxisY.Maximum))
+                        {
+
+                            cArea.AxisY.Maximum = 2 * cArea.AxisY.Maximum;
+                            cArea.AxisY.Interval = cArea.AxisY.Maximum / 5.0d;
+                            if (Math.Abs(cArea.AxisY.Maximum) > 1000.0)
+                            {
+                                cArea.AxisY.Maximum = ((int)cArea.AxisY.Maximum / 1000) * 1000;
+                                cArea.AxisY.Interval = cArea.AxisY.Maximum / 5.0d;
+                                cArea.AxisY.LabelStyle.Format = string.Format("0,.0##");
+                                //lblY1.Text = lblY1.Text.Replace("μm", "mm");
+                                //lblY1.Refresh();
+                            }
+                            //else
+                            //{
+                            //    cArea.AxisY.LabelStyle.Format = string.Format("f1");
+                            //    lblY1.Text = lblY1.Text.Replace("mm", "μm");
+                            //    lblY1.Refresh();
+                            //}
+                        }
+                        break;
+                    case 4:
+                        if (Math.Abs(_D1value) > Math.Abs(cArea.AxisY.Maximum))
+                        {
+                            cArea.AxisY.Maximum = 2 * cArea.AxisY.Maximum;
+                            cArea.AxisY.Interval = cArea.AxisY.Maximum / 5.0d;
+                            if (Math.Abs(cArea.AxisY.Maximum) > 1000.0)
+                            {
+                                cArea.AxisY.Maximum = ((int)cArea.AxisY.Maximum / 1000) * 1000;
+                                cArea.AxisY.Interval = cArea.AxisY.Maximum / 5.0d;
+                                cArea.AxisY.LabelStyle.Format = string.Format("0,.0##");
+                                //lblY1.Text = lblY1.Text.Replace("μm", "mm");
+                                //lblY1.Refresh();
+                            }
+                            //else
+                            //{
+                            //    cArea.AxisY.LabelStyle.Format = string.Format("f1");
+                            //    lblY1.Text = lblY1.Text.Replace("mm", "μm");
+                            //    lblY1.Refresh();
+                            //}
+                        }
+                        break;
+                }
+            }
+        }
+
+       private void frmAnalysiseCurve_Load(object sender, EventArgs e)
+        {
+            _ResultPanel = this.zedGraphControl.GraphPane;
+            initResultCurve(this.zedGraphControl);
+            this.zedGraphControl.Invalidated += new InvalidateEventHandler(zedGraphControl_Invalidated);
+            
+            this.cmbYr.SelectedIndex = int.Parse(RWconfig.GetAppSettings("ShowY"));           
+            this.cmbXr.SelectedIndex = int.Parse(RWconfig.GetAppSettings("ShowX")); 
+
+            this.zedGraphControl.RestoreScale(this.zedGraphControl.GraphPane);
+            _ResultChart.Invalidated += new InvalidateEventHandler(_ResultChart_Invalidated);
+        }
+
+        private string _testType=string.Empty;
+        public string _TestType
+        {
+            get { return this._testType; }
+            set { this._testType = value; }
+        }
+
+        private string _lineColor = string.Empty;
+        public string _LineColor
+        {
+            get { return this._lineColor; }
+            set { this._lineColor = value; }
+        }
+
+
+        /// <summary>
+        /// 曲线名称
+        /// </summary>
+        private string _curveName;
+        public string _CurveName
+        {
+            get { return this._curveName; }
+            set { this._curveName = value; }
+        }
+
+        private void readCurveName()
+        {
+            //若曲线存在
+            if (File.Exists(_curveName))
+            {
+                //先解密文件
+                //string outputFile = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\HRData.txt";
+                //string sSecretKey; 
+                
+                //string[] key =RWconfig.GetAppSettings("code").ToString().Split('-');
+                //byte[] keyee = new byte[8];
+                ////转换为 key byte数组
+                //for (int j = 0; j < key.Length; j++)
+                //{
+                //    keyee[j] = Byte.Parse(key[j], System.Globalization.NumberStyles.HexNumber);
+                //}
+                //sSecretKey = ASCIIEncoding.ASCII.GetString(keyee); 
+                //GCHandle gch = GCHandle.Alloc(sSecretKey, GCHandleType.Pinned); 
+                //Safe.DecryptFile(_curveName, outputFile, sSecretKey); 
+                //Safe.ZeroMemory(gch.AddrOfPinnedObject(), sSecretKey.Length * 2);
+                //gch.Free();
+                _List_Data = new List<gdata>();
+                //读取曲线
+                using (StreamReader srLine = new StreamReader(_curveName))
+                {
+                    string[] testSampleInfo1 = srLine.ReadLine().Split(',');
+                    string[] testSampleInfo2 = srLine.ReadLine().Split(','); 
+                    this.zedGraphControl.PrintDocument.DocumentName = testSampleInfo2[0].ToString() +" 试验曲线";
+                    //this.zedGraphControl.GraphPane.Title.IsVisible = true;
+                    String line;
+                    // Read and display lines from the file until the end of
+                    // the file is reached.
+                    while ((line = srLine.ReadLine()) != null)
+                    {
+                        string[] gdataArray = line.Split(',');
+                        gdata _gdata = new gdata();
+                        _gdata.F1 = double.Parse(gdataArray[0]);
+                        _gdata.F2 = double.Parse(gdataArray[1]);
+                        _gdata.F3 = double.Parse(gdataArray[2]);
+                        _gdata.D1 = double.Parse(gdataArray[3]);
+                        _gdata.D2 = double.Parse(gdataArray[4]);
+                        _gdata.D3 = double.Parse(gdataArray[5]);
+                        _gdata.BX1 = double.Parse(gdataArray[6]);
+                        _gdata.BX2 = double.Parse(gdataArray[7]);
+                        _gdata.BX3 = double.Parse(gdataArray[8]);
+                        _gdata.YL1 = double.Parse(gdataArray[9]);
+                        _gdata.YL2= double.Parse(gdataArray[10]);
+                        _gdata.YL3= double.Parse(gdataArray[11]);
+                        _gdata.YB1 = double.Parse(gdataArray[12]);
+                        _gdata.YB2= double.Parse(gdataArray[13]);
+                        _gdata.YB3 = double.Parse(gdataArray[14]);
+                        _gdata.Ts= double.Parse(gdataArray[15]);
+                        _List_Data.Add(_gdata);
+                    }
+                    srLine.Close();
+                    srLine.Dispose(); 
+                    //showCurve(_List_Data);
+                    InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, this._testType, this._lineColor);
+                }
+            }
+        }
+
+        private void readCurveToChart()
+        {
+            //若曲线存在
+            if (File.Exists(_curveName))
+            {
+                //先解密文件
+                //string outputFile = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\HRData.txt";
+                //string sSecretKey; 
+
+                //string[] key =RWconfig.GetAppSettings("code").ToString().Split('-');
+                //byte[] keyee = new byte[8];
+                ////转换为 key byte数组
+                //for (int j = 0; j < key.Length; j++)
+                //{
+                //    keyee[j] = Byte.Parse(key[j], System.Globalization.NumberStyles.HexNumber);
+                //}
+                //sSecretKey = ASCIIEncoding.ASCII.GetString(keyee); 
+                //GCHandle gch = GCHandle.Alloc(sSecretKey, GCHandleType.Pinned); 
+                //Safe.DecryptFile(_curveName, outputFile, sSecretKey); 
+                //Safe.ZeroMemory(gch.AddrOfPinnedObject(), sSecretKey.Length * 2);
+                //gch.Free();
+                _List_Data = new List<gdata>();
+                //读取曲线
+                using (StreamReader srLine = new StreamReader(_curveName))
+                {
+                    string[] testSampleInfo1 = srLine.ReadLine().Split(',');
+                    string[] testSampleInfo2 = srLine.ReadLine().Split(',');
+                    //this.zedGraphControl.PrintDocument.DocumentName = testSampleInfo2[0].ToString() + " 试验曲线";
+                    //this.zedGraphControl.GraphPane.Title.IsVisible = true;
+                    String line;
+                    // Read and display lines from the file until the end of
+                    // the file is reached.
+                    while ((line = srLine.ReadLine()) != null)
+                    {
+                        string[] gdataArray = line.Split(',');
+                        gdata _gdata = new gdata();
+                        _gdata.F1 = double.Parse(gdataArray[0]);
+                        _gdata.F2 = double.Parse(gdataArray[1]);
+                        _gdata.F3 = double.Parse(gdataArray[2]);
+                        _gdata.D1 = double.Parse(gdataArray[3]);
+                        _gdata.D2 = double.Parse(gdataArray[4]);
+                        _gdata.D3 = double.Parse(gdataArray[5]);
+                        _gdata.BX1 = double.Parse(gdataArray[6]);
+                        _gdata.BX2 = double.Parse(gdataArray[7]);
+                        _gdata.BX3 = double.Parse(gdataArray[8]);
+                        _gdata.YL1 = double.Parse(gdataArray[9]);
+                        _gdata.YL2 = double.Parse(gdataArray[10]);
+                        _gdata.YL3 = double.Parse(gdataArray[11]);
+                        _gdata.YB1 = double.Parse(gdataArray[12]);
+                        _gdata.YB2 = double.Parse(gdataArray[13]);
+                        _gdata.YB3 = double.Parse(gdataArray[14]);
+                        _gdata.Ts = double.Parse(gdataArray[15]);
+                        _List_Data.Add(_gdata);
+                    }
+                    srLine.Close();
+                    srLine.Dispose();
+                }
+
+                for (Int32 i = 0; i < _List_Data.Count; i++)
+                {
+                    //采集数据
+                    //时间
+                    _time = _List_Data[i].Ts;
+                    //力
+                    _F1value = _List_Data[i].F1;
+                    //应力
+                    _R1value = _List_Data[i].YL1;
+                    //位移
+                    _D1value = _List_Data[i].D1;
+                    //变形
+                    _BX1value = _List_Data[i].BX1;
+                    //应变
+                    _YB1value = _List_Data[i].YB1;
+
+                    //显示曲线数据
+                    #region  cmbYr,cmbXr 轴
+                    switch (this.cmbYr.SelectedIndex)
+                    {
+                        case 1:
+                            switch (this.cmbXr.SelectedIndex)
+                            {
+                                case 1:
+                                    //strCurveName[0] = "力/时间";
+                                    _ResultChart.Series[0].Points.AddXY(_time, _F1value);
+                                    //LineItemListEdit_0.Add(time, F1value);
+                                    //_RPPList_Read.Add(time, F1value);
+                                    break;
+                                case 2:
+                                    //strCurveName[0] = "力/位移";
+                                    //LineItemListEdit_0.Add(D1value, F1value);
+                                    //_RPPList_Read.Add(D1value, F1value);
+                                    _ResultChart.Series[0].Points.AddXY(_D1value, _F1value);
+                                    break;
+                                case 3:
+                                    //strCurveName[0] = "力/应变";
+                                    //LineItemListEdit_0.Add(YB1value, F1value);
+                                    //_RPPList_Read.Add(YB1value, F1value);
+                                    _ResultChart.Series[0].Points.AddXY(_YB1value, _F1value);
+                                    break;
+                                case 4:
+                                    //LineItemListEdit_0.Add(BX1value, F1value);
+                                    //_RPPList_Read.Add(BX1value, F1value);
+                                    _ResultChart.Series[0].Points.AddXY(_BX1value, _F1value);
+                                    break;
+                                case 5:
+                                    _ResultChart.Series[0].Points.AddXY(_R1value, _F1value);
+                                    break;
+                                default:
+                                    //strCurveName[0] = "";                           
+                                    break;
+                            }
+                            break;
+                        case 2:
+                            switch (this.cmbXr.SelectedIndex)
+                            {
+                                case 1:
+                                    //strCurveName[0] = "应力/时间";
+                                    //LineItemListEdit_0.Add(time, R1value);
+                                    //_RPPList_Read.Add(time, R1value);
+                                    _ResultChart.Series[0].Points.AddXY(_time, _R1value);
+                                    break;
+                                case 2:
+                                    //strCurveName[0] = "应力/位移";
+                                    //LineItemListEdit_0.Add(D1value, R1value);
+                                    //_RPPList_Read.Add(D1value, R1value);
+                                    _ResultChart.Series[0].Points.AddXY(_D1value, _R1value);
+                                    break;
+                                case 3:
+                                    //strCurveName[0] = "应力/应变";
+                                    //LineItemListEdit_0.Add(YB1value, R1value);
+                                    //_RPPList_Read.Add(YB1value, R1value);
+                                    _ResultChart.Series[0].Points.AddXY(_D1value, _R1value);
+                                    break;
+                                case 4:
+                                    //LineItemListEdit_0.Add(BX1value, R1value);
+                                    //_RPPList_Read.Add(BX1value, R1value);
+                                    _ResultChart.Series[0].Points.AddXY(_D1value, _R1value);
+                                    break;
+                                case 5:
+                                    //LineItemListEdit_0.Add(BX1value, R1value);
+                                    //_RPPList_Read.Add(BX1value, R1value);
+                                    _ResultChart.Series[0].Points.AddXY(_R1value, _R1value);
+                                    break;
+                                default:
+                                    //strCurveName[0] = "";
+                                    break;
+                            }
+                            break;
+                        case 3:
+                            switch (this.cmbXr.SelectedIndex)
+                            {
+                                case 1:
+                                    //strCurveName[0] = "变形/时间";
+                                    //LineItemListEdit_0.Add(time, BX1value);
+                                    //_RPPList_Read.Add(time, BX1value);
+                                    _ResultChart.Series[0].Points.AddXY(_time, _BX1value);
+                                    break;
+                                case 2:
+                                    //strCurveName[0] = "变形/位移";
+                                    //LineItemListEdit_0.Add(D1value, BX1value);
+                                    //_RPPList_Read.Add(D1value, BX1value);
+                                    _ResultChart.Series[0].Points.AddXY(_D1value, _BX1value);
+                                    break;
+                                case 3:
+                                    //strCurveName[0] = "变形/应变";
+                                    //LineItemListEdit_0.Add(YB1value, BX1value);
+                                    //_RPPList_Read.Add(YB1value, BX1value);
+                                    _ResultChart.Series[0].Points.AddXY(_YB1value, _BX1value);
+                                    break;
+                                case 4:
+                                    //LineItemListEdit_0.Add(BX1value, BX1value);
+                                    //_RPPList_Read.Add(BX1value, BX1value);
+                                    _ResultChart.Series[0].Points.AddXY(_BX1value, _BX1value);
+                                    break;
+                                case 5:
+                                    //LineItemListEdit_0.Add(BX1value, BX1value);
+                                    //_RPPList_Read.Add(BX1value, BX1value);
+                                    _ResultChart.Series[0].Points.AddXY(_R1value, _BX1value);
+                                    break;
+                                default:
+                                    //strCurveName[0] = "";
+                                    break;
+                            }
+                            break;
+                        case 4:
+                            switch (this.cmbXr.SelectedIndex)
+                            {
+                                case 1:
+                                    //strCurveName[0] = "位移/时间";
+                                    //LineItemListEdit_0.Add(time, D1value);
+                                    //_RPPList_Read.Add(time, D1value);
+                                    _ResultChart.Series[0].Points.AddXY(_time, _D1value);
+                                    break;
+                                case 2:
+                                    //strCurveName[0] = "位移/位移";
+                                    //LineItemListEdit_0.Add(D1value, D1value);
+                                    //_RPPList_Read.Add(D1value, D1value);
+                                    _ResultChart.Series[0].Points.AddXY(_D1value, _D1value);
+                                    break;
+                                case 3:
+                                    //strCurveName[0] = "位移/应变";
+                                    //LineItemListEdit_0.Add(YB1value, D1value);
+                                    //_RPPList_Read.Add(YB1value, D1value);
+                                    _ResultChart.Series[0].Points.AddXY(_YB1value, _D1value);
+                                    break;
+                                case 4:
+                                    //LineItemListEdit_0.Add(BX1value, D1value);
+                                    //_RPPList_Read.Add(BX1value, D1value);
+                                    _ResultChart.Series[0].Points.AddXY(_BX1value, _D1value);
+                                    break;
+                                case 5:
+                                    //LineItemListEdit_0.Add(BX1value, D1value);
+                                    //_RPPList_Read.Add(BX1value, D1value);
+                                    _ResultChart.Series[0].Points.AddXY(_R1value, _D1value);
+                                    break;
+                                default:
+                                    //strCurveName[0] = "";
+                                    break;
+                            }
+                            break;
+                        default:
+                            strCurveName[0] = "";
+                            strCurveName[1] = "";
+                            break;
+                    }
+                    #endregion
+                }
+                
+                _ResultChart.Invalidate();
+
+            }
+        } 
+
+
+        private PointD getFm(RollingPointPairList rppl)
+        {
+            PointD fm = new PointD();
+            Int32 i = 0;
+            while (i < rppl.Count)
+            {
+                if (fm.Y < rppl[i].Y)
+                {
+                    fm.Y = rppl[i].Y;
+                    fm.X = rppl[i].X;
+                }
+                i++;
+            }
+            return fm;
+        }
+
+        private void tsbtnExit_Click(object sender, EventArgs e)
+        {
+            this.Dispose();
+        }
+
+        private void gbtnExit_Click(object sender, EventArgs e)
+        {
+
+        }
+
+ 
+
+        void zedGraphControl_Invalidated(object sender, InvalidateEventArgs e)
+        {
+            if (this.zedGraphControl.GraphPane.XAxis != null)
+            {
+                Scale sScale = _ResultPanel.XAxis.Scale;
+
+                switch (this.cmbXr.SelectedIndex)// -请选择-   时间,s  位移,μm  应变,μm
+                {
+                    case 1://时间
+                        sScale.Mag = 0;
+                        break;
+                    case 2://位移 
+                        if (sScale.Max > 1000)
+                        {
+                            sScale.Mag = 3;
+                            sScale.Format = "0.00";
+                        }
+                        else
+                        {
+                            sScale.Mag = 0;
+                            sScale.Format = "0.0";
+                        }
+                        break;
+                    case 3:
+                        if (sScale.Max > 1000)
+                        {
+                            sScale.Mag = 3;
+                            sScale.Format = "0.00";
+                        }
+                        else
+                        {
+                            sScale.Mag = 0;
+                            sScale.Format = "0.0";
+                        }
+                        break;
+                }
+                if (_ResultPanel.XAxis.Scale.Max > 100)
+                {
+                    _ResultPanel.XAxis.Scale.Max = ((int)_ResultPanel.XAxis.Scale.Max / 10) * 10;
+                    _ResultPanel.XAxis.Scale.Min = 0;
+                }
+                _ResultPanel.XAxis.Scale.MajorStep = (_ResultPanel.XAxis.Scale.Max - _ResultPanel.XAxis.Scale.Min) / 5;
+                _ResultPanel.XAxis.Scale.MinorStep = _ResultPanel.XAxis.Scale.MajorStep / 5;
+            }
+
+            if (this.zedGraphControl.GraphPane.YAxis != null)
+            {
+                Scale sScale = _ResultPanel.YAxis.Scale;
+                switch (this.cmbYr.SelectedIndex)
+                {
+                    case 1:
+                        if (sScale.Max > 1000)
+                        {
+                            sScale.Mag = 3;
+                            sScale.Format = "0.00";
+                        }
+                        else
+                        {
+                            sScale.Mag = 0;
+                            sScale.Format = "0.0";
+                        }
+                        break;
+                    case 2:
+                        //if (m_Stress > sScale.Max)
+                        //{
+                        //    sScale.Max = 2 * sScale.Max;
+                        //}
+                        break;
+                    case 3:
+                        //if (m_Elongate > sScale.Max)
+                        //{
+                        //    sScale.Max = 2 * sScale.Max;
+                        if (sScale.Max > 1000)
+                        {
+                            sScale.Mag = 3;
+                            sScale.Format = "0.00";
+                        }
+                        else
+                        {
+                            sScale.Mag = 0;
+                            sScale.Format = "0.0";
+                        }
+                        //}
+                        break;
+                    case 4:
+                        //if (m_Displacement > sScale.Max)
+                        //{
+                        //    sScale.Max = 2 * sScale.Max;
+                        if (sScale.Max > 1000)
+                        {
+                            sScale.Mag = 3;
+                            sScale.Format = "0.00";
+                        }
+                        else
+                        {
+                            sScale.Mag = 0;
+                            sScale.Format = "0.0";
+                        }
+                        //}
+                        break;
+                }
+
+                if (_ResultPanel.YAxis.Scale.Max > 100)
+                {
+                    _ResultPanel.YAxis.Scale.Max = ((int)_ResultPanel.YAxis.Scale.Max / 10) * 10;
+                    _ResultPanel.YAxis.Scale.Min = 0;
+                }
+
+                _ResultPanel.YAxis.Scale.MajorStep = (_ResultPanel.YAxis.Scale.Max - _ResultPanel.YAxis.Scale.Min) / 5;
+                _ResultPanel.YAxis.Scale.MinorStep = _ResultPanel.YAxis.Scale.MajorStep / 5;
+            }
+        }
+
+        private void zedGraphControl_Click(object sender, EventArgs e)
+        {
+            //zedGraphControl.Selection.Add(this.zedGraphControl.GraphPane.CurveList[0]);
+            //zedGraphControl.Selection[0].Color = Color.DarkRed;
+            //zedGraphControl.Selection[0].IsSelectable = true;
+            //this.zedGraphControl.Refresh();
+        }
+
+      
+
+       // string[] _lblTensile_Result = { "-", "-", "Fm", "Rm", "ReH", "ReL", "Rp", "Rt", "Rr", "εp", "εt", "εr", "E", "m", "mE", "A", "Ae", "Ag", "At", "Agt", "Awn", "Lm", "Lf", "Z", "X", "S", "X￣" };
+       
+       // string[] _lblCompress_Result = { "-", "-", "△L", "εpc", "εtc", "n", "F0", "Ff", "Fpc", "Ftc", "FeHc", "FeLc", "Fmc", "Rpc", "Rtc", "ReHc", "ReLc", "Rmc", "Ec", "X", "X￣" };
+      
+      //  string[] _lblBend_Result = { "-", "-", "α", "r", "f" };
+
+
+        //保存修改结果
+        private void gBtnSaveResult_Click(object sender, EventArgs e)
+        {
+            switch (this._TestType)
+            {
+                case "tensile":
+                    // "Fm bit," + //最大力
+                    //"Rm bit," + //最大应力
+                    //"ReH bit," + //上屈服强度
+                    //"ReL bit," + //下屈服强度
+                    //"Rp bit," + //规定塑性延伸强度
+                    //"Rt bit," + //规定总延伸强度
+                    //"Rr bit," + //规定残余延伸强度
+                    //"εp bit," +//ε
+                    //"εt bit," +//
+                    //"εr bit," +//
+                    //"E bit," + //弹性模量
+                    //"m bit," + //应力-延伸率曲线在给定试验时刻的斜率
+                    //"mE bit," + //应力-延伸率曲线在弹性部分的斜率
+                    //"A bit," + //断后伸长率               
+                    //"Aee bit," + //屈服点延伸率
+                    //"Agg bit," + //最大力Fm塑性延伸率
+                    //"Att bit," + //断裂总延伸率 
+                    //"Aggtt bit," + //最大力Fm总延伸率
+                    //"Awnwn bit," + //无缩颈塑性伸长率
+                    //"Lm bit," +
+                    //"Lf bit," +
+                    //"Z bit," + //断面收缩率 
+                    //"Avera bit," + //平均值
+                    //"SS bit," + //标准偏差
+                    //"Avera1 bit" + //去掉最大最小值的平均值
+                    BLL.TestSample bllTs = new HR_Test.BLL.TestSample();
+                    Model.TestSample modelTs = bllTs.GetModel(this.tslblSampleNo.Text);
+                    foreach (UC.Result ucR in this.flowLayoutPanel1.Controls) 
+                    {
+                        switch (ucR.Name)
+                        {
+                            case "0":
+                                modelTs.Fm = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "1":
+                                modelTs.Rm = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "2":
+                                modelTs.ReH = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "3":
+                                modelTs.ReL = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "4":
+                                modelTs.Rp = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "5":
+                                modelTs.Rt = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "6":
+                                modelTs.Rr = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "7":
+                                modelTs.εp = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "8":
+                                modelTs.εt = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "9":
+                                modelTs.εr = double.Parse(ucR.txtFiledContent.Text);
+                                break; 
+                            case "10":
+                                modelTs.E = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "11":
+                                modelTs.m = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "12":
+                                modelTs.mE = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "13":
+                                modelTs.A = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "14":
+                                modelTs.Aee = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "15":
+                                modelTs.Agg = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "16":
+                                modelTs.Att = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "17":
+                                modelTs.Aggtt = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "18":
+                                modelTs.Awnwn = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "19":
+                                modelTs.Lm = double.Parse(ucR.txtFiledContent.Text);
+                                break; 
+                            case "20":
+                                modelTs.Lf = double.Parse(ucR.txtFiledContent.Text);
+                                break; 
+                            case "21":
+                                modelTs.Z = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "22":
+                                modelTs.Avera = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "23":
+                                modelTs.SS = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "24":
+                                modelTs.Avera1 = double.Parse(ucR.txtFiledContent.Text);
+                                break; 
+                        } 
+                    }
+                    if (bllTs.Update(modelTs))
+                    {
+                        MessageBox.Show("更新成功!");
+                    }
+                    break;
+                case "compress":
+                     BLL.Compress bllCs = new HR_Test.BLL.Compress();
+                     Model.Compress modelCs = bllCs.GetModel(this.tslblSampleNo.Text);
+                    foreach (UC.Result ucR in this.flowLayoutPanel1.Controls)
+                    {
+                        switch (ucR.Name)
+                        {
+                            case "0":
+                                modelCs.deltaL = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "1":
+                                modelCs.εpc = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "2":
+                                modelCs.εtc = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "3":
+                                modelCs.n = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "4":
+                                modelCs.F0 = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "5":
+                                modelCs.Ff = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "6":
+                                modelCs.Fpc = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "7":
+                                modelCs.Ftc = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "8":
+                                modelCs.FeHc = double.Parse(ucR.txtFiledContent.Text); 
+                                break;
+                            case "9":
+                                modelCs.FeLc = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "10":
+                                modelCs.Fmc = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "11":
+                                modelCs.Rpc = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "12":
+                                modelCs.Rtc = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "13":
+                                modelCs.ReHc = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "14":
+                                modelCs.ReLc = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "15":
+                                modelCs.Rmc = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "16":
+                                modelCs.Ec = double.Parse(ucR.txtFiledContent.Text);
+                                break;
+                            case "17":
+                                modelCs.Avera = double.Parse(ucR.txtFiledContent.Text); 
+                                break;
+                            case "18":
+                                modelCs.Avera1 = double.Parse(ucR.txtFiledContent.Text);
+                                break; 
+                        }
+                    }
+                    if (bllCs.Update(modelCs))
+                    {
+                        MessageBox.Show("更新成功!");
+                    }
+                    //"deltaL bit," + //原始标距段受力后的变形
+                    //      "εpc bit," + //规定非比例压缩应变
+                    //      "εtc bit," + //规定总压缩应变
+                    //      "n bit," + //变形放大倍数
+                    //      "F0 bit," + //试样上端所受得力
+                    //      "Ff bit," + //摩擦力                
+                    //      "Fpc bit," + //规定非比例压缩变形的实际压缩力
+                    //      "Ftc bit," + //规定总压缩变形的实际压缩力
+                    //      "FeHc bit," + //屈服时的实际上屈服压缩力
+                    //      "FeLc bit," + //屈服时的实际下屈服压缩力
+                    //      "Fmc bit," + //试样破坏过程中最大的压缩力
+                    //      "Rpc bit," + //规定非比例压缩强度
+                    //      "Rtc bit," +//规定总压缩强度
+                    //      "ReHc bit," +//上屈服压缩强度
+                    //      "ReLc bit," +//下屈服压缩强度
+                    //      "Rmc bit," + //抗压强度
+                    //      "Ec bit," + //压缩弹性模量
+                    //      "Avera bit," + //平均值
+                    //      "Avera1 bit" + //去掉最大最小值的平均值 
+                    break;
+                case "bend":
+                    //"α bit," + //弯曲角度
+                    //    "r bit," + //试样弯曲后的弯曲半径
+                    //    "f bit" + //弯曲压头的移动距离
+                     BLL.Bend bllBs = new HR_Test.BLL.Bend();
+                     Model.Bend modelBs = bllBs.GetModel(this.tslblSampleNo.Text);
+                     foreach (Control c in this.flowLayoutPanel1.Controls)
+                     {
+                         switch (c.Name)
+                         { 
+                             case "0":
+                                 UC.Result ucR = (UC.Result)c;
+                                 modelBs.α = double.Parse((ucR.txtFiledContent).Text); 
+                                 break;
+                             case "1":
+                                 UC.Result ucR1 = (UC.Result)c;
+                                 modelBs.r = double.Parse(ucR1.txtFiledContent.Text); 
+                                 break;
+                             case "2":
+                                 UC.Result ucR2 = (UC.Result)c;
+                                 modelBs.f = double.Parse(ucR2.txtFiledContent.Text); 
+                                 break;
+                             case "cmbSf":
+                                 ComboBox cb = (ComboBox)c;
+                                 switch (cb.SelectedIndex)
+                                 {
+                                     case 0:
+                                         modelBs.isConformity = false;
+                                         break;
+                                     case 1:
+                                         modelBs.isConformity = true;
+                                         break;
+                                     case 2:
+                                         modelBs.isConformity = false;
+                                         break;
+                                 } 
+                                 break;
+                         }
+                     } 
+
+                    if(bllBs.Update(modelBs))
+                    {
+                        MessageBox.Show("更新成功!");
+                    }
+
+                    break;
+
+                   
+            }
+        }
+
+        private void cmbYr_SelectedIndexChanged(object sender, EventArgs e)
+        { 
+         _time=0;
+        //力
+         _F1value=0;
+        //应力
+         _R1value=0;
+        //位移
+        _D1value=0;
+        //变形
+        _BX1value=0;
+        //应变
+         _YB1value=0;
+
+            InitResultChart(this._ResultChart);
+            switch (cmbYr.SelectedIndex)
+            {
+                case 0:
+                    //this._ResultPanel.YAxis.Title.Text = "Y1";
+                    //_ResultPanel.YAxis.Scale.LabelGap = 0;
+                    //_ResultPanel.YAxis.Scale.MaxAuto = true;
+                    _ResultChart.ChartAreas[0].AxisY.Title = "Y1";
+
+
+                    break;
+                case 1:
+                    //_ResultPanel.YAxis.Title.Text = "力,N";
+                    //_ResultPanel.YAxis.Scale.LabelGap = 0;
+                    //_ResultPanel.YAxis.Scale.MaxAuto = true;
+                    _ResultChart.ChartAreas[0].AxisY.Title = "负荷,N";
+                    break;
+                case 2:
+                    //_ResultPanel.YAxis.Title.Text = "应力,MPa";
+                    //_ResultPanel.YAxis.Scale.LabelGap = 0;
+                    //_ResultPanel.YAxis.Scale.MaxAuto = true;
+                    _ResultChart.ChartAreas[0].AxisY.Title = "应力,MPa";
+                    break;
+                case 3:
+                    //_ResultPanel.YAxis.Title.Text = "变形,mm";
+                    //_ResultPanel.YAxis.Scale.LabelGap = 0;
+                    //_ResultPanel.YAxis.Scale.MaxAuto = true;
+                    _ResultChart.ChartAreas[0].AxisY.Title = "变形,mm";
+                    break;
+                case 4:
+                    //_ResultPanel.YAxis.Title.Text = "位移,mm";
+                    //_ResultPanel.YAxis.Scale.LabelGap = 0;
+                    //_ResultPanel.YAxis.Scale.MaxAuto = true;
+                    _ResultChart.ChartAreas[0].AxisY.Title = "位移,mm";
+                    break;
+            }
+            //this.zedGraphControl.AxisChange();
+            //this.zedGraphControl.Refresh();
+            RWconfig.SetAppSettings("ShowY", this.cmbYr.SelectedIndex.ToString());
+
+            readCurveToChart();
+            //switch (this._TestType)
+            //{
+            //    case "tensile":
+            //        InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, "Tensile", _lineColor);
+            //        readCurveToChart();
+            //        break;
+            //    case "compress":
+            //        InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, "Compress", _lineColor);
+            //        break;
+            //    case "bend":
+            //        InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, "Bend", _lineColor);
+            //        break;
+            //}
+        }
+
+        private void cmbXr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _time = 0;
+            //力
+            _F1value = 0;
+            //应力
+            _R1value = 0;
+            //位移
+            _D1value = 0;
+            //变形
+            _BX1value = 0;
+            //应变
+            _YB1value = 0;
+            InitResultChart(this._ResultChart);
+            switch (cmbXr.SelectedIndex)
+            {
+                case 0:
+                    //_ResultPanel.XAxis.Title.Text = "X1";
+                    //_ResultPanel.XAxis.Scale.MaxAuto = true;
+                    _ResultChart.ChartAreas[0].AxisX.Title = "Y1";
+                    break;
+                case 1:
+                    _ResultChart.ChartAreas[0].AxisX.Title  = "时间,s"; 
+                    break;
+                case 2:
+                    _ResultChart.ChartAreas[0].AxisX.Title  = "位移,mm"; 
+                    break;
+                case 3:
+                    _ResultChart.ChartAreas[0].AxisX.Title = "应变,%"; 
+                    break;
+                case 4:
+                    _ResultChart.ChartAreas[0].AxisX.Title = "变形,mm"; 
+                    break;
+                case 5:
+                    _ResultChart.ChartAreas[0].AxisX.Title = "应力,MPa";
+                    break;
+                default:
+                    _ResultChart.ChartAreas[0].AxisX.Title = "X1"; 
+                    break;
+            } 
+            RWconfig.SetAppSettings("ShowX", this.cmbXr.SelectedIndex.ToString());
+            
+            readCurveToChart();
+            //switch (this._TestType)
+            //{
+            //    case "tensile":
+            //        //InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, "Tensile", _lineColor);
+            //        readCurveName();
+            //        break;
+            //    case "compress":
+            //        InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, "Compress", _lineColor);
+            //        break;
+            //    case "bend":
+            //        InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, "Bend", _lineColor);
+            //        break;
+            //}
+        }
+
+        //初始化试验结果曲线
+        private void initResultCurve(ZedGraph.ZedGraphControl zgControl)
+        {
+            #region
+            //Random random = new Random();
+            //for (int pointIndex = 0; pointIndex < 50; pointIndex++)
+            //{
+            //  chart.Series[0].Points.AddY(random.Next(32, 95));
+            //}
+            //// Set series chart type
+            //chart.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
+            //// Set point labels
+            //chart.Series[0].IsValueShownAsLabel = false;
+            //chart.Series[0].IsVisibleInLegend = false;
+            //// Enable X axis margin
+            //chart.ChartAreas["Default"].AxisX.IsMarginVisible = false;
+            //chart.Titles[0].Text = "力-位移";      
+            //// Show as 3D
+            //chart.ChartAreas["Default"].Area3DStyle.Enable3D = false; 
+            #endregion
+
+
+            _RPPList0 = new RollingPointPairList(50000);
+
+            //ZedGraph  
+            //zedGraphControl1.IsAntiAlias = true; 
+            Legend l = zgControl.GraphPane.Legend;
+            l.IsShowLegendSymbols = true;
+            l.Gap = 0;
+            l.Position = LegendPos.InsideTopLeft;
+            l.FontSpec.Size = 16.0f;
+            l.IsVisible = false;
+
+            // Set the titles and axis labels
+            _ResultPanel = zgControl.GraphPane;
+            _ResultPanel.Margin.All = 8;
+            _ResultPanel.Margin.Top = 15;
+            _ResultPanel.Title.Text = "";
+            _ResultPanel.Title.IsVisible = false;
+            _ResultPanel.IsFontsScaled = false;
+            zgControl.IsZoomOnMouseCenter = false;
+
+            //XAxis
+            //最后的显示值隐藏
+            _ResultPanel.XAxis.Scale.FontSpec.Size = 16.0f;
+            _ResultPanel.XAxis.Title.FontSpec.Size = 16.0f;
+            _ResultPanel.XAxis.Scale.FontSpec.Family = "宋体";
+            _ResultPanel.XAxis.Scale.FontSpec.IsBold = true;
+            _ResultPanel.XAxis.Title.FontSpec.FontColor = Color.FromArgb(34, 67, 108);
+            _ResultPanel.XAxis.Scale.FontSpec.FontColor = Color.FromArgb(34, 67, 108);
+            _ResultPanel.XAxis.Title.Text = "X";
+            _ResultPanel.XAxis.Title.Gap = -0.5f;
+            _ResultPanel.XAxis.Scale.AlignH = AlignH.Center;
+            _ResultPanel.XAxis.Scale.LabelGap = 0;
+            _ResultPanel.XAxis.Scale.Format = "0.0";
+            _ResultPanel.XAxis.Scale.MinGrace = 0.0;
+            _ResultPanel.XAxis.Scale.MaxGrace = 0.0;
+            _ResultPanel.XAxis.Scale.Min = 0;
+            _ResultPanel.XAxis.Scale.MinAuto = false;
+            _ResultPanel.XAxis.Scale.Max = 100;
+            _ResultPanel.XAxis.Scale.MaxAuto = true;
+            _ResultPanel.XAxis.MajorGrid.IsVisible = true;
+
+            _ResultPanel.YAxis.Title.Text = "Y";
+            _ResultPanel.YAxis.Title.Gap = -0.5f;
+            _ResultPanel.YAxis.Scale.FontSpec.FontColor = Color.FromArgb(34, 67, 108);
+            _ResultPanel.YAxis.Title.FontSpec.FontColor = Color.FromArgb(34, 67, 108);
+            _ResultPanel.YAxis.Scale.FontSpec.Size = 16.0f;
+            _ResultPanel.YAxis.Title.FontSpec.Size = 16.0f;
+            _ResultPanel.YAxis.Scale.FontSpec.Family = "宋体";
+            _ResultPanel.YAxis.Scale.FontSpec.IsBold = true;
+            _ResultPanel.YAxis.Scale.Format = "0.0";
+            _ResultPanel.YAxis.Scale.LabelGap = 0;
+            // Align the Y2 axis labels so they are flush to the axis 
+            _ResultPanel.YAxis.Scale.AlignH = AlignH.Center;
+            _ResultPanel.YAxis.Scale.Min = 0;
+            _ResultPanel.YAxis.Scale.MinAuto = false;
+            _ResultPanel.YAxis.Scale.Max = 100;
+            _ResultPanel.YAxis.Scale.MaxAuto = true;
+            _ResultPanel.YAxis.MajorGrid.IsVisible = true;
+
+            zgControl.AxisChange();
+        }
+
+        private void InitResultChart(System.Windows.Forms.DataVisualization.Charting.Chart resultChart)
+        {
+            resultChart.AntiAliasing = System.Windows.Forms.DataVisualization.Charting.AntiAliasingStyles.Graphics;
+            resultChart.Series.Clear();
+            resultChart.Legends.Clear();
+            resultChart.ChartAreas.Clear();
+
+            resultChart.Series.Add("Y1-X1");  
+            resultChart.Legends.Add("legend");
+            resultChart.ChartAreas.Add("chartArea"); 
+
+            System.Windows.Forms.DataVisualization.Charting.SeriesCollection msChartSeries = resultChart.Series;
+
+            msChartSeries[0].Color = Color.FromArgb(230, 0, 0); 
+            msChartSeries[0].BorderWidth = 1; 
+            //Y1-X1
+            msChartSeries[0].XAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Primary;
+            msChartSeries[0].YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Primary;
+            msChartSeries[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+
+            System.Windows.Forms.DataVisualization.Charting.Legend msLegend = resultChart.Legends[0];
+
+            msLegend.Position.Auto = false;
+            msLegend.Position.X = 0f;
+            msLegend.Position.Y = 0.1f;
+            msLegend.Position.Width = 35.0f;
+            msLegend.Position.Height = 3.5f;
+            msLegend.Enabled = true;
+            msLegend.Font = new Font("宋体", 11f);
+            msLegend.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+            msLegend.Alignment = StringAlignment.Near;
+            msLegend.TitleAlignment = StringAlignment.Near;
+
+            System.Windows.Forms.DataVisualization.Charting.ChartArea msChartArea = resultChart.ChartAreas[0];
+            msChartArea.BackColor = Color.White;
+            msChartArea.Position.Auto = true;
+            //msChartArea.Position.Width = 100;
+            //msChartArea.Position.Height = 100;
+            //msChartArea.Position.X = 0;
+            //msChartArea.Position.Y = 0;
+
+            msChartArea.InnerPlotPosition.Auto = true;
+            //msChartArea.InnerPlotPosition.Width = 96.5f;
+            //msChartArea.InnerPlotPosition.Height = 90.0f;
+            //msChartArea.InnerPlotPosition.X = 2f;
+            //msChartArea.InnerPlotPosition.Y = 5f;
+
+
+
+            msChartArea.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            msChartArea.AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;           
+
+            //msChartArea.AlignmentStyle = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles.Position;
+
+            
+            msChartArea.AxisX.LabelStyle.Font = new Font("宋体", 12f, FontStyle.Bold);
+            msChartArea.AxisX.LabelStyle.ForeColor = Color.Purple;
+            msChartArea.AxisX.IsMarginVisible = false;
+            msChartArea.AxisX.LabelStyle.Format = "f0";
+            msChartArea.AxisX.TitleFont = new Font("宋体", 12f, FontStyle.Bold);
+            msChartArea.AxisX.TitleForeColor = Color.Purple;
+            msChartArea.AxisX.MinorTickMark.Enabled = true;
+            msChartArea.AxisX.MinorTickMark.TickMarkStyle = System.Windows.Forms.DataVisualization.Charting.TickMarkStyle.AcrossAxis;
+            msChartArea.AxisX.MajorTickMark.Size = 0.5f;
+            msChartArea.AxisX.MinorTickMark.Size = 0.25f;
+            msChartArea.AxisX.Minimum = 0.0d;         
+            msChartArea.AxisX.Maximum = 100.0d;
+            msChartArea.AxisX.Interval = msChartArea.AxisX.Maximum / 5;
+
+            msChartArea.AxisY.LabelStyle.Font = new Font("宋体", 12f, FontStyle.Bold);
+            msChartArea.AxisY.LabelStyle.ForeColor = Color.FromArgb(230, 0, 0);
+            msChartArea.AxisY.LabelStyle.Angle = -90;
+            msChartArea.AxisY.TitleFont = new Font("宋体", 12f, FontStyle.Bold);
+            msChartArea.AxisY.TitleForeColor = Color.FromArgb(230, 0, 0);
+            msChartArea.AxisY.IsMarginVisible = false;
+            msChartArea.AxisY.MinorTickMark.Enabled = true;
+            msChartArea.AxisY.MinorTickMark.TickMarkStyle = System.Windows.Forms.DataVisualization.Charting.TickMarkStyle.AcrossAxis;
+            msChartArea.AxisY.MajorTickMark.Size = 0.5f;
+            msChartArea.AxisY.MinorTickMark.Size = 0.25f;
+            msChartArea.AxisY.MajorTickMark.TickMarkStyle = System.Windows.Forms.DataVisualization.Charting.TickMarkStyle.AcrossAxis;
+            msChartArea.AxisY.Minimum = 0.0d;
+            msChartArea.AxisY.LabelStyle.Format = "f0";
+            msChartArea.AxisY.Maximum = 100.0d;                  
+            msChartArea.AxisY.Interval = msChartArea.AxisY.Maximum / 5;
+            resultChart.Series[0].Points.AddXY(0, 0);
+            _ResultChart.Invalidate();
+
+        }
+
+        //初始化曲线控件上的曲线数量及名称
+        private void InitCurve(ZedGraph.ZedGraphControl zgControl, string curveName, string path, string lineColor)
+        {
+            //for (int j = 0; j < zgControl.GraphPane.CurveList.Count; j++)
+            //{
+            //    zgControl.GraphPane.CurveList.RemoveAt(j);
+            //}
+            if (curveName != null)
+            {
+                _RPPList_Read = new RollingPointPairList(100000);
+
+                _ResultPanel = zgControl.GraphPane;
+                zgControl.GraphPane.CurveList.RemoveRange(0, zgControl.GraphPane.CurveList.Count);
+
+                if (_List_Data != null)
+                    _List_Data = null;
+
+                foreach (CurveItem ci in zgControl.GraphPane.CurveList)
+                {
+                    ci.Clear();
+                }
+
+                LineItem CurveList = _ResultPanel.AddCurve(curveName, _RPPList_Read, Color.FromName(lineColor), SymbolType.None);//Y1-X1 
+                    readCurveName(curveName, path);
+ 
+            }
+
+            //MessageBox.Show(zgControl.GraphPane.CurveList.Count.ToString());
+            //初始化曲线名称即 试样编号的名称 
+            zgControl.AxisChange();
+            zgControl.RestoreScale(this._ResultPanel);
+        }
+
+ 
+
+        //读取曲线文件
+        private void readCurveName(string curveName, string path)
+        {
+            //若曲线存在
+            string curvePath = _curveName;// AppDomain.CurrentDomain.BaseDirectory + "Curve\\" + path + "\\" + curveName + ".lin";
+            if (File.Exists(curvePath))
+            {
+                //先解密文件
+                //string outputFile = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\HRData.txt";
+                //string sSecretKey;
+                //string[] key = RWconfig.GetAppSettings("code").ToString().Split('-');
+                //byte[] keyee = new byte[8];
+                ////转换为 key byte数组
+                //for (int j = 0; j < key.Length; j++)
+                //{
+                //    keyee[j] = Byte.Parse(key[j], System.Globalization.NumberStyles.HexNumber);
+                //}
+                //sSecretKey = ASCIIEncoding.ASCII.GetString(keyee);
+                //GCHandle gch = GCHandle.Alloc(sSecretKey, GCHandleType.Pinned);
+                //Safe.DecryptFile(curvePath, outputFile, sSecretKey);
+                //Safe.ZeroMemory(gch.AddrOfPinnedObject(), sSecretKey.Length * 2);
+                //gch.Free();
+
+                //读取曲线 
+                _List_Data = new List<gdata>(100000);
+                //建立曲线点 
+                _RPPList_Read = new RollingPointPairList(100000);
+                using (StreamReader srLine = new StreamReader(_curveName))
+                {
+                    string[] testSampleInfo1 = srLine.ReadLine().Split(',');
+                    string[] testSampleInfo2 = srLine.ReadLine().Split(',');
+                    //this.zedGraphControl.PrintDocument.DocumentName = testSampleInfo2[0].ToString() + " 试验曲线";
+                    //this.zedGraphControl.GraphPane.Title.IsVisible = true;
+                    String line;
+                    // Read and display lines from the file until the end of
+                    // the file is reached.
+                    while ((line = srLine.ReadLine()) != null)
+                    {
+                        string[] gdataArray = line.Split(',');
+                        gdata _gdata = new gdata();
+                        _gdata.F1 = double.Parse(gdataArray[0]);
+                        _gdata.F2 = double.Parse(gdataArray[1]);
+                        _gdata.F3 = double.Parse(gdataArray[2]);
+                        _gdata.D1 = double.Parse(gdataArray[3]);
+                        _gdata.D2 = double.Parse(gdataArray[4]);
+                        _gdata.D3 = double.Parse(gdataArray[5]);
+                        _gdata.BX1 = double.Parse(gdataArray[6]);
+                        _gdata.BX2 = double.Parse(gdataArray[7]);
+                        _gdata.BX3 = double.Parse(gdataArray[8]);
+                        _gdata.YL1 = double.Parse(gdataArray[9]);
+                        _gdata.YL2 = double.Parse(gdataArray[10]);
+                        _gdata.YL3 = double.Parse(gdataArray[11]);
+                        _gdata.YB1 = double.Parse(gdataArray[12]);
+                        _gdata.YB2 = double.Parse(gdataArray[13]);
+                        _gdata.YB3 = double.Parse(gdataArray[14]);
+                        _gdata.Ts = double.Parse(gdataArray[15]);
+                        _List_Data.Add(_gdata);
+                    }
+                    srLine.Close();
+                    srLine.Dispose();
+                    //显示曲线
+                    showCurve(_List_Data, this.zedGraphControl);
+                }
+            }
+        }
+
+        //显示一条曲线
+        private void showCurve(List<gdata> listGData, ZedGraph.ZedGraphControl zgControl)
+        {
+            LineItem LineItem0 = zgControl.GraphPane.CurveList[0] as LineItem;
+            if (LineItem0 == null)
+                return;
+
+            //第二步:在CurveItem中访问PointPairList(或者其它的IPointList)，根据自己的需要增加新数据或修改已存在的数据
+            IPointListEdit LineItemListEdit_0 = LineItem0.Points as IPointListEdit;
+            if (LineItemListEdit_0 == null)
+                return;
+
+            for (Int32 i = 0; i < listGData.Count; i++)
+            {
+                //采集数据
+                //时间
+                double time = listGData[i].Ts;
+                //力
+                double F1value = listGData[i].F1;
+                //应力
+                double R1value = listGData[i].YL1;
+                //位移
+                double D1value = listGData[i].D1;
+                //变形
+                double BX1value = listGData[i].BX1;
+                //应变
+                double YB1value = listGData[i].YB1;
+
+                //显示曲线数据
+                #region  cmbYr,cmbXr 轴
+                switch (this.cmbYr.SelectedIndex)
+                {
+                    case 1:
+                        switch (this.cmbXr.SelectedIndex)
+                        {
+                            case 1:
+                                //strCurveName[0] = "力/时间";
+                                LineItemListEdit_0.Add(time, F1value);
+                                _RPPList_Read.Add(time, F1value);
+                                break;
+                            case 2:
+                                //strCurveName[0] = "力/位移";
+                                LineItemListEdit_0.Add(D1value, F1value);
+                                _RPPList_Read.Add(D1value, F1value);
+                                break;
+                            case 3:
+                                //strCurveName[0] = "力/应变";
+                                LineItemListEdit_0.Add(YB1value, F1value);
+                                _RPPList_Read.Add(YB1value, F1value);
+                                break;
+                            case 4:
+                                LineItemListEdit_0.Add(BX1value, F1value);
+                                _RPPList_Read.Add(BX1value, F1value);
+                                break;
+                            default:
+                                //strCurveName[0] = "";                           
+                                break;
+                        }
+                        break;
+                    case 2:
+                        switch (this.cmbXr.SelectedIndex)
+                        {
+                            case 1:
+                                //strCurveName[0] = "应力/时间";
+                                LineItemListEdit_0.Add(time, R1value);
+                                _RPPList_Read.Add(time, R1value);
+                                break;
+                            case 2:
+                                //strCurveName[0] = "应力/位移";
+                                LineItemListEdit_0.Add(D1value, R1value);
+                                _RPPList_Read.Add(D1value, R1value);
+                                break;
+                            case 3:
+                                //strCurveName[0] = "应力/应变";
+                                LineItemListEdit_0.Add(YB1value, R1value);
+                                _RPPList_Read.Add(YB1value, R1value);
+                                break;
+                            case 4:
+                                LineItemListEdit_0.Add(BX1value, R1value);
+                                _RPPList_Read.Add(BX1value, R1value);
+                                break;
+                            default:
+                                //strCurveName[0] = "";
+                                break;
+                        }
+                        break;
+                    case 3:
+                        switch (this.cmbXr.SelectedIndex)
+                        {
+                            case 1:
+                                //strCurveName[0] = "变形/时间";
+                                LineItemListEdit_0.Add(time, BX1value);
+                                _RPPList_Read.Add(time, BX1value);
+                                break;
+                            case 2:
+                                //strCurveName[0] = "变形/位移";
+                                LineItemListEdit_0.Add(D1value, BX1value);
+                                _RPPList_Read.Add(D1value, BX1value);
+                                break;
+                            case 3:
+                                //strCurveName[0] = "变形/应变";
+                                LineItemListEdit_0.Add(YB1value, BX1value);
+                                _RPPList_Read.Add(YB1value, BX1value);
+                                break;
+                            case 4:
+                                LineItemListEdit_0.Add(BX1value, BX1value);
+                                _RPPList_Read.Add(BX1value, BX1value);
+                                break;
+                            default:
+                                //strCurveName[0] = "";
+                                break;
+                        }
+                        break;
+                    case 4:
+                        switch (this.cmbXr.SelectedIndex)
+                        {
+                            case 1:
+                                //strCurveName[0] = "位移/时间";
+                                LineItemListEdit_0.Add(time, D1value);
+                                _RPPList_Read.Add(time, D1value);
+                                break;
+                            case 2:
+                                //strCurveName[0] = "位移/位移";
+                                LineItemListEdit_0.Add(D1value, D1value);
+                                _RPPList_Read.Add(D1value, D1value);
+                                break;
+                            case 3:
+                                //strCurveName[0] = "位移/应变";
+                                LineItemListEdit_0.Add(YB1value, D1value);
+                                _RPPList_Read.Add(YB1value, D1value);
+                                break;
+                            case 4:
+                                LineItemListEdit_0.Add(BX1value, D1value);
+                                _RPPList_Read.Add(BX1value, D1value);
+                                break;
+                            default:
+                                //strCurveName[0] = "";
+                                break;
+                        }
+                        break;
+                    default:
+                        strCurveName[0] = "";
+                        strCurveName[1] = "";
+                        break;
+                }
+                #endregion
+            }
+
+            //if (this._RPPList0 != null && this._RPPList0[sampleIndex].Count > 0)
+            //{
+            //    zgControl.GraphPane.CurveList[0 + 6 * sampleIndex].Label.Text += " Max:(" + getFm(_RPPList0[sampleIndex]).Y + "/" + getFm(_RPPList0[sampleIndex]).X + ")";
+            //}
+            //if (this._RPPList1 != null && this._RPPList1[sampleIndex].Count > 0)
+            //{
+            //    zgControl.GraphPane.CurveList[1 + 6 * sampleIndex].Label.Text += " Max:(" + getFm(_RPPList1[sampleIndex]).Y + "/" + getFm(_RPPList1[sampleIndex]).X + ")";
+            //}
+            //if (this._RPPList2 != null && this._RPPList2[sampleIndex-1].Count > 0)
+            //{
+            //    zgControl.GraphPane.CurveList[2 + 6 * sampleIndex].Label.Text += " Max:(" + getFm(_RPPList2[sampleIndex-1]).Y + "/" + getFm(_RPPList2[sampleIndex-1]).X + ")";
+            //}
+            //if (this._RPPList3 != null && this._RPPList3[sampleIndex-1].Count > 0)
+            //{
+            //    zgControl.GraphPane.CurveList[3 + 6 * sampleIndex].Label.Text += " Max:(" + getFm(_RPPList3[sampleIndex-1]).Y + "/" + getFm(_RPPList3[sampleIndex-1]).X + ")";
+            //}
+            //if (this._RPPList4 != null && this._RPPList4[sampleIndex-1].Count > 0)
+            //{
+            //    zgControl.GraphPane.CurveList[4 + 6 * sampleIndex].Label.Text += " Max:(" + getFm(_RPPList4[sampleIndex-1]).Y + "/" + getFm(_RPPList4[sampleIndex-1]).X + ")";
+            //}
+            //if (this._RPPList5 != null && this._RPPList5[sampleIndex-1].Count > 0)
+            //{
+            //    zgControl.GraphPane.CurveList[5 + 6 * sampleIndex].Label.Text += " Max:(" + getFm(_RPPList5[sampleIndex-1]).Y + "/" + getFm(_RPPList5[sampleIndex-1]).X + ")";
+            //} 
+        }
+
+        private void tsbtnMinimize_Click(object sender, EventArgs e)
+        {
+            _fmMain.WindowState = FormWindowState.Minimized;
+        }
+
+        private void cmbXr_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmbYr_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+    }
+}

@@ -1,0 +1,702 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2D993BDE-0998-4EC9-9D48-12046166F5C4}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HR_Test</RootNamespace>
+    <AssemblyName>HS-Test</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <StartupObject>HR_Test.Program</StartupObject>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CSkin, Version=16.1.14.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\CSkin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Design" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnalysiseCurve\GBT7314.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnalysiseCurve\GBT7314.Designer.cs">
+      <DependentUpon>GBT7314.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AnalysiseCurve\GBT28289Shear.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnalysiseCurve\GBT28289Shear.Designer.cs">
+      <DependentUpon>GBT28289Shear.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AnalysiseCurve\GBT23615TensileZong.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnalysiseCurve\GBT23615TensileZong.Designer.cs">
+      <DependentUpon>GBT23615TensileZong.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomProperty\CustomProperty.cs" />
+    <Compile Include="CustomProperty\CustomPropertyCollection.cs" />
+    <Compile Include="CustomProperty\CustomPropertyDescriptor.cs" />
+    <Compile Include="dragControl.cs" />
+    <Compile Include="FormPrinting.cs" />
+    <Compile Include="frmAZ.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAZ.Designer.cs">
+      <DependentUpon>frmAZ.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmBendOther2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBendOther2.Designer.cs">
+      <DependentUpon>frmBendOther2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmHold.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmHold.Designer.cs">
+      <DependentUpon>frmHold.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmProgress.Designer.cs">
+      <DependentUpon>frmProgress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmReportEdit_T.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmReportEdit_T.Designer.cs">
+      <DependentUpon>frmReportEdit_T.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmSetRealtimeCurve.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSetRealtimeCurve.Designer.cs">
+      <DependentUpon>frmSetRealtimeCurve.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmSetResultCurve.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSetResultCurve.Designer.cs">
+      <DependentUpon>frmSetResultCurve.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmOtherParam.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmOtherParam.Designer.cs">
+      <DependentUpon>frmOtherParam.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmTensileOther2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTensileOther2.Designer.cs">
+      <DependentUpon>frmTensileOther2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmTestResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTestResult.Designer.cs">
+      <DependentUpon>frmTestResult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gdata.cs" />
+    <Compile Include="AnalysiseCurve\GBT228.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnalysiseCurve\GBT228.Designer.cs">
+      <DependentUpon>GBT228.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmFind.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmFind.Designer.cs">
+      <DependentUpon>frmFind.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmInput.Designer.cs">
+      <DependentUpon>frmInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmMachineSet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMachineSet.Designer.cs">
+      <DependentUpon>frmMachineSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmTestMethod.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTestMethod.Designer.cs">
+      <DependentUpon>frmTestMethod.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Input\GBT228_2010Tensile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Input\GBT228_2010Tensile.Designer.cs">
+      <DependentUpon>GBT228_2010Tensile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Input\GBT23615_2009TensileHeng.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Input\GBT23615_2009TensileHeng.Designer.cs">
+      <DependentUpon>GBT23615_2009TensileHeng.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Input\GBT23615_2009TensileZong.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Input\GBT23615_2009TensileZong.Designer.cs">
+      <DependentUpon>GBT23615_2009TensileZong.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Input\YBT5349_2006Bend.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Input\YBT5349_2006Bend.Designer.cs">
+      <DependentUpon>YBT5349_2006Bend.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Input\GBT7314_2005Compress.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Input\GBT7314_2005Compress.Designer.cs">
+      <DependentUpon>GBT7314_2005Compress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Input\GBT28289_2012Tensile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Input\GBT28289_2012Tensile.Designer.cs">
+      <DependentUpon>GBT28289_2012Tensile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Input\GBT28289_2012Shear.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Input\GBT28289_2012Shear.Designer.cs">
+      <DependentUpon>GBT28289_2012Shear.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Input\GBT28289_2012Twist.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Input\GBT28289_2012Twist.Designer.cs">
+      <DependentUpon>GBT28289_2012Twist.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PickBox.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AnalysiseCurve\GBT228.resx">
+      <DependentUpon>GBT228.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AnalysiseCurve\GBT7314.resx">
+      <DependentUpon>GBT7314.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AnalysiseCurve\GBT28289Shear.resx">
+      <DependentUpon>GBT28289Shear.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AnalysiseCurve\GBT23615TensileZong.resx">
+      <DependentUpon>GBT23615TensileZong.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAZ.resx">
+      <DependentUpon>frmAZ.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBendOther2.resx">
+      <DependentUpon>frmBendOther2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmFind.resx">
+      <DependentUpon>frmFind.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmHold.resx">
+      <DependentUpon>frmHold.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmInput.resx">
+      <DependentUpon>frmInput.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMachineSet.resx">
+      <DependentUpon>frmMachineSet.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmProgress.resx">
+      <DependentUpon>frmProgress.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmReportEdit_T.resx">
+      <DependentUpon>frmReportEdit_T.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSetRealtimeCurve.resx">
+      <DependentUpon>frmSetRealtimeCurve.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSetResultCurve.resx">
+      <DependentUpon>frmSetResultCurve.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmOtherParam.resx">
+      <DependentUpon>frmOtherParam.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTensileOther2.resx">
+      <DependentUpon>frmTensileOther2.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTestMethod.resx">
+      <DependentUpon>frmTestMethod.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTestResult.resx">
+      <DependentUpon>frmTestResult.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Input\GBT228_2010Tensile.resx">
+      <DependentUpon>GBT228_2010Tensile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Input\GBT23615_2009TensileHeng.resx">
+      <DependentUpon>GBT23615_2009TensileHeng.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Input\GBT23615_2009TensileZong.resx">
+      <DependentUpon>GBT23615_2009TensileZong.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Input\YBT5349_2006Bend.resx">
+      <DependentUpon>YBT5349_2006Bend.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Input\GBT7314_2005Compress.resx">
+      <DependentUpon>GBT7314_2005Compress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Input\GBT28289_2012Tensile.resx">
+      <DependentUpon>GBT28289_2012Tensile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Input\GBT28289_2012Shear.resx">
+      <DependentUpon>GBT28289_2012Shear.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Input\GBT28289_2012Twist.resx">
+      <DependentUpon>GBT28289_2012Twist.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC\CustomPanel.resx">
+      <DependentUpon>CustomPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC\DigitalDisplayControl.resx">
+      <DependentUpon>DigitalDisplayControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC\MethodItem.resx">
+      <DependentUpon>MethodItem.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC\ReSizePanel.resx">
+      <DependentUpon>ReSizePanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC\Result.resx">
+      <DependentUpon>Result.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AnalysiseCurve\YBT5349.resx">
+      <DependentUpon>YBT5349.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC\RowMergeView.resx">
+      <DependentUpon>RowMergeView.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="RectTracker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RWconfig.cs" />
+    <Compile Include="RwUsb.cs" />
+    <Compile Include="Safe.cs" />
+    <Compile Include="SelTestSample.cs" />
+    <Compile Include="Struc.cs" />
+    <Compile Include="TabControl\CustomTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TabControl\NativeMethods.cs" />
+    <Compile Include="TabControl\TabStyle.cs" />
+    <Compile Include="TabControl\ThemedColors.cs" />
+    <Compile Include="TestStandard\GBT228_2010.cs" />
+    <Compile Include="TestStandard\GBT23615_2009.cs" />
+    <Compile Include="TestStandard\GBT28289_2012.cs" />
+    <Compile Include="TestStandard\GBT7314_2005.cs" />
+    <Compile Include="TestStandard\MethodControl.cs" />
+    <Compile Include="TestStandard\SampleControl.cs" />
+    <Compile Include="TestStandard\YBT5349_2006.cs" />
+    <Compile Include="toolStripButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UC\A1Panel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UC\A1Panel.Designer.cs">
+      <DependentUpon>A1Panel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UC\A1PanelGraphics.cs" />
+    <Compile Include="UC\CornerCurveMode.cs" />
+    <Compile Include="UC\CustomPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UC\DigitalDisplayControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC\DigitalDisplayControl.designer.cs">
+      <DependentUpon>DigitalDisplayControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UC\GlassButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UC\GlassButton.Designer.cs">
+      <DependentUpon>GlassButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UC\Globals.cs" />
+    <Compile Include="UC\LinearGradientMode.cs" />
+    <Compile Include="UC\MethodItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC\MethodItem.Designer.cs">
+      <DependentUpon>MethodItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UC\ReSizePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC\ReSizePanel.Designer.cs">
+      <DependentUpon>ReSizePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UC\Result.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC\Result.Designer.cs">
+      <DependentUpon>Result.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UC\RowMergeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UC\RowMergeView.designer.cs">
+      <DependentUpon>RowMergeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="utils.cs" />
+    <Compile Include="AnalysiseCurve\YBT5349.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnalysiseCurve\YBT5349.Designer.cs">
+      <DependentUpon>YBT5349.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BLL\BLL.csproj">
+      <Project>{38D7AA58-C95B-449B-86C6-A8073A56E11F}</Project>
+      <Name>BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{9FE00521-3A8B-42B1-814E-585E99407B2E}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lable\CustomControl.OrientedTextControls.csproj">
+      <Project>{E194BFD7-F679-40F5-B460-E18F85BE475A}</Project>
+      <Name>CustomControl.OrientedTextControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{53995DBB-9836-4647-AD22-865884FDEB9E}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TabStripControlLibrary\TabStripControlLibrary.csproj">
+      <Project>{F63A0939-5ADD-4931-8066-6901B5FBEF67}</Project>
+      <Name>TabStripControlLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZedGraph\ZedGraph.csproj">
+      <Project>{2541686B-1673-43BF-AF89-3163945DB009}</Project>
+      <Name>ZedGraph</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\20110704100834860_easyicon_cn_128.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\testmethod.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\set.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sets.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\testt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\internet_connections_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\report.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\help2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\application_exit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.SQL.Server.Compact.3.5">
+      <Visible>False</Visible>
+      <ProductName>SQL Server Compact 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\undo1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\testmethod1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\testmethod2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\t1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\t2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\testTitle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\input.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.manifest" />
+    <None Include="EasyUSB1582.lib" />
+    <None Include="Resources\logo.png" />
+    <None Include="Resources\title_Setmachine.png" />
+    <None Include="Resources\start.png" />
+    <None Include="Resources\stop.png" />
+    <None Include="Resources\zero.png" />
+    <None Include="Resources\return.png" />
+    <None Include="Resources\curve.png" />
+    <None Include="Resources\exitdo.png" />
+    <None Include="Resources\analyseCurve.png" />
+    <None Include="Resources\zoomone.png" />
+    <None Include="Resources\zoomin.png" />
+    <None Include="Resources\a1.ico" />
+    <None Include="Resources\a2.ico" />
+    <None Include="Resources\reh.ico" />
+    <None Include="Resources\rel.ico" />
+    <None Include="Resources\find.png" />
+    <None Include="Resources\print.png" />
+    <None Include="Resources\usb1.png" />
+    <None Include="Resources\usb.png" />
+    <None Include="Resources\logo128.png" />
+    <None Include="Resources\logo1.png" />
+    <None Include="Resources\printer.png" />
+    <None Include="Resources\table_edit1.png" />
+    <None Include="Resources\return1.png" />
+    <None Include="Resources\down.png" />
+    <None Include="Resources\setprinter.png" />
+    <None Include="Resources\start.ico" />
+    <None Include="Resources\pause.ico" />
+    <None Include="Resources\stop.ico" />
+    <None Include="Resources\zero.ico" />
+    <None Include="Resources\return.ico" />
+    <None Include="Resources\analize.ico" />
+    <None Include="Resources\calculator.png" />
+    <None Include="Resources\bulianxu.ico" />
+    <None Include="Resources\lianxu.ico" />
+    <None Include="Resources\T48.png" />
+    <Content Include="EasyUSB1582.dll" />
+    <Content Include="logo.ico" />
+    <None Include="Resources\save.png" />
+    <None Include="Resources\minimize.png" />
+    <None Include="Resources\exit2.png" />
+    <None Include="Resources\minimize 2.png" />
+    <None Include="Resources\about2.png" />
+    <None Include="Resources\bk1.png" />
+    <None Include="Resources\bk2.png" />
+    <None Include="Resources\bk3.png" />
+    <None Include="Resources\left.png" />
+    <None Include="Resources\right.png" />
+    <None Include="Resources\handStop.png" />
+    <None Include="Resources\line.png" />
+    <None Include="Resources\btnbg.png" />
+    <None Include="Resources\application_exit2.png" />
+    <None Include="Resources\about1.png" />
+    <None Include="Resources\hstest.png" />
+    <None Include="Resources\xy.ico" />
+    <None Include="Resources\showxy.png" />
+    <None Include="Resources\showxy1.png" />
+    <None Include="Resources\set1.png" />
+    <None Include="Resources\folder_image.png" />
+    <None Include="Resources\pic48.png" />
+    <None Include="Resources\setcurve.png" />
+    <None Include="Resources\resize.bmp" />
+    <None Include="Resources\warning.png" />
+    <None Include="Resources\1.png" />
+    <None Include="Resources\2.png" />
+    <None Include="Resources\shi.png" />
+    <None Include="Resources\az.ico" />
+    <None Include="Resources\edit.png" />
+    <None Include="Resources\SQ.jpg" />
+    <None Include="Resources\rehc.ico" />
+    <None Include="Resources\relc.ico" />
+    <None Include="Resources\rmc.ico" />
+    <None Include="Resources\Ec.ico" />
+    <None Include="Resources\ftmax.ico" />
+    <None Include="Resources\fmax.ico" />
+    <None Include="Resources\a.ico" />
+    <Content Include="Resources\fbb.ico" />
+    <None Include="Resources\ysj.png" />
+    <Content Include="UC\GlassButton.bmp" />
+    <Content Include="UC\GlassButton.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="stdole">
+      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
