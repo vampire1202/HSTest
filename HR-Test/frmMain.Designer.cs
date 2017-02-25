@@ -35,6 +35,13 @@
             this.tsbtnExit = new System.Windows.Forms.ToolStripButton();
             this.tsbtnAccess = new System.Windows.Forms.ToolStripButton();
             this.palMain = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.tsbtnMinimize = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.gbtnParameter = new Glass.GlassButton();
             this.gbtnHelp = new Glass.GlassButton();
             this.gbtnTest = new Glass.GlassButton();
@@ -43,13 +50,6 @@
             this.glassButton4 = new Glass.GlassButton();
             this.glassButton8 = new Glass.GlassButton();
             this.gbtnSet = new Glass.GlassButton();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.tsbtnMinimize = new System.Windows.Forms.ToolStripButton();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
             this.panelContainer.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             this.palMain.SuspendLayout();
@@ -149,6 +149,83 @@
             this.palMain.Name = "palMain";
             this.palMain.Size = new System.Drawing.Size(857, 364);
             this.palMain.TabIndex = 11;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Controls.Add(this.toolStrip1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(996, 120);
+            this.panel1.TabIndex = 16;
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.AutoSize = false;
+            this.toolStrip1.BackColor = System.Drawing.Color.Transparent;
+            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbtnMinimize,
+            this.toolStripLabel1,
+            this.toolStripLabel2});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(996, 89);
+            this.toolStrip1.TabIndex = 13;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // tsbtnMinimize
+            // 
+            this.tsbtnMinimize.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.tsbtnMinimize.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tsbtnMinimize.ForeColor = System.Drawing.Color.Black;
+            this.tsbtnMinimize.Image = global::HR_Test.Properties.Resources.minimize_2;
+            this.tsbtnMinimize.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbtnMinimize.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnMinimize.Name = "tsbtnMinimize";
+            this.tsbtnMinimize.Size = new System.Drawing.Size(53, 86);
+            this.tsbtnMinimize.Text = "最小化";
+            this.tsbtnMinimize.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tsbtnMinimize.Click += new System.EventHandler(this.tsbtnMinimize_Click);
+            // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.BackgroundImage = global::HR_Test.Properties.Resources.hstest;
+            this.toolStripLabel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.toolStripLabel1.Font = new System.Drawing.Font("微软雅黑", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.toolStripLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(158, 86);
+            this.toolStripLabel1.Text = "              ";
+            // 
+            // toolStripLabel2
+            // 
+            this.toolStripLabel2.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripLabel2.AutoSize = false;
+            this.toolStripLabel2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripLabel2.Image = global::HR_Test.Properties.Resources.logo;
+            this.toolStripLabel2.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripLabel2.Name = "toolStripLabel2";
+            this.toolStripLabel2.Size = new System.Drawing.Size(388, 86);
+            // 
+            // panel2
+            // 
+            this.panel2.BackgroundImage = global::HR_Test.Properties.Resources.bk2;
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(998, 10);
+            this.panel2.TabIndex = 19;
+            // 
+            // panel3
+            // 
+            this.panel3.BackgroundImage = global::HR_Test.Properties.Resources.bk2;
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel3.Location = new System.Drawing.Point(0, 693);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(998, 8);
+            this.panel3.TabIndex = 21;
             // 
             // gbtnParameter
             // 
@@ -313,83 +390,6 @@
             this.gbtnSet.Click += new System.EventHandler(this.gbtnSet_Click);
             this.gbtnSet.MouseEnter += new System.EventHandler(this.gbtnTestMethod_MouseEnter);
             this.gbtnSet.MouseLeave += new System.EventHandler(this.gbtnTestMethod_MouseLeave);
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.White;
-            this.panel1.Controls.Add(this.toolStrip1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(996, 120);
-            this.panel1.TabIndex = 16;
-            // 
-            // toolStrip1
-            // 
-            this.toolStrip1.AutoSize = false;
-            this.toolStrip1.BackColor = System.Drawing.Color.Transparent;
-            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsbtnMinimize,
-            this.toolStripLabel1,
-            this.toolStripLabel2});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(996, 89);
-            this.toolStrip1.TabIndex = 13;
-            this.toolStrip1.Text = "toolStrip1";
-            // 
-            // tsbtnMinimize
-            // 
-            this.tsbtnMinimize.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.tsbtnMinimize.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tsbtnMinimize.ForeColor = System.Drawing.Color.Black;
-            this.tsbtnMinimize.Image = global::HR_Test.Properties.Resources.minimize_2;
-            this.tsbtnMinimize.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.tsbtnMinimize.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtnMinimize.Name = "tsbtnMinimize";
-            this.tsbtnMinimize.Size = new System.Drawing.Size(53, 86);
-            this.tsbtnMinimize.Text = "最小化";
-            this.tsbtnMinimize.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tsbtnMinimize.Click += new System.EventHandler(this.tsbtnMinimize_Click);
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.BackgroundImage = global::HR_Test.Properties.Resources.hstest;
-            this.toolStripLabel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.toolStripLabel1.Font = new System.Drawing.Font("微软雅黑", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.toolStripLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(158, 86);
-            this.toolStripLabel1.Text = "              ";
-            // 
-            // toolStripLabel2
-            // 
-            this.toolStripLabel2.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripLabel2.AutoSize = false;
-            this.toolStripLabel2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripLabel2.Image = global::HR_Test.Properties.Resources.logo;
-            this.toolStripLabel2.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(388, 86);
-            // 
-            // panel2
-            // 
-            this.panel2.BackgroundImage = global::HR_Test.Properties.Resources.bk2;
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(998, 10);
-            this.panel2.TabIndex = 19;
-            // 
-            // panel3
-            // 
-            this.panel3.BackgroundImage = global::HR_Test.Properties.Resources.bk2;
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(0, 693);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(998, 8);
-            this.panel3.TabIndex = 21;
             // 
             // frmMain
             // 

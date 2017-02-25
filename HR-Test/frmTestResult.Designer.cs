@@ -429,11 +429,11 @@
             // label27
             // 
             this.label27.AutoSize = true;
-            this.label27.Font = new System.Drawing.Font("经典细隶书简", 21.75F);
+            this.label27.Font = new System.Drawing.Font("方正隶变简体", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label27.ForeColor = System.Drawing.Color.Black;
             this.label27.Location = new System.Drawing.Point(3, 3);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(73, 29);
+            this.label27.Size = new System.Drawing.Size(77, 32);
             this.label27.TabIndex = 1;
             this.label27.Text = "时间";
             // 
@@ -526,11 +526,11 @@
             // lblBx
             // 
             this.lblBx.AutoSize = true;
-            this.lblBx.Font = new System.Drawing.Font("经典细隶书简", 21.75F);
+            this.lblBx.Font = new System.Drawing.Font("方正隶变简体", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblBx.ForeColor = System.Drawing.Color.Black;
             this.lblBx.Location = new System.Drawing.Point(3, 2);
             this.lblBx.Name = "lblBx";
-            this.lblBx.Size = new System.Drawing.Size(73, 29);
+            this.lblBx.Size = new System.Drawing.Size(77, 32);
             this.lblBx.TabIndex = 1;
             this.lblBx.Text = "变形";
             // 
@@ -587,11 +587,11 @@
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("经典细隶书简", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label21.Font = new System.Drawing.Font("方正隶变简体", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label21.ForeColor = System.Drawing.Color.Black;
             this.label21.Location = new System.Drawing.Point(3, 2);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(73, 29);
+            this.label21.Size = new System.Drawing.Size(77, 32);
             this.label21.TabIndex = 1;
             this.label21.Text = "位移";
             // 
@@ -696,12 +696,12 @@
             // lblFuhe
             // 
             this.lblFuhe.AutoSize = true;
-            this.lblFuhe.Font = new System.Drawing.Font("经典细隶书简", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblFuhe.Font = new System.Drawing.Font("方正隶变简体", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblFuhe.ForeColor = System.Drawing.Color.Black;
             this.lblFuhe.Location = new System.Drawing.Point(3, 2);
             this.lblFuhe.Margin = new System.Windows.Forms.Padding(0);
             this.lblFuhe.Name = "lblFuhe";
-            this.lblFuhe.Size = new System.Drawing.Size(73, 29);
+            this.lblFuhe.Size = new System.Drawing.Size(77, 32);
             this.lblFuhe.TabIndex = 1;
             this.lblFuhe.Text = "负荷";
             // 
