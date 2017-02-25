@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBUtility", "DBUtility\DBUt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{53995DBB-9836-4647-AD22-865884FDEB9E}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "HSTest", "HSTestSetup\HSTestSetup.vdproj", "{6A371785-3140-4777-BF78-D1C0FA0E9849}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControl.OrientedTextControls", "Lable\CustomControl.OrientedTextControls.csproj", "{E194BFD7-F679-40F5-B460-E18F85BE475A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestReadFile", "TestReadFile\TestReadFile.csproj", "{00D6AE97-DEE2-4324-B91A-0FE961241B33}"
@@ -107,12 +105,6 @@ Global
 		{53995DBB-9836-4647-AD22-865884FDEB9E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{53995DBB-9836-4647-AD22-865884FDEB9E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{53995DBB-9836-4647-AD22-865884FDEB9E}.Release|x86.ActiveCfg = Release|Any CPU
-		{6A371785-3140-4777-BF78-D1C0FA0E9849}.Debug|Any CPU.ActiveCfg = Debug
-		{6A371785-3140-4777-BF78-D1C0FA0E9849}.Debug|Mixed Platforms.ActiveCfg = Debug
-		{6A371785-3140-4777-BF78-D1C0FA0E9849}.Debug|x86.ActiveCfg = Debug
-		{6A371785-3140-4777-BF78-D1C0FA0E9849}.Release|Any CPU.ActiveCfg = Release
-		{6A371785-3140-4777-BF78-D1C0FA0E9849}.Release|Mixed Platforms.ActiveCfg = Release
-		{6A371785-3140-4777-BF78-D1C0FA0E9849}.Release|x86.ActiveCfg = Release
 		{E194BFD7-F679-40F5-B460-E18F85BE475A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E194BFD7-F679-40F5-B460-E18F85BE475A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E194BFD7-F679-40F5-B460-E18F85BE475A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
