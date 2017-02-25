@@ -1675,6 +1675,9 @@ namespace HR_Test
                     case "GB/T 28289-2012":
                         ReadGBT28289(methodName);
                         break;
+                    case "GB/T 3354-2014":
+                        ReadGBT3354(methodName);
+                        break;
                 }
             }
         }
@@ -3516,6 +3519,507 @@ namespace HR_Test
                     }
                 }
             }
+        }
+
+        private void ReadGBT3354(string _methodName)
+        {
+            BLL.GBT282892012_Method bllCm_C = new HR_Test.BLL.GBT282892012_Method();
+            Model.GBT282892012_Method mCm_C = bllCm_C.GetModel(_methodName);
+            this.txtmethodName.Text = mCm_C.methodName;
+            this.chkisProLoad.Checked = mCm_C.isProLoad;
+
+            this.cmbTestType.Text = mCm_C.xmlPath;
+            this.cmbTestStandard.Text = mCm_C.testStandard;
+
+
+            //若允许预载
+            if (mCm_C.isProLoad)
+            {
+                this.cmbProLoadValueType.SelectedIndex = int.Parse(mCm_C.proLoadType.ToString());
+                this.txtproLoadValue.Text = mCm_C.proLoadValue.ToString();
+                this.txtproLoadSpeed.Text = mCm_C.proLoadSpeed.ToString();
+                this.cmbProLoadCtlMode.SelectedIndex = int.Parse(mCm_C.proLoadControlType.ToString());
+            }
+
+            //bool isContinued_C = mCm_C.isLxqf;
+            //如果不连续屈服
+            if (mCm_C.isLxqf == 1)
+            {
+                rb_1.Checked = true;
+                string[] control1 = mCm_C.controlType1.Split(',');
+                string[] control2 = mCm_C.controlType2.Split(',');
+                string[] control3 = mCm_C.controlType3.Split(',');
+                string stopValue = mCm_C.stopValue.ToString();
+                //弹性段
+                this.cmbCtlType1.SelectedIndex = int.Parse(control1[0]);
+                this.txtCtlSpeed1.Text = control1[1];
+                this.cmbCtlChange1.SelectedIndex = int.Parse(control1[2]);
+                this.txtCtlChangeValue1.Text = control1[3];
+                //屈服段
+                this.cmbCtlType2.SelectedIndex = int.Parse(control2[0]);
+                this.txtCtlSpeed2.Text = control2[1];
+                this.cmbCtlChange2.SelectedIndex = int.Parse(control2[2]);
+                this.txtCtlChangeValue2.Text = control2[3];
+                //加工硬化段                    
+                this.cmbCtlType3.SelectedIndex = int.Parse(control3[0]);
+                this.txtCtlSpeed3.Text = control3[1];
+                //停止测试
+                this.txtStopValueNo.Text = stopValue;
+                this.txtSpeed_bulianxu.Text = mCm_C.controlType12.ToString();
+            }
+
+            if (mCm_C.isLxqf == 2)
+            {//如果连续屈服 
+                rb_2.Checked = true;
+                string[] control1 = mCm_C.controlType1.Split(',');
+                string[] control2 = mCm_C.controlType2.Split(',');
+                string stopValue = mCm_C.stopValue.ToString();
+                //弹性段
+                this.cmbCtlType4.SelectedIndex = int.Parse(control1[0]);
+                this.txtCtlSpeed4.Text = control1[1];
+                this.cmbCtlChange4.SelectedIndex = int.Parse(control1[2]);
+                this.txtCtlChangeValue4.Text = control1[3];
+                //加工硬化段                    
+                this.cmbCtlType5.SelectedIndex = int.Parse(control2[0]);
+                this.txtCtlSpeed5.Text = control2[1];
+                //停止测试
+                this.txtStopValueYes.Text = stopValue;
+                this.txtSpeed_lianxu.Text = mCm_C.controlType12.ToString();
+            }
+
+            if (mCm_C.isLxqf == 3)
+            {//如果自定义试验段 
+                //先清空表格中的数据
+                this.dbViewMethod.Rows.Clear();
+                rb_3.Checked = true;
+                this.txtStopValue.Text = mCm_C.stopValue.ToString();
+                this.txtCircleNum.Text = mCm_C.circleNum.Value.ToString();
+                this.txtSpeed_zidingyi.Text = mCm_C.controlType12.ToString();
+                string[] control1 = null;
+                string[] control2 = null;
+                string[] control3 = null;
+                string[] control4 = null;
+                string[] control5 = null;
+                string[] control6 = null;
+                string[] control7 = null;
+                string[] control8 = null;
+                string[] control9 = null;
+                string[] control10 = null;
+                string[] control11 = null;
+
+                if (mCm_C.controlType1 != "-")
+                {
+                    control1 = mCm_C.controlType1.Split(',');
+                    string strCtrol = string.Empty;
+                    switch (int.Parse(control1[0]))
+                    {
+                        case 0: strCtrol = "位移控制(mm/min)"; break;
+                        case 1: strCtrol = "负荷控制(kN/s)"; break;
+                        case 2: strCtrol = "应力控制(MPa/s)"; break;
+                        case 3: strCtrol = "ēLc控制(/s)"; break;
+                        case 4: strCtrol = "ēLe控制(/s)"; break;
+                        case 5: strCtrol = "变形控制(mm/s)"; break;
+                    }
+                    string strChange = string.Empty;
+                    switch (int.Parse(control1[2]))
+                    {
+                        case 0: strChange = "位移(mm)"; break;
+                        case 1: strChange = "负荷(kN)"; break;
+                        case 2: strChange = "变形(mm)"; break;
+                        case 3: strChange = "应力(MPa)"; break;
+                        case 4: strChange = "应变(%)"; break;
+                    }
+                    DataGridViewRow dgvr = new DataGridViewRow();
+                    dgvr.CreateCells(this.dbViewMethod, new object[] { false, "0", int.Parse(control1[0]), strCtrol, control1[1], int.Parse(control1[2]), strChange, control1[3] });
+                    dbViewMethod.Rows.Add(dgvr);
+                }
+                else
+                {
+                    goto line;
+                }
+
+                if (mCm_C.controlType2 != "-")
+                {
+                    control2 = mCm_C.controlType2.Split(',');
+                    string strCtrol = string.Empty;
+                    switch (int.Parse(control2[0]))
+                    {
+                        case 0: strCtrol = "位移控制(mm/min)"; break;
+                        case 1: strCtrol = "负荷控制(kN/s)"; break;
+                        case 2: strCtrol = "应力控制(MPa/s)"; break;
+                        case 3: strCtrol = "ēLc控制(/s)"; break;
+                        case 4: strCtrol = "ēLe控制(/s)"; break;
+                        case 5: strCtrol = "变形控制(mm/s)"; break;
+                    }
+                    string strChange = string.Empty;
+                    switch (int.Parse(control2[2]))
+                    {
+                        case 0: strChange = "位移(mm)"; break;
+                        case 1: strChange = "负荷(kN)"; break;
+                        case 2: strChange = "变形(mm)"; break;
+                        case 3: strChange = "应力(MPa)"; break;
+                        case 4: strChange = "应变(%)"; break;
+                    }
+                    DataGridViewRow dgvr = new DataGridViewRow();
+                    dgvr.CreateCells(this.dbViewMethod, new object[] { false, "1", int.Parse(control2[0]), strCtrol, control2[1], int.Parse(control2[2]), strChange, control2[3] });
+                    dbViewMethod.Rows.Add(dgvr);
+                }
+                else
+                {
+                    goto line;
+                }
+
+                if (mCm_C.controlType3 != "-")
+                {
+                    control3 = mCm_C.controlType3.Split(',');
+                    string strCtrol = string.Empty;
+                    switch (int.Parse(control3[0]))
+                    {
+                        case 0: strCtrol = "位移控制(mm/min)"; break;
+                        case 1: strCtrol = "负荷控制(kN/s)"; break;
+                        case 2: strCtrol = "应力控制(MPa/s)"; break;
+                        case 3: strCtrol = "ēLc控制(/s)"; break;
+                        case 4: strCtrol = "ēLe控制(/s)"; break;
+                        case 5: strCtrol = "变形控制(mm/s)"; break;
+                    }
+                    string strChange = string.Empty;
+                    switch (int.Parse(control3[2]))
+                    {
+                        case 0: strChange = "位移(mm)"; break;
+                        case 1: strChange = "负荷(kN)"; break;
+                        case 2: strChange = "变形(mm)"; break;
+                        case 3: strChange = "应力(MPa)"; break;
+                        case 4: strChange = "应变(%)"; break;
+                    }
+                    DataGridViewRow dgvr = new DataGridViewRow();
+                    dgvr.CreateCells(this.dbViewMethod, new object[] { false, "2", int.Parse(control3[0]), strCtrol, control3[1], int.Parse(control3[2]), strChange, control3[3] });
+                    dbViewMethod.Rows.Add(dgvr);
+                }
+                else
+                {
+                    goto line;
+                }
+
+                if (mCm_C.controlType4 != "-")
+                {
+                    control4 = mCm_C.controlType4.Split(',');
+                    string strCtrol = string.Empty;
+                    switch (int.Parse(control4[0]))
+                    {
+                        case 0: strCtrol = "位移控制(mm/min)"; break;
+                        case 1: strCtrol = "负荷控制(kN/s)"; break;
+                        case 2: strCtrol = "应力控制(MPa/s)"; break;
+                        case 3: strCtrol = "ēLc控制(/s)"; break;
+                        case 4: strCtrol = "ēLe控制(/s)"; break;
+                        case 5: strCtrol = "变形控制(mm/s)"; break;
+                    }
+                    string strChange = string.Empty;
+                    switch (int.Parse(control4[2]))
+                    {
+                        case 0: strChange = "位移(mm)"; break;
+                        case 1: strChange = "负荷(kN)"; break;
+                        case 2: strChange = "变形(mm)"; break;
+                        case 3: strChange = "应力(MPa)"; break;
+                        case 4: strChange = "应变(%)"; break;
+                    }
+                    DataGridViewRow dgvr = new DataGridViewRow();
+                    dgvr.CreateCells(this.dbViewMethod, new object[] { false, "3", int.Parse(control4[0]), strCtrol, control4[1], int.Parse(control4[2]), strChange, control4[3] });
+                    dbViewMethod.Rows.Add(dgvr);
+                }
+                else
+                {
+                    goto line;
+                }
+
+                if (mCm_C.controlType5 != "-")
+                {
+                    control5 = mCm_C.controlType5.Split(',');
+                    string strCtrol = string.Empty;
+                    switch (int.Parse(control5[0]))
+                    {
+                        case 0: strCtrol = "位移控制(mm/min)"; break;
+                        case 1: strCtrol = "负荷控制(kN/s)"; break;
+                        case 2: strCtrol = "应力控制(MPa/s)"; break;
+                        case 3: strCtrol = "ēLc控制(/s)"; break;
+                        case 4: strCtrol = "ēLe控制(/s)"; break;
+                        case 5: strCtrol = "变形控制(mm/s)"; break;
+                    }
+                    string strChange = string.Empty;
+                    switch (int.Parse(control5[2]))
+                    {
+                        case 0: strChange = "位移(mm)"; break;
+                        case 1: strChange = "负荷(kN)"; break;
+                        case 2: strChange = "变形(mm)"; break;
+                        case 3: strChange = "应力(MPa)"; break;
+                        case 4: strChange = "应变(%)"; break;
+                    }
+                    DataGridViewRow dgvr = new DataGridViewRow();
+                    dgvr.CreateCells(this.dbViewMethod, new object[] { false, "4", int.Parse(control5[0]), strCtrol, control5[1], int.Parse(control5[2]), strChange, control5[3] });
+                    dbViewMethod.Rows.Add(dgvr);
+                }
+                else
+                {
+                    goto line;
+                }
+                if (mCm_C.controlType6 != "-")
+                {
+                    control6 = mCm_C.controlType6.Split(',');
+                    string strCtrol = string.Empty;
+                    switch (int.Parse(control6[0]))
+                    {
+                        case 0: strCtrol = "位移控制(mm/min)"; break;
+                        case 1: strCtrol = "负荷控制(kN/s)"; break;
+                        case 2: strCtrol = "应力控制(MPa/s)"; break;
+                        case 3: strCtrol = "ēLc控制(/s)"; break;
+                        case 4: strCtrol = "ēLe控制(/s)"; break;
+                        case 5: strCtrol = "变形控制(mm/s)"; break;
+                    }
+                    string strChange = string.Empty;
+                    switch (int.Parse(control6[2]))
+                    {
+                        case 0: strChange = "位移(mm)"; break;
+                        case 1: strChange = "负荷(kN)"; break;
+                        case 2: strChange = "变形(mm)"; break;
+                        case 3: strChange = "应力(MPa)"; break;
+                        case 4: strChange = "应变(%)"; break;
+                    }
+                    DataGridViewRow dgvr = new DataGridViewRow();
+                    dgvr.CreateCells(this.dbViewMethod, new object[] { false, "5", int.Parse(control6[0]), strCtrol, control6[1], int.Parse(control6[2]), strChange, control6[3] });
+                    dbViewMethod.Rows.Add(dgvr);
+                }
+                else
+                {
+                    goto line;
+                }
+
+                if (mCm_C.controlType7 != "-")
+                {
+                    control7 = mCm_C.controlType7.Split(',');
+                    string strCtrol = string.Empty;
+                    switch (int.Parse(control7[0]))
+                    {
+                        case 0: strCtrol = "位移控制(mm/min)"; break;
+                        case 1: strCtrol = "负荷控制(kN/s)"; break;
+                        case 2: strCtrol = "应力控制(MPa/s)"; break;
+                        case 3: strCtrol = "ēLc控制(/s)"; break;
+                        case 4: strCtrol = "ēLe控制(/s)"; break;
+                        case 5: strCtrol = "变形控制(mm/s)"; break;
+                    }
+                    string strChange = string.Empty;
+                    switch (int.Parse(control7[2]))
+                    {
+                        case 0: strChange = "位移(mm)"; break;
+                        case 1: strChange = "负荷(kN)"; break;
+                        case 2: strChange = "变形(mm)"; break;
+                        case 3: strChange = "应力(MPa)"; break;
+                        case 4: strChange = "应变(%)"; break;
+                    }
+                    DataGridViewRow dgvr = new DataGridViewRow();
+                    dgvr.CreateCells(this.dbViewMethod, new object[] { false, "6", int.Parse(control7[0]), strCtrol, control7[1], int.Parse(control7[2]), strChange, control7[3] });
+                    dbViewMethod.Rows.Add(dgvr);
+                }
+                else
+                {
+                    goto line;
+                }
+
+                if (mCm_C.controlType8 != "-")
+                {
+                    control8 = mCm_C.controlType8.Split(',');
+                    string strCtrol = string.Empty;
+                    switch (int.Parse(control8[0]))
+                    {
+                        case 0: strCtrol = "位移控制(mm/min)"; break;
+                        case 1: strCtrol = "负荷控制(kN/s)"; break;
+                        case 2: strCtrol = "应力控制(MPa/s)"; break;
+                        case 3: strCtrol = "ēLc控制(/s)"; break;
+                        case 4: strCtrol = "ēLe控制(/s)"; break;
+                        case 5: strCtrol = "变形控制(mm/s)"; break;
+                    }
+                    string strChange = string.Empty;
+                    switch (int.Parse(control8[2]))
+                    {
+                        case 0: strChange = "位移(mm)"; break;
+                        case 1: strChange = "负荷(kN)"; break;
+                        case 2: strChange = "变形(mm)"; break;
+                        case 3: strChange = "应力(MPa)"; break;
+                        case 4: strChange = "应变(%)"; break;
+                    }
+                    DataGridViewRow dgvr = new DataGridViewRow();
+                    dgvr.CreateCells(this.dbViewMethod, new object[] { false, "7", int.Parse(control8[0]), strCtrol, control8[1], int.Parse(control8[2]), strChange, control8[3] });
+                    dbViewMethod.Rows.Add(dgvr);
+                }
+                else
+                {
+                    goto line;
+                }
+                if (mCm_C.controlType9 != "-")
+                {
+                    control9 = mCm_C.controlType9.Split(',');
+                    string strCtrol = string.Empty;
+                    switch (int.Parse(control9[0]))
+                    {
+                        case 0: strCtrol = "位移控制(mm/min)"; break;
+                        case 1: strCtrol = "负荷控制(kN/s)"; break;
+                        case 2: strCtrol = "应力控制(MPa/s)"; break;
+                        case 3: strCtrol = "ēLc控制(/s)"; break;
+                        case 4: strCtrol = "ēLe控制(/s)"; break;
+                        case 5: strCtrol = "变形控制(mm/s)"; break;
+                    }
+                    string strChange = string.Empty;
+                    switch (int.Parse(control9[2]))
+                    {
+                        case 0: strChange = "位移(mm)"; break;
+                        case 1: strChange = "负荷(kN)"; break;
+                        case 2: strChange = "变形(mm)"; break;
+                        case 3: strChange = "应力(MPa)"; break;
+                        case 4: strChange = "应变(%)"; break;
+                    }
+                    DataGridViewRow dgvr = new DataGridViewRow();
+                    dgvr.CreateCells(this.dbViewMethod, new object[] { false, "8", int.Parse(control9[0]), strCtrol, control9[1], int.Parse(control9[2]), strChange, control9[3] });
+                    dbViewMethod.Rows.Add(dgvr);
+                }
+                else
+                {
+                    goto line;
+                }
+
+                if (mCm_C.controlType10 != "-")
+                {
+                    control10 = mCm_C.controlType10.Split(',');
+                    string strCtrol = string.Empty;
+                    switch (int.Parse(control10[0]))
+                    {
+                        case 0: strCtrol = "位移控制(mm/min)"; break;
+                        case 1: strCtrol = "负荷控制(kN/s)"; break;
+                        case 2: strCtrol = "应力控制(MPa/s)"; break;
+                        case 3: strCtrol = "ēLc控制(/s)"; break;
+                        case 4: strCtrol = "ēLe控制(/s)"; break;
+                        case 5: strCtrol = "变形控制(mm/s)"; break;
+                    }
+                    string strChange = string.Empty;
+                    switch (int.Parse(control10[2]))
+                    {
+                        case 0: strChange = "位移(mm)"; break;
+                        case 1: strChange = "负荷(kN)"; break;
+                        case 2: strChange = "变形(mm)"; break;
+                        case 3: strChange = "应力(MPa)"; break;
+                        case 4: strChange = "应变(%)"; break;
+                    }
+                    DataGridViewRow dgvr = new DataGridViewRow();
+                    dgvr.CreateCells(this.dbViewMethod, new object[] { false, "9", int.Parse(control10[0]), strCtrol, control10[1], int.Parse(control10[2]), strChange, control10[3] });
+                    dbViewMethod.Rows.Add(dgvr);
+                }
+                else
+                {
+                    goto line;
+                }
+
+                if (mCm_C.controlType11 != "-")
+                {
+                    control11 = mCm_C.controlType11.Split(',');
+                    string strCtrol = string.Empty;
+                    switch (int.Parse(control11[0]))
+                    {
+                        case 0: strCtrol = "位移控制(mm/min)"; break;
+                        case 1: strCtrol = "负荷控制(kN/s)"; break;
+                        case 2: strCtrol = "应力控制(MPa/s)"; break;
+                        case 3: strCtrol = "ēLc控制(/s)"; break;
+                        case 4: strCtrol = "ēLe控制(/s)"; break;
+                        case 5: strCtrol = "变形控制(mm/s)"; break;
+                    }
+                    string strChange = string.Empty;
+                    switch (int.Parse(control11[2]))
+                    {
+                        case 0: strChange = "位移(mm)"; break;
+                        case 1: strChange = "负荷(kN)"; break;
+                        case 2: strChange = "变形(mm)"; break;
+                        case 3: strChange = "应力(MPa)"; break;
+                        case 4: strChange = "应变(%)"; break;
+                    }
+                    DataGridViewRow dgvr = new DataGridViewRow();
+                    dgvr.CreateCells(this.dbViewMethod, new object[] { false, "10", int.Parse(control11[0]), strCtrol, control11[1], int.Parse(control11[2]), strChange, control11[3] });
+                    dbViewMethod.Rows.Add(dgvr);
+                }
+                else
+                {
+                    goto line;
+                }
+
+            line: ;
+            }
+            //this.txtCircleNum.Text = mCm_C.circleNum.Value.ToString();
+            //是否取引伸计
+            this.chkYinShen.Checked = mCm_C.isTakeDownExten;
+            if (chkYinShen.Checked)
+            {
+                this.cmbYsChl.Text = mCm_C.extenChannel.ToString();
+                this.cmbYsType.SelectedIndex = (int)mCm_C.selResultID;
+                this.txtYsValue.Text = mCm_C.extenValue.ToString();
+            }
+
+            //读取试验结果表
+            switch (mCm_C.xmlPath)
+            {
+                case "拉伸试验":
+                    ReadResultSel("tb_GBT282892012_TensileSel");
+                    BLL.GBT282892012_TensileSel bllSel_T = new HR_Test.BLL.GBT282892012_TensileSel();
+                    DataSet dsSel_T = bllSel_T.GetList("methodName='" + this.txtmethodName.Text + "'");
+                    if (dsSel_T.Tables[0].Rows.Count > 0)
+                    {
+                        for (int i = 2; i < dsSel_T.Tables[0].Columns.Count; i++)
+                        {
+                            if (dsSel_T.Tables[0].Rows[0][i].ToString().ToLower() == "true")
+                            {
+                                this.chkResultList.SetItemChecked(i - 2, true);
+                            }
+                            else
+                            {
+                                this.chkResultList.SetItemChecked(i - 2, false);
+                            }
+                        }
+                    }
+                    break;
+                case "剪切试验":
+                    ReadResultSel("tb_GBT282892012_ShearSel");
+                    BLL.GBT282892012_ShearSel bllSel_S = new HR_Test.BLL.GBT282892012_ShearSel();
+                    DataSet dsSel_S = bllSel_S.GetList("methodName='" + this.txtmethodName.Text + "'");
+                    if (dsSel_S.Tables[0].Rows.Count > 0)
+                    {
+                        for (int i = 2; i < dsSel_S.Tables[0].Columns.Count; i++)
+                        {
+                            if (dsSel_S.Tables[0].Rows[0][i].ToString().ToLower() == "true")
+                            {
+                                this.chkResultList.SetItemChecked(i - 2, true);
+                            }
+                            else
+                            {
+                                this.chkResultList.SetItemChecked(i - 2, false);
+                            }
+                        }
+                    }
+                    break;
+                case "扭转试验":
+                    ReadResultSel("tb_GBT282892012_TwistSel");
+                    BLL.GBT282892012_TwistSel bllSel_Tw = new HR_Test.BLL.GBT282892012_TwistSel();
+                    DataSet dsSel_Tw = bllSel_Tw.GetList("methodName='" + this.txtmethodName.Text + "'");
+                    if (dsSel_Tw.Tables[0].Rows.Count > 0)
+                    {
+                        for (int i = 2; i < dsSel_Tw.Tables[0].Columns.Count; i++)
+                        {
+                            if (dsSel_Tw.Tables[0].Rows[0][i].ToString().ToLower() == "true")
+                            {
+                                this.chkResultList.SetItemChecked(i - 2, true);
+                            }
+                            else
+                            {
+                                this.chkResultList.SetItemChecked(i - 2, false);
+                            }
+                        }
+                    }
+                    break;
+            }
+
         }
 
         private void ReadGBT28289(string _methodName)
