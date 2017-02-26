@@ -654,6 +654,9 @@
     <None Include="Resources\lianxu.ico" />
     <None Include="Resources\T48.png" />
     <Content Include="EasyUSB1582.dll" />
+    <Content Include="Database\HR-TestData.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="logo.ico" />
     <None Include="Resources\save.png" />
     <None Include="Resources\minimize.png" />
