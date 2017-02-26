@@ -6496,13 +6496,16 @@ namespace HR_Test
                 case "tb_SelTestResult_B":
                     ds = bllsrii.GetList(" standardNo='YB/T 5349-2006' and testType='弯曲试验'");
                     break;
+                case "tb_GBT3354-2014_Sel":
+                    ds = bllsrii.GetList(" standardNo='GB/T 3354-2014' and testType='拉伸试验'");
+                    break;                    
             }
             if (ds != null)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
                     string paraname = ds.Tables[0].Rows[i]["paramName"].ToString();
-                    if (paraname.Contains("△") || paraname.Contains("σ"))
+                    if (paraname.Contains("△") || paraname.Contains("σ") || paraname.Contains("μ") || paraname.Contains("ε"))
                         this.chkResultList.Items.Add("            " + ds.Tables[0].Rows[i]["paramName"].ToString().PadRight(15) + ds.Tables[0].Rows[i]["unit"].ToString().PadRight(19) + ds.Tables[0].Rows[i]["paramDiscrible"].ToString());
                     else
                         this.chkResultList.Items.Add("            " + ds.Tables[0].Rows[i]["paramName"].ToString().PadRight(16) + ds.Tables[0].Rows[i]["unit"].ToString().PadRight(19) + ds.Tables[0].Rows[i]["paramDiscrible"].ToString());
