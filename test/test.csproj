@@ -40,10 +40,14 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSkin">
+      <HintPath>..\HR-Test\bin\Debug\CSkin.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Design" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -99,6 +103,10 @@
     <ProjectReference Include="..\HR-Test\HR-Test.csproj">
       <Project>{2D993BDE-0998-4EC9-9D48-12046166F5C4}</Project>
       <Name>HR-Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TabStripControlLibrary\TabStripControlLibrary.csproj">
+      <Project>{F63A0939-5ADD-4931-8066-6901B5FBEF67}</Project>
+      <Name>TabStripControlLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@ namespace Maticsoft.DBUtility
         {           
             get 
             {
-                string _dataPath = @"E:\衡新试验数据\HR-TestData.mdb";
+                string _dataPath = @"E:\衡新试验数据\HR-TestData.mdb";//Provider=Microsoft.Jet.OLEDB.4.0;Data Source=E:\\衡新试验数据\\HR-TestData.mdb;Jet OLEDB:Database password=Password1;
                 string _conn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + _dataPath + ";Jet OLEDB:Database password=Password1;";
                 string _connectionString = _conn;// ConfigurationManager.AppSettings["ConnectionString"];       
                 string ConStringEncrypt = ConfigurationManager.AppSettings["ConStringEncrypt"];

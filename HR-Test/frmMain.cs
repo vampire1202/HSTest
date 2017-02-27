@@ -53,15 +53,6 @@ namespace HR_Test
             
             //创建密匙
             //string sSecretKey;
-            // Get the Key for the file to Encrypt.
-            //sSecretKey = Safe.GenerateKey();
-            //m_SensorArray[0].scale = 0x0504;
-            //m_SensorArray[1].scale = 0x0205;
-            //m_SensorArray[2].scale = 0x0105;
-            //m_LSensorArray[0].SensorIndex = 0;
-            //m_DSensorArray[0].SensorIndex = 1;
-            //m_ESensorArray[0].SensorIndex = 2;
-
             this.MaximizedBounds = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
             this.WindowState = FormWindowState.Maximized;   
 

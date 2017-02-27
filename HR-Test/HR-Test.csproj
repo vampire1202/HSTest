@@ -232,6 +232,12 @@
     <Compile Include="Input\GBT23615_2009TensileZong.Designer.cs">
       <DependentUpon>GBT23615_2009TensileZong.cs</DependentUpon>
     </Compile>
+    <Compile Include="Input\GBT3354_2014.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Input\GBT3354_2014.Designer.cs">
+      <DependentUpon>GBT3354_2014.cs</DependentUpon>
+    </Compile>
     <Compile Include="Input\YBT5349_2006Bend.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -349,6 +355,9 @@
     <EmbeddedResource Include="Input\GBT23615_2009TensileZong.resx">
       <DependentUpon>GBT23615_2009TensileZong.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Input\GBT3354_2014.resx">
+      <DependentUpon>GBT3354_2014.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Input\YBT5349_2006Bend.resx">
       <DependentUpon>YBT5349_2006Bend.cs</DependentUpon>
     </EmbeddedResource>
@@ -397,6 +406,7 @@
       <DependentUpon>RowMergeView.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Font\FZLBJW.TTF" />
+    <None Include="Font\经典细隶书简.TTF" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

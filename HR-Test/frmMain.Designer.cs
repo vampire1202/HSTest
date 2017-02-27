@@ -153,7 +153,7 @@
             // gbtnParameter
             // 
             this.gbtnParameter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnParameter.Font = new System.Drawing.Font("方正隶变简体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.gbtnParameter.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.gbtnParameter.GlowColor = System.Drawing.Color.White;
             this.gbtnParameter.Image = global::HR_Test.Properties.Resources._20110704100834860_easyicon_cn_128;
             this.gbtnParameter.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -174,7 +174,7 @@
             // gbtnHelp
             // 
             this.gbtnHelp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnHelp.Font = new System.Drawing.Font("方正隶变简体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.gbtnHelp.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.gbtnHelp.GlowColor = System.Drawing.Color.White;
             this.gbtnHelp.Image = global::HR_Test.Properties.Resources.help2;
             this.gbtnHelp.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -194,7 +194,7 @@
             // gbtnTest
             // 
             this.gbtnTest.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnTest.Font = new System.Drawing.Font("方正隶变简体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.gbtnTest.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.gbtnTest.GlowColor = System.Drawing.Color.White;
             this.gbtnTest.Image = global::HR_Test.Properties.Resources.testt;
             this.gbtnTest.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -215,7 +215,7 @@
             // gbtnTestMethod
             // 
             this.gbtnTestMethod.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnTestMethod.Font = new System.Drawing.Font("方正隶变简体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.gbtnTestMethod.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.gbtnTestMethod.GlowColor = System.Drawing.Color.White;
             this.gbtnTestMethod.Image = global::HR_Test.Properties.Resources.testmethod;
             this.gbtnTestMethod.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -236,7 +236,7 @@
             // gbtnReport
             // 
             this.gbtnReport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnReport.Font = new System.Drawing.Font("方正隶变简体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.gbtnReport.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.gbtnReport.GlowColor = System.Drawing.Color.White;
             this.gbtnReport.Image = global::HR_Test.Properties.Resources.report;
             this.gbtnReport.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -257,7 +257,7 @@
             // glassButton4
             // 
             this.glassButton4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.glassButton4.Font = new System.Drawing.Font("方正隶变简体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.glassButton4.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.glassButton4.GlowColor = System.Drawing.Color.White;
             this.glassButton4.Image = global::HR_Test.Properties.Resources.set1;
             this.glassButton4.InnerBorderColor = System.Drawing.Color.LightSkyBlue;
@@ -276,7 +276,7 @@
             // glassButton8
             // 
             this.glassButton8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.glassButton8.Font = new System.Drawing.Font("方正隶变简体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.glassButton8.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.glassButton8.GlowColor = System.Drawing.Color.White;
             this.glassButton8.Image = global::HR_Test.Properties.Resources.about1;
             this.glassButton8.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -296,7 +296,7 @@
             // gbtnSet
             // 
             this.gbtnSet.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(78)))), ((int)(((byte)(133)))));
-            this.gbtnSet.Font = new System.Drawing.Font("方正隶变简体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.gbtnSet.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.gbtnSet.GlowColor = System.Drawing.Color.White;
             this.gbtnSet.Image = global::HR_Test.Properties.Resources.sets;
             this.gbtnSet.ImageAlign = System.Drawing.ContentAlignment.TopCenter;

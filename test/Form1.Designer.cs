@@ -31,7 +31,6 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.userControl11 = new test.UserControl1();
             this.SuspendLayout();
             // 
             // button1
@@ -64,20 +63,11 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // userControl11
-            // 
-            this.userControl11.Location = new System.Drawing.Point(0, 0);
-            this.userControl11.Name = "userControl11";
-            this.userControl11.Size = new System.Drawing.Size(628, 25);
-            this.userControl11.TabIndex = 3;
-            this.userControl11.Text = "userControl11";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(628, 262);
-            this.Controls.Add(this.userControl11);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -86,7 +76,6 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -95,7 +84,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        private UserControl1 userControl11;
     }
 }
 

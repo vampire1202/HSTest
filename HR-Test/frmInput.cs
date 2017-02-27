@@ -20,7 +20,7 @@ namespace HR_Test
         Input.GBT28289_2012Tensile input_GBT28289Tensile;
         Input.GBT28289_2012Shear input_GBT28289Shear;
         Input.GBT28289_2012Twist input_GBT28289Twist;
-        
+        Input.GBT3354_2014 input_GBT3354;
         private frmMain _fmMain;
         public frmInput(frmMain fmMain)
         {
@@ -97,8 +97,35 @@ namespace HR_Test
                     case "YB/T 5349-2006":
                         AddInputYBT5349Control(e.Node.Text);
                         break;
+
+                    case "GB/T 3354-2014":
+                        AddInputGBT3354Control(e.Node.Text);
+                        break;
                     
                 }
+            }
+        } 
+        private void AddInputGBT3354Control(string _methodName)
+        {
+            if (input_GBT3354 == null)
+            {
+                input_GBT3354 = new HR_Test.Input.GBT3354_2014();
+                input_GBT3354._MethodName = _methodName;
+                this.palInput.Controls.Add(input_GBT3354);
+                //先添加控件，然后调整位置
+                int left = (Screen.PrimaryScreen.WorkingArea.Width - 180 - input_GBT3354.gbTensileC.Width) / 2;
+                int top = (Screen.PrimaryScreen.WorkingArea.Height - input_GBT3354.gbTensileC.Height - 195) / 2;
+                input_GBT3354.gbTensileC.Location = new Point(left, top);
+                input_GBT3354.Dock = DockStyle.Fill;
+                int mleft = (Screen.PrimaryScreen.WorkingArea.Width - 180 - input_GBT3354.palMethodShow.Width) / 2;
+                int mtop = (input_YBT5349.palBottom.Height - input_GBT3354.palMethodShow.Height) / 2;
+                input_GBT3354.palMethodShow.Location = new Point(mleft, mtop);
+                input_GBT3354.BringToFront();
+            }
+            else
+            {
+                input_GBT3354.BringToFront();
+                input_GBT3354.ReadMethodInfo(_methodName);
             }
         }
 

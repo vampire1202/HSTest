@@ -633,7 +633,7 @@ namespace HR_Test
             model.S0 = 0;
             model.lL = 0;
             model.lT = 0;
-            model.εz = 0;
+            model.εz = "-";
 
             model.selResultID = 0;
             model.extenValue = 0;

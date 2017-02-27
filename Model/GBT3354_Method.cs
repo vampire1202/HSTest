@@ -59,7 +59,7 @@ namespace HR_Test.Model
         private double? _s0;
         private double? _ll;
         private double? _lt;
-        private double? _εz;
+        private string _εz;
         private string _sign;
         /// <summary>
         /// 
@@ -456,7 +456,7 @@ namespace HR_Test.Model
         /// <summary>
         /// 纵向应变范围
         /// </summary>
-        public double? εz
+        public string εz
         {
             set { _εz = value; }
             get { return _εz; }

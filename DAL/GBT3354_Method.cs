@@ -89,7 +89,7 @@ namespace HR_Test.DAL
 					new OleDbParameter("@S0", OleDbType.Double),
 					new OleDbParameter("@lL", OleDbType.Double),
 					new OleDbParameter("@lT", OleDbType.Double),
-					new OleDbParameter("@εz", OleDbType.Double),
+					new OleDbParameter("@εz", OleDbType.VarChar,100),
 					new OleDbParameter("@sign", OleDbType.VarChar,0)};
             parameters[0].Value = model.methodName;
             parameters[1].Value = model.xmlPath;
@@ -259,7 +259,7 @@ namespace HR_Test.DAL
 					new OleDbParameter("@S0", OleDbType.Double),
 					new OleDbParameter("@lL", OleDbType.Double),
 					new OleDbParameter("@lT", OleDbType.Double),
-					new OleDbParameter("@εz", OleDbType.Double),
+					new OleDbParameter("@εz", OleDbType.VarChar,100),
 					new OleDbParameter("@sign", OleDbType.VarChar,0),
 					new OleDbParameter("@ID", OleDbType.Integer,4)};
             parameters[0].Value = model.methodName;
@@ -652,7 +652,7 @@ namespace HR_Test.DAL
                 //model.εz=row["εz"].ToString();
                 if (row["εz"] != null && row["εz"].ToString() != "")
                 {
-                    model.εz = double.Parse(row["εz"].ToString());
+                    model.εz = row["εz"].ToString();
                 } 
                 if (row["sign"] != null)
                 {

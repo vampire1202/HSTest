@@ -125,6 +125,7 @@
     <Compile Include="GBT282892012_Twist.cs" />
     <Compile Include="GBT282892012_TwistSel.cs" />
     <Compile Include="GBT3354_Method.cs" />
+    <Compile Include="GBT3354_Samples.cs" />
     <Compile Include="GBT3354_Sel.cs" />
     <Compile Include="SelTestResult.cs" />
     <Compile Include="SelTestResult_B.cs" />

@@ -619,8 +619,8 @@
             this.txtproLoadSpeed.Size = new System.Drawing.Size(121, 26);
             this.txtproLoadSpeed.TabIndex = 3;
             this.txtproLoadSpeed.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtproLoadSpeed.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtproLoadSpeed.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtproLoadSpeed.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // cmbProLoadValueType
             // 
@@ -646,8 +646,8 @@
             this.txtproLoadValue.Size = new System.Drawing.Size(97, 26);
             this.txtproLoadValue.TabIndex = 3;
             this.txtproLoadValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtproLoadValue.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtproLoadValue.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtproLoadValue.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // cmbProLoadCtlMode
             // 
@@ -728,8 +728,8 @@
             this.customPanel2.Name = "customPanel2";
             this.customPanel2.Size = new System.Drawing.Size(953, 345);
             this.customPanel2.TabIndex = 18;
-            this.customPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.customPanel2_Paint);
             this.customPanel2.Click += new System.EventHandler(this.panelAll_Click);
+            this.customPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.customPanel2_Paint);
             // 
             // panel16
             // 
@@ -784,8 +784,8 @@
             this.txtCtlChangeValue4.Size = new System.Drawing.Size(95, 23);
             this.txtCtlChangeValue4.TabIndex = 5;
             this.txtCtlChangeValue4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtCtlChangeValue4.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtCtlChangeValue4.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtCtlChangeValue4.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // cmbCtlType4
             // 
@@ -841,8 +841,8 @@
             this.txtSpeed_lianxu.TabIndex = 5;
             this.txtSpeed_lianxu.Text = "200";
             this.txtSpeed_lianxu.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtSpeed_lianxu.TextChanged += new System.EventHandler(this.txtSpeed_zidingyi_TextChanged);
             this.txtSpeed_lianxu.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtSpeed_lianxu.TextChanged += new System.EventHandler(this.txtSpeed_zidingyi_TextChanged);
             // 
             // txtStopValueYes
             // 
@@ -852,8 +852,8 @@
             this.txtStopValueYes.TabIndex = 5;
             this.txtStopValueYes.Text = "80";
             this.txtStopValueYes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtStopValueYes.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtStopValueYes.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtStopValueYes.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // label18
             // 
@@ -872,8 +872,8 @@
             this.txtCtlSpeed4.Size = new System.Drawing.Size(95, 23);
             this.txtCtlSpeed4.TabIndex = 5;
             this.txtCtlSpeed4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtCtlSpeed4.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtCtlSpeed4.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtCtlSpeed4.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // cmbCtlType5
             // 
@@ -933,8 +933,8 @@
             this.txtCtlSpeed5.Size = new System.Drawing.Size(95, 23);
             this.txtCtlSpeed5.TabIndex = 5;
             this.txtCtlSpeed5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtCtlSpeed5.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtCtlSpeed5.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtCtlSpeed5.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // label21
             // 
@@ -997,9 +997,9 @@
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Navy;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.White;
             this.dbViewMethod.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dbViewMethod.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.dbViewMethod.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dbViewMethod.BackgroundColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
@@ -1279,8 +1279,8 @@
             this.txtSpeed_zidingyi.Size = new System.Drawing.Size(62, 23);
             this.txtSpeed_zidingyi.TabIndex = 13;
             this.txtSpeed_zidingyi.Text = "200";
-            this.txtSpeed_zidingyi.TextChanged += new System.EventHandler(this.txtSpeed_zidingyi_TextChanged);
             this.txtSpeed_zidingyi.Click += new System.EventHandler(this.txtCtl_TextChanged);
+            this.txtSpeed_zidingyi.TextChanged += new System.EventHandler(this.txtSpeed_zidingyi_TextChanged);
             // 
             // label26
             // 
@@ -1299,8 +1299,8 @@
             this.txtStopValue.Size = new System.Drawing.Size(62, 23);
             this.txtStopValue.TabIndex = 13;
             this.txtStopValue.Text = "80";
-            this.txtStopValue.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtStopValue.Click += new System.EventHandler(this.txtCtl_TextChanged);
+            this.txtStopValue.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // label9
             // 
@@ -1318,8 +1318,8 @@
             this.txtCircleNum.Size = new System.Drawing.Size(62, 23);
             this.txtCircleNum.TabIndex = 13;
             this.txtCircleNum.Text = "1";
-            this.txtCircleNum.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtCircleNum.Click += new System.EventHandler(this.txtCtl_TextChanged);
+            this.txtCircleNum.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // customPanel1
             // 
@@ -1404,8 +1404,8 @@
             this.txtCtlChangeValue2.Size = new System.Drawing.Size(95, 23);
             this.txtCtlChangeValue2.TabIndex = 5;
             this.txtCtlChangeValue2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtCtlChangeValue2.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtCtlChangeValue2.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtCtlChangeValue2.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // lbl2
             // 
@@ -1449,8 +1449,8 @@
             this.txtSpeed_bulianxu.TabIndex = 5;
             this.txtSpeed_bulianxu.Text = "200";
             this.txtSpeed_bulianxu.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtSpeed_bulianxu.TextChanged += new System.EventHandler(this.txtSpeed_zidingyi_TextChanged);
             this.txtSpeed_bulianxu.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtSpeed_bulianxu.TextChanged += new System.EventHandler(this.txtSpeed_zidingyi_TextChanged);
             // 
             // txtStopValueNo
             // 
@@ -1460,8 +1460,8 @@
             this.txtStopValueNo.TabIndex = 5;
             this.txtStopValueNo.Text = "80";
             this.txtStopValueNo.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtStopValueNo.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtStopValueNo.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtStopValueNo.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // lbl1
             // 
@@ -1479,8 +1479,8 @@
             this.txtCtlChangeValue1.Size = new System.Drawing.Size(95, 23);
             this.txtCtlChangeValue1.TabIndex = 5;
             this.txtCtlChangeValue1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtCtlChangeValue1.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtCtlChangeValue1.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtCtlChangeValue1.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // label28
             // 
@@ -1543,8 +1543,8 @@
             this.txtCtlSpeed2.Size = new System.Drawing.Size(95, 23);
             this.txtCtlSpeed2.TabIndex = 5;
             this.txtCtlSpeed2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtCtlSpeed2.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtCtlSpeed2.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtCtlSpeed2.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // label23
             // 
@@ -1583,8 +1583,8 @@
             this.txtCtlSpeed1.Size = new System.Drawing.Size(95, 23);
             this.txtCtlSpeed1.TabIndex = 5;
             this.txtCtlSpeed1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtCtlSpeed1.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtCtlSpeed1.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtCtlSpeed1.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // cmbCtlType2
             // 
@@ -1654,8 +1654,8 @@
             this.txtCtlSpeed3.Size = new System.Drawing.Size(95, 23);
             this.txtCtlSpeed3.TabIndex = 5;
             this.txtCtlSpeed3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtCtlSpeed3.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             this.txtCtlSpeed3.Click += new System.EventHandler(this.txtSelAll_Click);
+            this.txtCtlSpeed3.TextChanged += new System.EventHandler(this.txtCtl_TextChanged);
             // 
             // label32
             // 
@@ -1779,7 +1779,7 @@
             this.chkResultList.Name = "chkResultList";
             this.chkResultList.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.chkResultList.ScrollAlwaysVisible = true;
-            this.chkResultList.Size = new System.Drawing.Size(963, 378);
+            this.chkResultList.Size = new System.Drawing.Size(963, 383);
             this.chkResultList.TabIndex = 6;
             // 
             // panel6
