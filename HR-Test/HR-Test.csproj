@@ -396,6 +396,7 @@
     <EmbeddedResource Include="UC\RowMergeView.resx">
       <DependentUpon>RowMergeView.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Font\FZLBJW.TTF" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
