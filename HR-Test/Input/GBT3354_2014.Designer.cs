@@ -33,13 +33,10 @@
             this.gbTensileC = new System.Windows.Forms.GroupBox();
             this.label22 = new System.Windows.Forms.Label();
             this._testNo = new System.Windows.Forms.TextBox();
-            this.label44 = new System.Windows.Forms.Label();
             this.label37 = new System.Windows.Forms.Label();
             this._TestNum = new System.Windows.Forms.TextBox();
             this.label50 = new System.Windows.Forms.Label();
             this.label48 = new System.Windows.Forms.Label();
-            this.label45 = new System.Windows.Forms.Label();
-            this.label43 = new System.Windows.Forms.Label();
             this.label42 = new System.Windows.Forms.Label();
             this._stuffCardNo = new System.Windows.Forms.TextBox();
             this._stuffType = new System.Windows.Forms.TextBox();
@@ -48,21 +45,15 @@
             this.label41 = new System.Windows.Forms.Label();
             this.label39 = new System.Windows.Forms.Label();
             this.label38 = new System.Windows.Forms.Label();
-            this.btnMore2 = new Glass.GlassButton();
-            this.btnMore6 = new Glass.GlassButton();
-            this.btnMore1 = new Glass.GlassButton();
             this._testStandard = new System.Windows.Forms.TextBox();
             this._Lc = new System.Windows.Forms.TextBox();
-            this._εp = new System.Windows.Forms.TextBox();
             this._tester = new System.Windows.Forms.TextBox();
             this._mathineType = new System.Windows.Forms.TextBox();
-            this._Le = new System.Windows.Forms.TextBox();
             this._L0 = new System.Windows.Forms.TextBox();
             this._getSample = new System.Windows.Forms.TextBox();
             this.panel25 = new System.Windows.Forms.Panel();
             this.panel24 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.panel6 = new System.Windows.Forms.Panel();
             this.label25 = new System.Windows.Forms.Label();
             this.gBtnDelete = new Glass.GlassButton();
             this.btnOtherShape = new Glass.GlassButton();
@@ -88,11 +79,6 @@
             this.rdoPipe = new System.Windows.Forms.RadioButton();
             this.rdoCircle = new System.Windows.Forms.RadioButton();
             this.rdoRect = new System.Windows.Forms.RadioButton();
-            this.pallashen2 = new System.Windows.Forms.Panel();
-            this.label47 = new System.Windows.Forms.Label();
-            this.label46 = new System.Windows.Forms.Label();
-            this._εr = new System.Windows.Forms.TextBox();
-            this._εt = new System.Windows.Forms.TextBox();
             this._testDate = new System.Windows.Forms.DateTimePicker();
             this.label3 = new System.Windows.Forms.Label();
             this._testSampleNo = new System.Windows.Forms.ComboBox();
@@ -106,12 +92,17 @@
             this.gBtnAddToMethod1 = new Glass.GlassButton();
             this.label51 = new System.Windows.Forms.Label();
             this._testMethod = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.gbTensile.SuspendLayout();
             this.panel26.SuspendLayout();
             this.gbTensileC.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.pallashen2.SuspendLayout();
             this.palBottom.SuspendLayout();
             this.palMethodShow.SuspendLayout();
             this.SuspendLayout();
@@ -139,38 +130,35 @@
             // 
             // gbTensileC
             // 
+            this.gbTensileC.Controls.Add(this.label14);
+            this.gbTensileC.Controls.Add(this._L0);
             this.gbTensileC.Controls.Add(this.label22);
             this.gbTensileC.Controls.Add(this._testNo);
-            this.gbTensileC.Controls.Add(this.label44);
             this.gbTensileC.Controls.Add(this.label37);
             this.gbTensileC.Controls.Add(this._TestNum);
             this.gbTensileC.Controls.Add(this.label50);
             this.gbTensileC.Controls.Add(this.label48);
-            this.gbTensileC.Controls.Add(this.label45);
-            this.gbTensileC.Controls.Add(this.label43);
+            this.gbTensileC.Controls.Add(this.label5);
+            this.gbTensileC.Controls.Add(this.label15);
             this.gbTensileC.Controls.Add(this.label42);
             this.gbTensileC.Controls.Add(this._stuffCardNo);
             this.gbTensileC.Controls.Add(this._stuffType);
             this.gbTensileC.Controls.Add(this._stuffSpec);
             this.gbTensileC.Controls.Add(this.label40);
+            this.gbTensileC.Controls.Add(this.label8);
             this.gbTensileC.Controls.Add(this.label41);
             this.gbTensileC.Controls.Add(this.label39);
             this.gbTensileC.Controls.Add(this.label38);
-            this.gbTensileC.Controls.Add(this.btnMore2);
-            this.gbTensileC.Controls.Add(this.btnMore6);
-            this.gbTensileC.Controls.Add(this.btnMore1);
+            this.gbTensileC.Controls.Add(this.textBox1);
             this.gbTensileC.Controls.Add(this._testStandard);
+            this.gbTensileC.Controls.Add(this.textBox2);
             this.gbTensileC.Controls.Add(this._Lc);
-            this.gbTensileC.Controls.Add(this._εp);
             this.gbTensileC.Controls.Add(this._tester);
             this.gbTensileC.Controls.Add(this._mathineType);
-            this.gbTensileC.Controls.Add(this._Le);
-            this.gbTensileC.Controls.Add(this._L0);
             this.gbTensileC.Controls.Add(this._getSample);
             this.gbTensileC.Controls.Add(this.panel25);
             this.gbTensileC.Controls.Add(this.panel24);
             this.gbTensileC.Controls.Add(this.panel5);
-            this.gbTensileC.Controls.Add(this.panel6);
             this.gbTensileC.Controls.Add(this.label25);
             this.gbTensileC.Controls.Add(this.gBtnDelete);
             this.gbTensileC.Controls.Add(this.btnOtherShape);
@@ -181,7 +169,6 @@
             this.gbTensileC.Controls.Add(this.groupBox3);
             this.gbTensileC.Controls.Add(this.label28);
             this.gbTensileC.Controls.Add(this.groupBox1);
-            this.gbTensileC.Controls.Add(this.pallashen2);
             this.gbTensileC.Controls.Add(this._testDate);
             this.gbTensileC.Controls.Add(this.label3);
             this.gbTensileC.Controls.Add(this._testSampleNo);
@@ -214,15 +201,6 @@
             this._testNo.TabIndex = 138;
             this._testNo.TextChanged += new System.EventHandler(this._testNo_TextChanged);
             // 
-            // label44
-            // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(292, 122);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(131, 15);
-            this.label44.TabIndex = 141;
-            this.label44.Text = "平行长度 Lc(mm):";
-            // 
             // label37
             // 
             this.label37.AutoSize = true;
@@ -243,7 +221,7 @@
             // label50
             // 
             this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(663, 335);
+            this.label50.Location = new System.Drawing.Point(663, 308);
             this.label50.Name = "label50";
             this.label50.Size = new System.Drawing.Size(76, 15);
             this.label50.TabIndex = 141;
@@ -252,38 +230,21 @@
             // label48
             // 
             this.label48.AutoSize = true;
-            this.label48.Location = new System.Drawing.Point(19, 336);
+            this.label48.Location = new System.Drawing.Point(19, 309);
             this.label48.Name = "label48";
             this.label48.Size = new System.Drawing.Size(75, 15);
             this.label48.TabIndex = 141;
             this.label48.Text = "试验设备:";
             // 
-            // label45
-            // 
-            this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(96, 289);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(55, 15);
-            this.label45.TabIndex = 141;
-            this.label45.Text = "ep(%):";
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(611, 122);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(146, 15);
-            this.label43.TabIndex = 141;
-            this.label43.Text = "引伸计标距 Le(mm):";
-            // 
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(19, 117);
+            this.label42.Location = new System.Drawing.Point(13, 126);
             this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(131, 15);
+            this.label42.Size = new System.Drawing.Size(82, 30);
             this.label42.TabIndex = 141;
-            this.label42.Text = "原始标距 Lo(mm):";
+            this.label42.Text = "纵向引伸计\r\n标距(mm):\r\n";
+            this.label42.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // _stuffCardNo
             // 
@@ -309,11 +270,11 @@
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(682, 51);
+            this.label40.Location = new System.Drawing.Point(697, 51);
             this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(75, 15);
+            this.label40.Size = new System.Drawing.Size(60, 15);
             this.label40.TabIndex = 139;
-            this.label40.Text = "材料牌号:";
+            this.label40.Text = "胶粘剂:";
             // 
             // label41
             // 
@@ -327,11 +288,11 @@
             // label39
             // 
             this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(348, 50);
+            this.label39.Location = new System.Drawing.Point(363, 51);
             this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(75, 15);
+            this.label39.Size = new System.Drawing.Size(60, 15);
             this.label39.TabIndex = 139;
-            this.label39.Text = "材料类型:";
+            this.label39.Text = "加强片:";
             // 
             // label38
             // 
@@ -341,49 +302,6 @@
             this.label38.Size = new System.Drawing.Size(75, 15);
             this.label38.TabIndex = 139;
             this.label38.Text = "材料规格:";
-            // 
-            // btnMore2
-            // 
-            this.btnMore2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnMore2.Font = new System.Drawing.Font("宋体", 10.5F);
-            this.btnMore2.ForeColor = System.Drawing.Color.Black;
-            this.btnMore2.GlowColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnMore2.Location = new System.Drawing.Point(811, 282);
-            this.btnMore2.Name = "btnMore2";
-            this.btnMore2.ShineColor = System.Drawing.SystemColors.ButtonFace;
-            this.btnMore2.Size = new System.Drawing.Size(95, 34);
-            this.btnMore2.TabIndex = 137;
-            this.btnMore2.Text = "更多参数>>";
-            this.btnMore2.Visible = false;
-            this.btnMore2.Click += new System.EventHandler(this.btnMore2_Click);
-            // 
-            // btnMore6
-            // 
-            this.btnMore6.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnMore6.Font = new System.Drawing.Font("宋体", 10.5F);
-            this.btnMore6.ForeColor = System.Drawing.Color.Black;
-            this.btnMore6.GlowColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnMore6.Location = new System.Drawing.Point(811, 147);
-            this.btnMore6.Name = "btnMore6";
-            this.btnMore6.ShineColor = System.Drawing.SystemColors.ButtonFace;
-            this.btnMore6.Size = new System.Drawing.Size(95, 34);
-            this.btnMore6.TabIndex = 136;
-            this.btnMore6.Text = "更多参数>>";
-            this.btnMore6.Click += new System.EventHandler(this.btnMore6_Click);
-            // 
-            // btnMore1
-            // 
-            this.btnMore1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnMore1.Font = new System.Drawing.Font("宋体", 10.5F);
-            this.btnMore1.ForeColor = System.Drawing.Color.Black;
-            this.btnMore1.GlowColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnMore1.Location = new System.Drawing.Point(811, 72);
-            this.btnMore1.Name = "btnMore1";
-            this.btnMore1.ShineColor = System.Drawing.SystemColors.ButtonFace;
-            this.btnMore1.Size = new System.Drawing.Size(95, 34);
-            this.btnMore1.TabIndex = 135;
-            this.btnMore1.Text = "更多参数>>";
-            this.btnMore1.Click += new System.EventHandler(this.btnMore1_Click);
             // 
             // _testStandard
             // 
@@ -395,47 +313,31 @@
             // 
             // _Lc
             // 
-            this._Lc.Location = new System.Drawing.Point(429, 117);
+            this._Lc.Location = new System.Drawing.Point(429, 130);
             this._Lc.Name = "_Lc";
             this._Lc.Size = new System.Drawing.Size(146, 24);
             this._Lc.TabIndex = 0;
             this._Lc.TextChanged += new System.EventHandler(this._a0_TextChanged);
             // 
-            // _εp
-            // 
-            this._εp.Location = new System.Drawing.Point(153, 286);
-            this._εp.Name = "_εp";
-            this._εp.Size = new System.Drawing.Size(63, 24);
-            this._εp.TabIndex = 0;
-            this._εp.TextChanged += new System.EventHandler(this._a0_TextChanged);
-            // 
             // _tester
             // 
-            this._tester.Location = new System.Drawing.Point(760, 329);
+            this._tester.Location = new System.Drawing.Point(760, 302);
             this._tester.Name = "_tester";
             this._tester.Size = new System.Drawing.Size(146, 24);
             this._tester.TabIndex = 0;
             // 
             // _mathineType
             // 
-            this._mathineType.Location = new System.Drawing.Point(95, 332);
+            this._mathineType.Location = new System.Drawing.Point(95, 305);
             this._mathineType.Name = "_mathineType";
             this._mathineType.Size = new System.Drawing.Size(146, 24);
             this._mathineType.TabIndex = 0;
             // 
-            // _Le
-            // 
-            this._Le.Location = new System.Drawing.Point(760, 117);
-            this._Le.Name = "_Le";
-            this._Le.Size = new System.Drawing.Size(146, 24);
-            this._Le.TabIndex = 0;
-            this._Le.TextChanged += new System.EventHandler(this._a0_TextChanged);
-            // 
             // _L0
             // 
-            this._L0.Location = new System.Drawing.Point(151, 115);
+            this._L0.Location = new System.Drawing.Point(93, 130);
             this._L0.Name = "_L0";
-            this._L0.Size = new System.Drawing.Size(92, 24);
+            this._L0.Size = new System.Drawing.Size(148, 24);
             this._L0.TabIndex = 0;
             this._L0.TextChanged += new System.EventHandler(this._a0_TextChanged);
             // 
@@ -448,8 +350,8 @@
             // 
             // panel25
             // 
-            this.panel25.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel25.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel25.BackColor = System.Drawing.Color.DimGray;
             this.panel25.Location = new System.Drawing.Point(8, 108);
             this.panel25.Name = "panel25";
@@ -458,8 +360,8 @@
             // 
             // panel24
             // 
-            this.panel24.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel24.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel24.BackColor = System.Drawing.Color.DimGray;
             this.panel24.Location = new System.Drawing.Point(8, 186);
             this.panel24.Name = "panel24";
@@ -468,23 +370,13 @@
             // 
             // panel5
             // 
-            this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel5.BackColor = System.Drawing.Color.DimGray;
             this.panel5.Location = new System.Drawing.Point(7, 272);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(932, 1);
             this.panel5.TabIndex = 132;
-            // 
-            // panel6
-            // 
-            this.panel6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel6.BackColor = System.Drawing.Color.DimGray;
-            this.panel6.Location = new System.Drawing.Point(7, 322);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(932, 1);
-            this.panel6.TabIndex = 129;
             // 
             // label25
             // 
@@ -494,7 +386,7 @@
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(75, 15);
             this.label25.TabIndex = 2;
-            this.label25.Text = "试样取样:";
+            this.label25.Text = "试样来源:";
             this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // gBtnDelete
@@ -565,8 +457,8 @@
             // 
             // panel4
             // 
-            this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel4.BackColor = System.Drawing.Color.DimGray;
             this.panel4.Location = new System.Drawing.Point(5, 393);
             this.panel4.Name = "panel4";
@@ -771,55 +663,10 @@
             this.rdoRect.UseVisualStyleBackColor = true;
             this.rdoRect.CheckedChanged += new System.EventHandler(this.rdoRect_CheckedChanged);
             // 
-            // pallashen2
-            // 
-            this.pallashen2.Controls.Add(this.label47);
-            this.pallashen2.Controls.Add(this.label46);
-            this.pallashen2.Controls.Add(this._εr);
-            this.pallashen2.Controls.Add(this._εt);
-            this.pallashen2.Location = new System.Drawing.Point(295, 279);
-            this.pallashen2.Name = "pallashen2";
-            this.pallashen2.Size = new System.Drawing.Size(410, 39);
-            this.pallashen2.TabIndex = 116;
-            // 
-            // label47
-            // 
-            this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(259, 9);
-            this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(55, 15);
-            this.label47.TabIndex = 141;
-            this.label47.Text = "er(%):";
-            // 
-            // label46
-            // 
-            this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(20, 9);
-            this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(55, 15);
-            this.label46.TabIndex = 141;
-            this.label46.Text = "et(%):";
-            // 
-            // _εr
-            // 
-            this._εr.Location = new System.Drawing.Point(320, 5);
-            this._εr.Name = "_εr";
-            this._εr.Size = new System.Drawing.Size(63, 24);
-            this._εr.TabIndex = 0;
-            this._εr.TextChanged += new System.EventHandler(this._a0_TextChanged);
-            // 
-            // _εt
-            // 
-            this._εt.Location = new System.Drawing.Point(81, 5);
-            this._εt.Name = "_εt";
-            this._εt.Size = new System.Drawing.Size(63, 24);
-            this._εt.TabIndex = 0;
-            this._εt.TextChanged += new System.EventHandler(this._a0_TextChanged);
-            // 
             // _testDate
             // 
             this._testDate.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this._testDate.Location = new System.Drawing.Point(429, 332);
+            this._testDate.Location = new System.Drawing.Point(429, 305);
             this._testDate.Name = "_testDate";
             this._testDate.Size = new System.Drawing.Size(146, 26);
             this._testDate.TabIndex = 119;
@@ -847,7 +694,7 @@
             // 
             // _sign
             // 
-            this._sign.Location = new System.Drawing.Point(95, 363);
+            this._sign.Location = new System.Drawing.Point(95, 336);
             this._sign.Margin = new System.Windows.Forms.Padding(5, 3, 3, 3);
             this._sign.Name = "_sign";
             this._sign.Size = new System.Drawing.Size(479, 24);
@@ -866,7 +713,7 @@
             // label49
             // 
             this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(348, 335);
+            this.label49.Location = new System.Drawing.Point(348, 308);
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(75, 15);
             this.label49.TabIndex = 120;
@@ -877,7 +724,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.ForeColor = System.Drawing.Color.Black;
-            this.label9.Location = new System.Drawing.Point(17, 366);
+            this.label9.Location = new System.Drawing.Point(17, 339);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(77, 15);
             this.label9.TabIndex = 126;
@@ -944,12 +791,68 @@
             this._testMethod.Size = new System.Drawing.Size(344, 24);
             this._testMethod.TabIndex = 0;
             // 
-            // GBT228_2010Tensile
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(682, 81);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(75, 15);
+            this.label8.TabIndex = 139;
+            this.label8.Text = "试样状态:";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Enabled = false;
+            this.textBox1.Location = new System.Drawing.Point(760, 78);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(146, 24);
+            this.textBox1.TabIndex = 0;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(341, 128);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(82, 30);
+            this.label15.TabIndex = 141;
+            this.label15.Text = "横向引伸计\r\n标距(mm):\r\n";
+            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(682, 133);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(75, 15);
+            this.label5.TabIndex = 141;
+            this.label5.Text = "应变范围:\r\n";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(760, 130);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(146, 24);
+            this.textBox2.TabIndex = 0;
+            this.textBox2.TextChanged += new System.EventHandler(this._a0_TextChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label14.ForeColor = System.Drawing.Color.Red;
+            this.label14.Location = new System.Drawing.Point(656, 160);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(281, 24);
+            this.label14.TabIndex = 142;
+            this.label14.Text = "① 90°试样拉伸弹性模量应变范围:0.0005～0.0015\r\n② 其他试样拉伸弹性模量应变范围:0.001～0.003";
+            // 
+            // GBT3354_2014
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.gbTensile);
-            this.Name = "GBT228_2010Tensile";
+            this.Name = "GBT3354_2014";
             this.Size = new System.Drawing.Size(950, 580);
             this.Load += new System.EventHandler(this.GBT228_2010Tensile_Load);
             this.SizeChanged += new System.EventHandler(this.GBT228_2010Tensile_SizeChanged);
@@ -961,8 +864,6 @@
             this.groupBox3.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.pallashen2.ResumeLayout(false);
-            this.pallashen2.PerformLayout();
             this.palBottom.ResumeLayout(false);
             this.palMethodShow.ResumeLayout(false);
             this.palMethodShow.PerformLayout();
@@ -975,12 +876,9 @@
         private System.Windows.Forms.Panel gbTensile;
         private System.Windows.Forms.Panel panel26;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label44;
         private System.Windows.Forms.Label label37;
         private System.Windows.Forms.Label label50;
         private System.Windows.Forms.Label label48;
-        private System.Windows.Forms.Label label45;
-        private System.Windows.Forms.Label label43;
         private System.Windows.Forms.Label label42;
         private System.Windows.Forms.Label label40;
         private System.Windows.Forms.Label label41;
@@ -989,7 +887,6 @@
         private System.Windows.Forms.Panel panel25;
         private System.Windows.Forms.Panel panel24;
         private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.Label label25;
         private Glass.GlassButton btnOtherShape;
         private Glass.GlassButton gbtnCalculate;
@@ -1004,9 +901,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label28;
-        private System.Windows.Forms.Panel pallashen2;
-        private System.Windows.Forms.Label label47;
-        private System.Windows.Forms.Label label46;
         private System.Windows.Forms.DateTimePicker _testDate;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
@@ -1020,15 +914,10 @@
         private System.Windows.Forms.TextBox _stuffCardNo;
         private System.Windows.Forms.TextBox _stuffType;
         private System.Windows.Forms.TextBox _stuffSpec;
-        private Glass.GlassButton btnMore2;
-        private Glass.GlassButton btnMore6;
-        private Glass.GlassButton btnMore1;
         private System.Windows.Forms.TextBox _testStandard;
         private System.Windows.Forms.TextBox _Lc;
-        private System.Windows.Forms.TextBox _εp;
         private System.Windows.Forms.TextBox _tester;
         private System.Windows.Forms.TextBox _mathineType;
-        private System.Windows.Forms.TextBox _Le;
         private System.Windows.Forms.TextBox _L0;
         private System.Windows.Forms.TextBox _getSample;
         private System.Windows.Forms.TextBox _S0;
@@ -1039,8 +928,6 @@
         private System.Windows.Forms.RadioButton rdoPipe;
         private System.Windows.Forms.RadioButton rdoCircle;
         private System.Windows.Forms.RadioButton rdoRect;
-        private System.Windows.Forms.TextBox _εr;
-        private System.Windows.Forms.TextBox _εt;
         private System.Windows.Forms.ComboBox _testSampleNo;
         private System.Windows.Forms.TextBox _sign;
         private System.Windows.Forms.TextBox _testMethod;
@@ -1050,5 +937,11 @@
         public System.Windows.Forms.GroupBox gbTensileC;
         public System.Windows.Forms.Panel palMethodShow;
         public System.Windows.Forms.Panel palBottom;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label label14;
     }
 }

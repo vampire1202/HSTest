@@ -483,9 +483,208 @@ namespace HR_Test
                         SaveGBT23615Method(controlType1, controlType2, controlType3, "tensileheng");
                         break;
                     #endregion
+                    #region 定向纤维复合材料拉伸GBT3354
+                    case "tb_GBT3354_Samples":
+                        SaveGBT3354Method(controlType1, controlType2, controlType3, "tensile");
+                        break;
+                    #endregion
                 }
             }
             #endregion
+        }
+        private void SaveGBT3354Method(string _controlType1, string _controlType2, string _controlType3, string _testType)
+        {
+            //查找是否同名
+            BLL.GBT3354_Method bllcm = new HR_Test.BLL.GBT3354_Method();
+            DataSet cmds = bllcm.GetList("methodName ='" + this.txtmethodName.Text.Trim() + "'");
+            if (cmds.Tables[0].Rows.Count > 0)
+            {
+                MessageBox.Show("存在同名的试验方法,请重新命名!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            cmds.Dispose();
+            HR_Test.Model.GBT3354_Method model = new HR_Test.Model.GBT3354_Method();
+            model.methodName = this.txtmethodName.Text.Trim();
+            model.xmlPath = this.cmbTestType.Text.ToString();
+            model.isProLoad = this.chkisProLoad.Checked;
+            model.proLoadType = 0;
+            model.proLoadControlType = 0;
+            model.proLoadValue = 0;
+            model.proLoadSpeed = 0;
+            model.circleNum = 0;
+
+            if ((!rb_1.Checked) & (!rb_2.Checked) & (!rb_3.Checked))
+            {
+                MessageBox.Show(this, "请选择测试类型", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning); return;
+            }
+
+            model.controlType1 = "-";
+            model.controlType2 = "-";
+            model.controlType3 = "-";
+            model.controlType4 = "-";
+            model.controlType5 = "-";
+            model.controlType6 = "-";
+            model.controlType7 = "-";
+            model.controlType8 = "-";
+            model.controlType9 = "-";
+            model.controlType10 = "-";
+            model.controlType11 = "-";
+            model.controlType12 = "200";
+            model.stopValue = 0;
+
+            if (rb_1.Checked == true)
+            {
+                if (string.IsNullOrEmpty(this.txtStopValueNo.Text))
+                {
+                    MessageBox.Show(this, "请输入停止值!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                model.isLxqf = 1;
+                model.stopValue = double.Parse(this.txtStopValueNo.Text);
+                model.controlType1 = _controlType1;
+                model.controlType2 = _controlType2;
+                model.controlType3 = _controlType3;
+                model.controlType12 = this.txtSpeed_bulianxu.Text.Trim();
+            }
+
+            if (rb_2.Checked == true)
+            {
+                if (string.IsNullOrEmpty(this.txtStopValueYes.Text))
+                {
+                    MessageBox.Show(this, "请输入停止值!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                model.isLxqf = 2;
+                model.stopValue = double.Parse(this.txtStopValueYes.Text);
+                model.controlType1 = _controlType1;
+                model.controlType2 = _controlType2;
+                model.controlType3 = _controlType3;
+                model.controlType12 = this.txtSpeed_lianxu.Text.Trim();
+            }
+
+            if (rb_3.Checked == true)
+            {
+                model.isLxqf = 3;
+                if (string.IsNullOrEmpty(this.txtStopValue.Text))
+                {
+                    MessageBox.Show(this, "请输入停止值!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(this.txtCircleNum.Text))
+                {
+                    MessageBox.Show(this, "请输入循环次数!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                model.stopValue = double.Parse(this.txtStopValue.Text);
+                model.circleNum = int.Parse(this.txtCircleNum.Text);
+                model.controlType12 = this.txtSpeed_zidingyi.Text.Trim();
+                if (dbViewMethod.Rows.Count == 0)
+                {
+                    MessageBox.Show(this, "无自定义试验方法段,不允许保存!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (dbViewMethod.Rows.Count > 0)
+                    model.controlType1 = dbViewMethod.Rows[0].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[0].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[0].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[0].Cells[7].Value.ToString();
+                if (dbViewMethod.Rows.Count > 1)
+                    model.controlType2 = dbViewMethod.Rows[1].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[1].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[1].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[1].Cells[7].Value.ToString();
+                if (dbViewMethod.Rows.Count > 2)
+                    model.controlType3 = dbViewMethod.Rows[2].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[2].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[2].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[2].Cells[7].Value.ToString();
+                if (dbViewMethod.Rows.Count > 3)
+                    model.controlType4 = dbViewMethod.Rows[3].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[3].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[3].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[3].Cells[7].Value.ToString();
+                if (dbViewMethod.Rows.Count > 4)
+                    model.controlType5 = dbViewMethod.Rows[4].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[4].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[4].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[4].Cells[7].Value.ToString();
+                if (dbViewMethod.Rows.Count > 5)
+                    model.controlType6 = dbViewMethod.Rows[5].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[5].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[5].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[5].Cells[7].Value.ToString();
+                if (dbViewMethod.Rows.Count > 6)
+                    model.controlType7 = dbViewMethod.Rows[6].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[6].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[6].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[6].Cells[7].Value.ToString();
+                if (dbViewMethod.Rows.Count > 7)
+                    model.controlType8 = dbViewMethod.Rows[7].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[7].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[7].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[7].Cells[7].Value.ToString();
+                if (dbViewMethod.Rows.Count > 8)
+                    model.controlType9 = dbViewMethod.Rows[8].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[8].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[8].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[8].Cells[7].Value.ToString();
+                if (dbViewMethod.Rows.Count > 9)
+                    model.controlType10 = dbViewMethod.Rows[9].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[9].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[9].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[9].Cells[7].Value.ToString();
+                if (dbViewMethod.Rows.Count > 10)
+                    model.controlType11 = dbViewMethod.Rows[10].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[10].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[10].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[10].Cells[7].Value.ToString();
+                //if (dbViewMethod.Rows.Count > 11)
+                //    model.controlType12 = dbViewMethod.Rows[11].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[11].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[11].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[11].Cells[7].Value.ToString();
+
+            }
+            model.sendCompany = "-";
+            model.getSample = "-";
+            model.strengthPlate = "-";//加强片:织物,无纬布增强复合材料,铝合金板,无
+            model.adhesive = "-";//胶粘剂规格
+            model.sampleState = "-";//试样状态
+            model.temperature = 0;
+            model.humidity = 0;
+            model.testStandard = this.cmbTestStandard.Text;
+            model.testMethod = this.txtmethodName.Text;
+            model.mathineType = "-";
+            model.testCondition = "-";
+            model.tester = "-";
+            model.assessor = "-";
+            model.testDate = DateTime.Now;
+            model.sampleShape = "-";
+            model.w = 0;
+            model.h = 0;
+            model.d0 = 0;
+            model.Do = 0;
+            model.S0 = 0;
+            model.lL = 0;
+            model.lT = 0;
+            model.εz = 0;
+
+            model.selResultID = 0;
+            model.extenValue = 0;
+            model.extenChannel = 0;
+        
+            model.sign = "-";
+
+            //是否预载 
+            if (chkisProLoad.Checked)
+            {
+                model.proLoadType = this.cmbProLoadValueType.SelectedIndex;
+                model.proLoadControlType = this.cmbProLoadCtlMode.SelectedIndex;
+                model.proLoadValue = double.Parse(this.txtproLoadValue.Text);
+                model.proLoadSpeed = double.Parse(this.txtproLoadSpeed.Text);
+            }
+
+            //是否取引伸计       
+            model.isTakeDownExten = this.chkYinShen.Checked;
+            if (this.chkYinShen.Checked)
+            {
+                model.extenChannel = int.Parse(this.cmbYsChl.Text);
+                model.extenValue = double.Parse(this.txtYsValue.Text);
+                model.selResultID = this.cmbYsType.SelectedIndex;//取引伸计的方式
+            }
+
+
+            Model.GBT3354_Sel mSel = new HR_Test.Model.GBT3354_Sel();
+            mSel.methodName = this.txtmethodName.Text;
+            mSel.Pmax = this.chkResultList.GetItemChecked(0);   
+            mSel.σt = this.chkResultList.GetItemChecked(1);   
+            mSel.Et = this.chkResultList.GetItemChecked(2);  
+            mSel.μ12 = this.chkResultList.GetItemChecked(3); 
+            mSel.ε1t = this.chkResultList.GetItemChecked(4);  
+            mSel.Mean = this.chkResultList.GetItemChecked(5); 
+            mSel.SD = this.chkResultList.GetItemChecked(6);  
+            mSel.Mid = this.chkResultList.GetItemChecked(7);  
+            mSel.CV = this.chkResultList.GetItemChecked(8);
+            mSel.saveCurve = this.chkResultList.GetItemChecked(9);
+
+            BLL.GBT3354_Sel bllSel = new HR_Test.BLL.GBT3354_Sel();
+
+            if (bllcm.Add(model) && bllSel.Add(mSel))
+            {
+                MessageBox.Show("保存成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+            }
+            else
+            {
+                MessageBox.Show("保存失败!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
         }
 
         private void SaveGBT23615Method(string _controlType1, string _controlType2, string _controlType3, string _testType)
@@ -3523,8 +3722,8 @@ namespace HR_Test
 
         private void ReadGBT3354(string _methodName)
         {
-            BLL.GBT282892012_Method bllCm_C = new HR_Test.BLL.GBT282892012_Method();
-            Model.GBT282892012_Method mCm_C = bllCm_C.GetModel(_methodName);
+            BLL.GBT3354_Method bllCm_C = new HR_Test.BLL.GBT3354_Method();
+            Model.GBT3354_Method mCm_C = bllCm_C.GetModel(_methodName);
             this.txtmethodName.Text = mCm_C.methodName;
             this.chkisProLoad.Checked = mCm_C.isProLoad;
 
@@ -3958,67 +4157,25 @@ namespace HR_Test
                 this.txtYsValue.Text = mCm_C.extenValue.ToString();
             }
 
-            //读取试验结果表
-            switch (mCm_C.xmlPath)
+            //读取试验结果表           
+            ReadResultSel("tb_GBT3354_Sel");
+            BLL.GBT3354_Sel bllSel_T = new HR_Test.BLL.GBT3354_Sel();
+            DataSet dsSel_T = bllSel_T.GetList("methodName='" + this.txtmethodName.Text + "'");
+            if (dsSel_T.Tables[0].Rows.Count > 0)
             {
-                case "拉伸试验":
-                    ReadResultSel("tb_GBT282892012_TensileSel");
-                    BLL.GBT282892012_TensileSel bllSel_T = new HR_Test.BLL.GBT282892012_TensileSel();
-                    DataSet dsSel_T = bllSel_T.GetList("methodName='" + this.txtmethodName.Text + "'");
-                    if (dsSel_T.Tables[0].Rows.Count > 0)
+                for (int i = 2; i < dsSel_T.Tables[0].Columns.Count; i++)
+                {
+                    if (dsSel_T.Tables[0].Rows[0][i].ToString().ToLower() == "true")
                     {
-                        for (int i = 2; i < dsSel_T.Tables[0].Columns.Count; i++)
-                        {
-                            if (dsSel_T.Tables[0].Rows[0][i].ToString().ToLower() == "true")
-                            {
-                                this.chkResultList.SetItemChecked(i - 2, true);
-                            }
-                            else
-                            {
-                                this.chkResultList.SetItemChecked(i - 2, false);
-                            }
-                        }
+                        this.chkResultList.SetItemChecked(i - 2, true);
                     }
-                    break;
-                case "剪切试验":
-                    ReadResultSel("tb_GBT282892012_ShearSel");
-                    BLL.GBT282892012_ShearSel bllSel_S = new HR_Test.BLL.GBT282892012_ShearSel();
-                    DataSet dsSel_S = bllSel_S.GetList("methodName='" + this.txtmethodName.Text + "'");
-                    if (dsSel_S.Tables[0].Rows.Count > 0)
+                    else
                     {
-                        for (int i = 2; i < dsSel_S.Tables[0].Columns.Count; i++)
-                        {
-                            if (dsSel_S.Tables[0].Rows[0][i].ToString().ToLower() == "true")
-                            {
-                                this.chkResultList.SetItemChecked(i - 2, true);
-                            }
-                            else
-                            {
-                                this.chkResultList.SetItemChecked(i - 2, false);
-                            }
-                        }
+                        this.chkResultList.SetItemChecked(i - 2, false);
                     }
-                    break;
-                case "扭转试验":
-                    ReadResultSel("tb_GBT282892012_TwistSel");
-                    BLL.GBT282892012_TwistSel bllSel_Tw = new HR_Test.BLL.GBT282892012_TwistSel();
-                    DataSet dsSel_Tw = bllSel_Tw.GetList("methodName='" + this.txtmethodName.Text + "'");
-                    if (dsSel_Tw.Tables[0].Rows.Count > 0)
-                    {
-                        for (int i = 2; i < dsSel_Tw.Tables[0].Columns.Count; i++)
-                        {
-                            if (dsSel_Tw.Tables[0].Rows[0][i].ToString().ToLower() == "true")
-                            {
-                                this.chkResultList.SetItemChecked(i - 2, true);
-                            }
-                            else
-                            {
-                                this.chkResultList.SetItemChecked(i - 2, false);
-                            }
-                        }
-                    }
-                    break;
+                }
             }
+               
 
         }
 
@@ -4714,8 +4871,189 @@ namespace HR_Test
                     case "GB/T 23615.1-2009":
                         UpdateGBT23615();
                         break;
+                    case "GB/T 3354-2014":
+                        UpdateGBT3354();
+                        break;
                 }
             }
+        }
+
+        private void UpdateGBT3354()
+        {
+            //查找存在
+            BLL.GBT3354_Method bllcm = new HR_Test.BLL.GBT3354_Method();
+            DataSet cmds = bllcm.GetList("methodName ='" + this.txtmethodName.Text.Trim() + "'");
+            if (cmds.Tables[0].Rows.Count == 0)
+            {
+                MessageBox.Show(this, "不存在该试验方法名称,请添加!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            else
+            {//保存修改 
+                HR_Test.Model.GBT3354_Method model = bllcm.GetModel(this.txtmethodName.Text);
+                model.methodName = this.txtmethodName.Text.Trim();
+                model.testStandard = this.cmbTestStandard.Text;
+                model.testMethod = this.txtmethodName.Text.Trim();
+                //是否连续屈服 
+                string controlType1 = "-";
+                string controlType2 = "-";
+                string controlType3 = "-";
+
+                if (rb_1.Checked == true)//若不连续屈服
+                {
+                    //弹性段  
+                    controlType1 = this.cmbCtlType1.SelectedIndex.ToString() + "," + this.txtCtlSpeed1.Text + "," + this.cmbCtlChange1.SelectedIndex.ToString() + "," + this.txtCtlChangeValue1.Text;
+                    //屈服段
+                    controlType2 = this.cmbCtlType2.SelectedIndex.ToString() + "," + this.txtCtlSpeed2.Text + "," + this.cmbCtlChange2.SelectedIndex.ToString() + "," + this.txtCtlChangeValue2.Text;
+                    //停止测试
+                    controlType3 = this.cmbCtlType3.SelectedIndex.ToString() + "," + this.txtCtlSpeed3.Text;
+
+                    model.isLxqf = 1;
+                    model.controlType1 = controlType1;
+                    model.controlType2 = controlType2;
+                    model.controlType3 = controlType3;
+                    model.controlType4 = "-";
+                    model.controlType5 = "-";
+                    model.controlType6 = "-";
+                    model.controlType7 = "-";
+                    model.controlType8 = "-";
+                    model.controlType9 = "-";
+                    model.controlType10 = "-";
+                    model.controlType11 = "-";
+                    model.selResultID = 0;
+                    model.circleNum = 0;
+                    model.extenValue = 0;
+                    model.extenChannel = 0;
+                    model.stopValue = double.Parse(this.txtStopValueNo.Text);
+                    model.controlType12 = this.txtSpeed_bulianxu.Text.Trim();
+                }
+
+                if (rb_2.Checked == true)//若连续屈服
+                {
+                    //弹性段
+                    controlType1 = this.cmbCtlType4.SelectedIndex.ToString() + "," + this.txtCtlSpeed4.Text + "," + this.cmbCtlChange4.SelectedIndex.ToString() + "," + this.txtCtlChangeValue4.Text;
+                    //试验段
+                    controlType2 = this.cmbCtlType5.SelectedIndex.ToString() + "," + this.txtCtlSpeed5.Text;
+                    controlType3 = "-";
+                    model.isLxqf = 2;
+                    model.controlType1 = controlType1;
+                    model.controlType2 = controlType2;
+                    model.controlType3 = controlType3;
+                    model.controlType4 = "-";
+                    model.controlType5 = "-";
+                    model.controlType6 = "-";
+                    model.controlType7 = "-";
+                    model.controlType8 = "-";
+                    model.controlType9 = "-";
+                    model.controlType10 = "-";
+                    model.controlType11 = "-";
+                    model.controlType12 = this.txtSpeed_lianxu.Text.Trim();
+                    model.selResultID = 0;
+                    model.circleNum = 0;
+                    model.extenValue = 0;
+                    model.extenChannel = 0;
+                    model.stopValue = double.Parse(this.txtStopValueYes.Text);
+                }
+
+                if (rb_3.Checked == true)
+                {
+                    if (string.IsNullOrEmpty(this.txtStopValue.Text))
+                    {
+                        MessageBox.Show(this, "请输入停止值", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    if (string.IsNullOrEmpty(this.txtCircleNum.Text))
+                    {
+                        MessageBox.Show(this, "请输入循环次数!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    model.stopValue = double.Parse(this.txtStopValue.Text);
+                    model.isLxqf = 3;
+                    model.circleNum = int.Parse(this.txtCircleNum.Text);
+                    model.controlType1 = "-";
+                    model.controlType2 = "-";
+                    model.controlType3 = "-";
+                    model.controlType4 = "-";
+                    model.controlType5 = "-";
+                    model.controlType6 = "-";
+                    model.controlType7 = "-";
+                    model.controlType8 = "-";
+                    model.controlType9 = "-";
+                    model.controlType10 = "-";
+                    model.controlType11 = "-";
+                    model.controlType12 = this.txtSpeed_zidingyi.Text.Trim();
+
+                    if (dbViewMethod.Rows.Count == 0)
+                    {
+                        MessageBox.Show(this, "无自定义试验方法段,不允许保存!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    if (dbViewMethod.Rows.Count > 0)
+                        model.controlType1 = dbViewMethod.Rows[0].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[0].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[0].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[0].Cells[7].Value.ToString();
+                    if (dbViewMethod.Rows.Count > 1)
+                        model.controlType2 = dbViewMethod.Rows[1].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[1].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[1].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[1].Cells[7].Value.ToString();
+                    if (dbViewMethod.Rows.Count > 2)
+                        model.controlType3 = dbViewMethod.Rows[2].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[2].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[2].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[2].Cells[7].Value.ToString();
+                    if (dbViewMethod.Rows.Count > 3)
+                        model.controlType4 = dbViewMethod.Rows[3].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[3].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[3].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[3].Cells[7].Value.ToString();
+                    if (dbViewMethod.Rows.Count > 4)
+                        model.controlType5 = dbViewMethod.Rows[4].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[4].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[4].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[4].Cells[7].Value.ToString();
+                    if (dbViewMethod.Rows.Count > 5)
+                        model.controlType6 = dbViewMethod.Rows[5].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[5].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[5].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[5].Cells[7].Value.ToString();
+                    if (dbViewMethod.Rows.Count > 6)
+                        model.controlType7 = dbViewMethod.Rows[6].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[6].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[6].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[6].Cells[7].Value.ToString();
+                    if (dbViewMethod.Rows.Count > 7)
+                        model.controlType8 = dbViewMethod.Rows[7].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[7].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[7].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[7].Cells[7].Value.ToString();
+                    if (dbViewMethod.Rows.Count > 8)
+                        model.controlType9 = dbViewMethod.Rows[8].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[8].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[8].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[8].Cells[7].Value.ToString();
+                    if (dbViewMethod.Rows.Count > 9)
+                        model.controlType10 = dbViewMethod.Rows[9].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[9].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[9].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[9].Cells[7].Value.ToString();
+                    if (dbViewMethod.Rows.Count > 10)
+                        model.controlType11 = dbViewMethod.Rows[10].Cells[2].Value.ToString() + "," + dbViewMethod.Rows[10].Cells[4].Value.ToString() + "," + dbViewMethod.Rows[10].Cells[5].Value.ToString() + "," + dbViewMethod.Rows[10].Cells[7].Value.ToString();
+
+                }
+                //是否预载  
+                model.isProLoad = this.chkisProLoad.Checked;
+                if (chkisProLoad.Checked)
+                {
+                    model.proLoadType = this.cmbProLoadValueType.SelectedIndex;
+                    model.proLoadControlType = this.cmbProLoadCtlMode.SelectedIndex;
+                    model.proLoadValue = double.Parse(this.txtproLoadValue.Text);
+                    model.proLoadSpeed = double.Parse(this.txtproLoadSpeed.Text);
+                }
+
+                //model.ID = int.Parse(this.tvTestMethod.SelectedNode.Name.ToString());
+                //是否取引伸计       
+                model.isTakeDownExten = this.chkYinShen.Checked;
+                if (this.chkYinShen.Checked)
+                {
+                    model.extenChannel = int.Parse(this.cmbYsChl.Text);
+                    model.extenValue = double.Parse(this.txtYsValue.Text);
+                    model.selResultID = this.cmbYsType.SelectedIndex;//取引伸计的方式
+                }
+                //readMethod(this.tvTestMethod); 
+                BLL.GBT3354_Sel bllSel = new HR_Test.BLL.GBT3354_Sel();
+                Model.GBT3354_Sel mSel = bllSel.GetModel(this.txtmethodName.Text.Trim());
+                mSel.methodName = this.txtmethodName.Text; //this.tvTestMethod.SelectedNode.Text;//  
+                mSel.Pmax = this.chkResultList.GetItemChecked(0);
+                mSel.σt = this.chkResultList.GetItemChecked(1);
+                mSel.Et = this.chkResultList.GetItemChecked(2);
+                mSel.μ12 = this.chkResultList.GetItemChecked(3);
+                mSel.ε1t = this.chkResultList.GetItemChecked(4);
+                mSel.Mean = this.chkResultList.GetItemChecked(5);
+                mSel.SD = this.chkResultList.GetItemChecked(6);
+                mSel.Mid = this.chkResultList.GetItemChecked(7);
+                mSel.CV = this.chkResultList.GetItemChecked(8);
+                mSel.saveCurve = this.chkResultList.GetItemChecked(9);
+                if (bllSel.Update(mSel) && bllcm.Update(model))
+                    MessageBox.Show("更新成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else
+                    MessageBox.Show("更新失败!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            cmds.Dispose();
         }
 
         private void UpdateGBT23615()
@@ -6496,7 +6834,7 @@ namespace HR_Test
                 case "tb_SelTestResult_B":
                     ds = bllsrii.GetList(" standardNo='YB/T 5349-2006' and testType='弯曲试验'");
                     break;
-                case "tb_GBT3354-2014_Sel":
+                case "tb_GBT3354_Sel":
                     ds = bllsrii.GetList(" standardNo='GB/T 3354-2014' and testType='拉伸试验'");
                     break;                    
             }
