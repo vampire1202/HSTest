@@ -118,7 +118,7 @@ namespace HR_Test
                 input_GBT3354.gbTensileC.Location = new Point(left, top);
                 input_GBT3354.Dock = DockStyle.Fill;
                 int mleft = (Screen.PrimaryScreen.WorkingArea.Width - 180 - input_GBT3354.palMethodShow.Width) / 2;
-                int mtop = (input_YBT5349.palBottom.Height - input_GBT3354.palMethodShow.Height) / 2;
+                int mtop = (input_GBT3354.palBottom.Height - input_GBT3354.palMethodShow.Height) / 2;
                 input_GBT3354.palMethodShow.Location = new Point(mleft, mtop);
                 input_GBT3354.BringToFront();
             }

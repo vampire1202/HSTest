@@ -59,12 +59,14 @@
             this._tester = new System.Windows.Forms.TextBox();
             this._mathineType = new System.Windows.Forms.TextBox();
             this._temperature = new System.Windows.Forms.TextBox();
+            this._sendCompany = new System.Windows.Forms.TextBox();
             this._getSample = new System.Windows.Forms.TextBox();
             this.panel25 = new System.Windows.Forms.Panel();
             this.panel24 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.label19 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.gBtnDelete = new Glass.GlassButton();
@@ -104,8 +106,6 @@
             this.gBtnAddToMethod1 = new Glass.GlassButton();
             this.label51 = new System.Windows.Forms.Label();
             this._testMethod = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
-            this._sendCompany = new System.Windows.Forms.TextBox();
             this.gbTensile.SuspendLayout();
             this.panel26.SuspendLayout();
             this.gbTensileC.SuspendLayout();
@@ -437,6 +437,13 @@
             this._temperature.Size = new System.Drawing.Size(146, 24);
             this._temperature.TabIndex = 0;
             // 
+            // _sendCompany
+            // 
+            this._sendCompany.Location = new System.Drawing.Point(95, 108);
+            this._sendCompany.Name = "_sendCompany";
+            this._sendCompany.Size = new System.Drawing.Size(146, 24);
+            this._sendCompany.TabIndex = 0;
+            // 
             // _getSample
             // 
             this._getSample.Location = new System.Drawing.Point(95, 76);
@@ -496,6 +503,17 @@
             this.label18.Text = "℃";
             this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.ForeColor = System.Drawing.Color.Black;
+            this.label20.Location = new System.Drawing.Point(19, 111);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(75, 15);
+            this.label20.TabIndex = 2;
+            this.label20.Text = "送检单位:";
+            this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // label16
             // 
             this.label16.AutoSize = true;
@@ -545,6 +563,7 @@
             this.btnOtherShape.ShineColor = System.Drawing.Color.AliceBlue;
             this.btnOtherShape.Size = new System.Drawing.Size(41, 50);
             this.btnOtherShape.TabIndex = 113;
+            this.btnOtherShape.Click += new System.EventHandler(this.btnOtherShape_Click);
             // 
             // gbtnCalculate
             // 
@@ -919,24 +938,6 @@
             this._testMethod.Name = "_testMethod";
             this._testMethod.Size = new System.Drawing.Size(344, 24);
             this._testMethod.TabIndex = 0;
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.ForeColor = System.Drawing.Color.Black;
-            this.label20.Location = new System.Drawing.Point(19, 111);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(75, 15);
-            this.label20.TabIndex = 2;
-            this.label20.Text = "送检单位:";
-            this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // _sendCompany
-            // 
-            this._sendCompany.Location = new System.Drawing.Point(95, 108);
-            this._sendCompany.Name = "_sendCompany";
-            this._sendCompany.Size = new System.Drawing.Size(146, 24);
-            this._sendCompany.TabIndex = 0;
             // 
             // GBT3354_2014
             // 

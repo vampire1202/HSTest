@@ -285,7 +285,7 @@ namespace HR_Test.Input
             DataSet ds = bllts.GetList("MethodName ='" + methodName + "'");
             if (ds.Tables[0].Rows.Count > 0)
             {
-                _stuffSpec.Text = ds.Tables[0].Rows[0]["stuffSpec"].ToString();
+                //_stuffSpec.Text = ds.Tables[0].Rows[0]["stuffSpec"].ToString();
                 _strengthPlate.Text = ds.Tables[0].Rows[0]["strengthPlate"].ToString();
                 _adhesive.Text = ds.Tables[0].Rows[0]["adhesive"].ToString();
                 _getSample.Text = ds.Tables[0].Rows[0]["getSample"].ToString();
@@ -309,8 +309,8 @@ namespace HR_Test.Input
                 _Do.Text = "";
                 _S0.Text = "";
 
-                _condition = ds.Tables[0].Rows[0]["condition"].ToString();
-                _controlMode = ds.Tables[0].Rows[0]["controlmode"].ToString();
+                //_condition = ds.Tables[0].Rows[0]["condition"].ToString();
+                //_controlMode = ds.Tables[0].Rows[0]["controlmode"].ToString();
             }
             ds.Dispose();
         }
@@ -645,6 +645,13 @@ namespace HR_Test.Input
         private void GBT228_2010Tensile_SizeChanged(object sender, EventArgs e)
         {
             this.gbTensileC.Size = new Size(946, 450);
+        }
+
+        private void btnOtherShape_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.ProcessStartInfo Info = new System.Diagnostics.ProcessStartInfo();
+            Info.FileName = "calc.exe";  
+            System.Diagnostics.Process Proc = System.Diagnostics.Process.Start(Info);
         }
     }
 }
