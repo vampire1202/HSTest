@@ -378,7 +378,6 @@
             // 
             // _sampleState
             // 
-            this._sampleState.Enabled = false;
             this._sampleState.Location = new System.Drawing.Point(760, 78);
             this._sampleState.Name = "_sampleState";
             this._sampleState.Size = new System.Drawing.Size(146, 24);
@@ -386,7 +385,6 @@
             // 
             // _humidity
             // 
-            this._humidity.Enabled = false;
             this._humidity.Location = new System.Drawing.Point(760, 109);
             this._humidity.Name = "_humidity";
             this._humidity.Size = new System.Drawing.Size(146, 24);
@@ -888,6 +886,7 @@
             this.palBottom.Name = "palBottom";
             this.palBottom.Size = new System.Drawing.Size(950, 120);
             this.palBottom.TabIndex = 132;
+            this.palBottom.Paint += new System.Windows.Forms.PaintEventHandler(this.palBottom_Paint);
             // 
             // panel34
             // 

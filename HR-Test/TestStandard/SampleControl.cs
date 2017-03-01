@@ -50,6 +50,9 @@ namespace HR_Test.TestStandard
                         case "tb_GBT236152009_TensileZong":
                             ltn = ReadGBT23615ZongSamples(dtp);
                             break;
+                        case "tb_GBT3354_Samples":
+                            ltn = ReadGBT3354Samples(dtp);
+                            break;
                         default:
                             break;
                     }
@@ -68,7 +71,51 @@ namespace HR_Test.TestStandard
                 tv.Nodes.Add("无");
             //tv.ExpandAll();
         }
+        private static List<TreeNode> ReadGBT3354Samples(DateTimePicker dtp)
+        {
+            BLL.GBT3354_Samples bllTs = new HR_Test.BLL.GBT3354_Samples();
+            //查询不重复项
+            DataSet ds = bllTs.GetNotOverlapList1(" testDate = #" + dtp.Value.Date + "#");//distinct testNo,testMethodName
+            int rCount = ds.Tables[0].Rows.Count;
+            List<TreeNode> ltn = new List<TreeNode>();
+            for (int i = 0; i < rCount; i++)
+            {
+                DataSet _ds = bllTs.GetList(" testNo='" + ds.Tables[0].Rows[i]["testNo"].ToString() + "' and testMethodName='" + ds.Tables[0].Rows[i]["testMethodName"].ToString() + "' and testDate=#" + dtp.Value.Date + "#");
+                TreeNode tn = new TreeNode();
+                tn.Text = ds.Tables[0].Rows[i]["testNo"].ToString();
+                tn.Name = "GBT3354-2014";
+                tn.ImageIndex = 0;
 
+                foreach (DataRow dr in _ds.Tables[0].Rows)
+                {
+                    if (Convert.ToBoolean(dr["isFinish"].ToString()) == true)
+                    {
+                        //左侧node完成试验的图标
+                        TreeNode ftn = new TreeNode();
+                        ftn.ImageIndex = 1;
+                        ftn.Text = dr["testSampleNo"].ToString();
+                        ftn.Name = "GBT3354-2014_c";
+                        ftn.Tag = dr;
+                        tn.Nodes.Add(ftn);
+                    }
+                    else
+                    {
+                        //左侧node未完成试验的图标
+                        //左侧node完成试验的图标
+                        TreeNode ftn = new TreeNode();
+                        ftn.ImageIndex = 2;
+                        ftn.Text = dr["testSampleNo"].ToString();
+                        ftn.Tag = dr;
+                        ftn.Name = "GBT3354-2014_c";
+                        tn.Nodes.Add(ftn);
+                    }
+                }
+                _ds.Dispose();
+                ltn.Add(tn);
+            }
+            ds.Dispose();
+            return ltn;
+        }
         private static List<TreeNode> ReadGBT23615ZongSamples(DateTimePicker dtp)
         {
             BLL.GBT236152009_TensileZong bllTs = new HR_Test.BLL.GBT236152009_TensileZong();

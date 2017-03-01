@@ -469,6 +469,15 @@ namespace HR_Test.Model
             set { _sign = value; }
             get { return _sign; }
         }
+        string _sampleSpec;
+        /// <summary>
+        /// 材料规格
+        /// </summary>
+        public string sampleSpec
+        {
+            set { _sampleSpec = value; }
+            get { return _sampleSpec; }
+        }
         #endregion Model
 
     }

@@ -435,6 +435,7 @@
     <Compile Include="TabControl\NativeMethods.cs" />
     <Compile Include="TabControl\TabStyle.cs" />
     <Compile Include="TabControl\ThemedColors.cs" />
+    <Compile Include="TestStandard\GBT3354_2014.cs" />
     <Compile Include="TestStandard\GBT228_2010.cs" />
     <Compile Include="TestStandard\GBT23615_2009.cs" />
     <Compile Include="TestStandard\GBT28289_2012.cs" />

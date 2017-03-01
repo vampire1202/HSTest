@@ -30,6 +30,40 @@ namespace HR_Test.BLL
             return dal.Add(model);
         }
 
+        public DataSet GetNotOverlapList(string strWhere)
+        {
+            return dal.GetNotOverlapList(strWhere);
+        }
+
+        public DataSet GetNotOverlapList1(string strWhere)
+        {
+            return dal.GetNotOverlapList1(strWhere);
+        }
+        public DataSet GetMaxFm(string strWhere)
+        {
+            return dal.GetMaxFm(strWhere);
+        }
+
+        public DataSet GetFinishList(string strWhere,double maxvalue)
+        {
+            return dal.GetFinishList(strWhere,maxvalue);
+        }
+
+        public DataSet GetFinishList1(string selCol, string strWhere, int ab)
+        {
+            return dal.GetFinishList1(selCol, strWhere, ab);
+        }
+
+        public DataSet GetFinishSumList1(string selColAvr,string strWhere)
+        {
+            return dal.GetFinishSumList1(selColAvr, strWhere);
+        }
+
+        public DataSet GetFinishListReport(string selCol, string strWhere, int ab)
+        {
+            return dal.GetFinishListReport(selCol, strWhere, ab);
+        }
+
         /// <summary>
         /// 更新一条数据
         /// </summary>
@@ -67,6 +101,13 @@ namespace HR_Test.BLL
 
             return dal.GetModel(ID);
         }
+
+        public HR_Test.Model.GBT3354_Samples GetModel(string testSampleNo)
+        {
+
+            return dal.GetModel(testSampleNo);
+        }
+
 
         /// <summary>
         /// 得到一个对象实体，从缓存中

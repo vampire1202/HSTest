@@ -151,6 +151,8 @@ namespace HR_Test
         //是否使用引伸计数据库标记
         private bool _useExten = false;
         private bool m_useExten = false;
+        private bool m_useExten1 = false;
+        private bool m_useExten2 = false;
         private float m_extenValue;
         private int m_extenType = 2;
 
@@ -253,6 +255,8 @@ namespace HR_Test
         float m_Ep;
         float m_Et;
         float m_Er;
+        float m_Ll;
+        float m_Lt;
 
         float m_n;                      //挠度计放大倍数
         float m_Y;                      //弯曲计算参数
@@ -2130,6 +2134,157 @@ namespace HR_Test
                         break;
                     #endregion
 
+                    #region GBT3354-2014
+                    case "GBT3354-2014":
+                        m_path = "GBT3354-2014";
+                        m_testType = "GBT3354-2014";
+                        isShowResult = false;
+                        this.dataGridView.Tag = "GBT3354-2014";
+                        m_calSuccess = false;
+                        m_lstNoTestSamples.Clear();
+                        if (e.Node.ImageIndex == 0)//表示已完成的试验
+                        {
+                            ShowResultPanel();
+                            tsbtn_Start.Enabled = false;
+                            //读取试验结果 
+                            TestStandard.GBT3354_2014.readFinishSample(this.dataGridView, this.dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
+                            //m_lstNoTestSamples.Clear();
+                            //this.lblInfo.Text = "当前试样:无\r\n下一个试样:无"; 
+                            foreach (DataGridViewRow drow in this.dataGridView.Rows)
+                            {
+                                drow.Cells[0].Value = false;
+                                drow.Selected = false;
+                                dataGridView_CellClick(this.dataGridView, new DataGridViewCellEventArgs(0, drow.Index));
+                            }
+                        }
+                        break;
+
+                    case "GBT3354-2014_c":
+                        m_path = "GBT3354-2014";
+                        m_testType = "tensile";
+                        this.dataGridView.Tag = "GBT3354-2014";
+                        BLL.GBT3354_Samples bll3354 = new HR_Test.BLL.GBT3354_Samples();
+                        Model.GBT3354_Samples model3354 = bll3354.GetModel(m_TestSampleNo);
+                        if (model3354 == null)
+                            return;
+                        //读取参数
+                        m_S0 = (float)model3354.S0.Value;
+                        m_Ll = (float)model3354.lL.Value;
+                        m_Lt = (float)model3354.lT.Value; 
+                        
+                        m_useExten1 = model3354.isUseExtensometer1;
+                        m_useExten2 = model3354.isUseExtensometer2;
+
+                        if (e.Node.ImageIndex == 0)//表示已完成的试验组
+                        {
+                            m_calSuccess = false;
+                            isShowResult = false;
+                            ShowResultPanel();
+                            tsbtn_Start.Enabled = false;
+                            //读取试验结果 
+                            TestStandard.GBT3354_2014.readFinishSample(this.dataGridView, this.dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
+                            int dgvRowsCount = this.dataGridView.Rows.Count;
+                            for (int i = 0; i < dgvRowsCount; i++)
+                            {
+                                this.dataGridView.Rows[i].Cells[1].Value = false;
+                                this.dataGridView.Rows[i].Selected = false;
+                                dataGridView_CellClick(this.dataGridView, new DataGridViewCellEventArgs(0, this.dataGridView.Rows[i].Index));
+                            }
+                        }
+                        else if (e.Node.ImageIndex == 2)//未完成的试验
+                        {
+                            this.dataGridView.UseWaitCursor = true;
+                            m_calSuccess = false;
+                            isShowResult = false;
+                            _useExten = false;
+                            m_useExten = false;
+                            m_holdPause = false;
+                            m_holdContinue = false;
+                            btnZeroS.Enabled = true;
+                            ZeroAllValue();
+                            ShowCurvePanel();
+                            ChangeRealTimeXYChart();
+                            _testpath = "E:\\衡新试验数据\\Curve\\" + m_path + "\\" + m_TestSampleNo + ".txt";
+                            if (!Directory.Exists("E:\\衡新试验数据\\Curve\\" + m_path))
+                            {
+                                Directory.CreateDirectory("E:\\衡新试验数据\\Curve\\" + m_path);
+                            }
+                            TestStandard.GBT3354_2014.readFinishSample(this.dataGridView, this.dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
+
+                  
+                            //读取试验方法生成控制命令数组 
+                            if (!string.IsNullOrEmpty(m_TestSampleNo))
+                            {
+                                //写入试样信息
+                                try
+                                {
+                                    TestStandard.GBT3354_2014.CreateCurveFile(_testpath, model3354);
+                                    Thread.Sleep(5);
+                                    if (m_SensorCount > 0)
+                                    {
+                                        if (ReadMethod("GBT3354-2014", model3354.testMethodName, out m_CtrlCommandArray, out loopCount, out m_methodContent, out m_isProLoad))
+                                        {
+                                            //写入命令数组 
+                                            if (loopCount == 0) loopCount = 1;
+                                            if (WriteCommand(m_CtrlCommandArray, 12, loopCount, m_isProLoad, "tensile", RWconfig.GetAppSettings("machineType")))
+                                            {
+                                                tsbtn_Start.Enabled = true;
+                                            }
+                                            else
+                                            {
+                                                tsbtn_Start.Enabled = false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show(this, "该试样所指定的试验方法不存在,请重新选择!", "警告", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                                            tsbtn_Start.Enabled = false;
+                                            return;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(this, "请连接设备!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        tsbtn_Start.Enabled = false;
+                                    }
+                                }
+                                catch (Exception ee)
+                                {
+                                    MessageBox.Show(ee.ToString());
+                                    return;
+                                }
+                                finally
+                                {
+                                    this.dataGridView.UseWaitCursor = false;
+                                    //Test
+                                    //tsbtn_Start.Enabled = true;
+                                }
+                            }
+                        }
+                        else if (e.Node.ImageIndex == 1)
+                        {
+                            //选择一根已完成的试验试样编号
+                            //m_lstNoTestSamples.Clear();
+                            //this.lblInfo.Text = "当前试样:无\r\n下一个试样:无"; 
+                            //m_TestSampleNo = e.Node.Text;
+                            tsbtn_Start.Enabled = false;
+                            TestStandard.GBT3354_2014.readFinishSample(this.dataGridView, this.dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
+                            ShowResultPanel();
+                            int dgvRows = this.dataGridView.Rows.Count;
+                            this.zedGraphControl.GraphPane.CurveList.Clear();
+                            for (int i = 0; i < dgvRows; i++)
+                            {
+                                this.dataGridView.Rows[i].Cells[0].Value = false;
+                                this.dataGridView.Rows[i].Selected = false;
+                                if (this.dataGridView.Rows[i].Cells[3].Value.ToString() == m_TestSampleNo)
+                                {
+                                    dataGridView_CellClick(this.dataGridView, new DataGridViewCellEventArgs(0, this.dataGridView.Rows[i].Index));                                   
+                                }
+                            }
+                        }
+                        break;
+                    #endregion
+
                     #region GBT7314-2005
                     case "GBT7314-2005":
                         m_path = "GBT7314-2005";
@@ -3637,6 +3792,405 @@ namespace HR_Test
                         if (m_StopValue == 0)
                             m_StopValue = 80;
                         loopCount = (int)modelControlMethod.circleNum;
+
+                        m_methodContent = methodContent;
+                    }
+                    break;
+                case "GBT3354-2014":
+                    BLL.GBT3354_Method bll3354Method = new HR_Test.BLL.GBT3354_Method();
+                    Model.GBT3354_Method model3354Method = bll3354Method.GetModel(testMethodName);
+                    if (model3354Method != null)
+                    {
+                        TestMethodDis(this.txtMethod, "试验方法:" + testMethodName + "\r\n", Color.Black);
+                        TestMethodDis(this.txtMethod, "--------\r\n", Color.Black);
+
+                        #region ///////////////////////是 否 预 载?///////////////////////////////
+                        isProLoad = model3354Method.isProLoad;
+                        if (model3354Method.isProLoad)
+                        {
+                            Struc.ctrlcommand m_Command = new Struc.ctrlcommand();
+                            TestMethodDis(this.txtMethod, "是否预载:是;\r\n", Color.Black);
+                            //控制预载 变形或负荷 
+                            switch (model3354Method.proLoadControlType)
+                            {
+                                case 0://位移
+                                    //泛型命令组
+                                    m_Command.m_CtrlType = 0x80;
+                                    m_Command.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
+                                    m_Command.m_CtrlSpeed = (int)(model3354Method.proLoadSpeed * 1000);//位移控制速度
+                                    TestMethodDis(this.txtMethod, "预载控制:位移; 速度:" + model3354Method.proLoadSpeed.ToString() + " mm/min\r\n", Color.Crimson);
+                                    break;
+                                case 1://负荷
+                                    //泛型命令组
+                                    m_Command.m_CtrlType = 0x81;
+                                    m_Command.m_CtrlChannel = m_LSensorArray[0].SensorIndex;
+                                    double m_SR = GetSensorSR((ushort)m_SensorArray[m_LSensorArray[0].SensorIndex].scale);
+                                    m_Command.m_CtrlSpeed = (int)((model3354Method.proLoadSpeed * 1000.0 / m_SR) + 0.2d);
+                                    TestMethodDis(this.txtMethod, "预载控制:负荷; 速度:" + model3354Method.proLoadSpeed.ToString() + " kN/s\r\n", Color.Crimson);
+                                    break;
+                            }
+
+                            //预载值停止点类型 变形或负荷
+                            switch (model3354Method.proLoadType)
+                            {
+                                case 0://变形 
+                                    m_Command.m_StopPointType = 0x82;
+                                    m_Command.m_StopPointChannel = m_ESensorArray[0].SensorIndex;
+                                    double m_SR = GetSensorSR((ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale);
+                                    m_Command.m_StopPoint = (int)((model3354Method.proLoadValue * 1000.0 / m_SR) + 0.2d);
+                                    methodContent += "预载停止点:变形; 值:" + model3354Method.proLoadValue + " mm\r\n";
+                                    TestMethodDis(this.txtMethod, "预载停止点:变形; 值:" + model3354Method.proLoadValue.ToString() + " mm\r\n", Color.Crimson);
+                                    break;
+                                case 1: //负荷 
+                                    //停止的值， 负荷
+                                    m_Command.m_StopPointType = 0x81;
+                                    m_Command.m_StopPointChannel = m_LSensorArray[0].SensorIndex;
+                                    double m_SR1 = GetSensorSR((ushort)m_SensorArray[m_LSensorArray[0].SensorIndex].scale);
+                                    m_Command.m_StopPoint = (int)((model3354Method.proLoadValue * 1000.0 / m_SR1) + 0.2d);
+                                    //MessageBox.Show("负荷传感器序号:"+ m_LSensorArray[0].SensorIndex.ToString()+"负荷分辨率:" + m_SR1.ToString() + "负荷停止点:" + m_Command.m_StopPoint.ToString());
+                                    TestMethodDis(this.txtMethod, "预载停止点:负荷; 值:" + model3354Method.proLoadValue.ToString() + " kN\r\n", Color.Crimson);
+                                    break;
+                            }
+                            commandArray[10] = m_Command;
+                        }
+                        #endregion
+
+                        #region///////////////////////不连续屈服 和 连续屈服//////////////
+
+
+                        if (model3354Method.isLxqf == 1 || model3354Method.isLxqf == 2)
+                        {
+                            #region//////////////////弹性阶段//////////////////
+                            //TestMethodDis(this.txtMethod, "试验类型:不连续屈服\r\n--------\r\n", Color.Black);
+                            string[] controlType1 = model3354Method.controlType1.Split(',');
+
+                            if (controlType1.Length == 4)
+                            {
+                                m_CtrlCommandList.Add(GetCtrlCommand(controlType1, "弹性"));
+                            }
+                            #endregion
+                        }
+
+                        if (model3354Method.isLxqf == 1)
+                        {
+                            #region//////////////////屈服阶段//////////////////
+                            //methodContent += "--------\r\n";
+                            TestMethodDis(this.txtMethod, "--------\r\n", Color.Black);
+
+                            Struc.ctrlcommand m_Command2 = new Struc.ctrlcommand();
+                            string[] controlType2 = model3354Method.controlType2.Split(',');
+
+                            if (controlType2.Length == 4)
+                            {
+
+                                #region 屈服阶段控制
+                                //控制方式：位移,eLc
+                                switch (controlType2[0])
+                                {// 0,5.3,1,20.68
+                                    case "0"://位移控制
+                                        m_Command2.m_CtrlType = 0x80;
+                                        m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
+                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * 1000.0);//位移控制速度
+
+                                        TestMethodDis(this.txtMethod, "屈服阶段控制:位移\r\n", Color.Blue);
+                                        TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " mm/min \r\n", Color.Blue);
+
+                                        break;
+                                    case "1"://eLc控制   Lc*eLc=位移速度
+                                        m_Command2.m_CtrlType = 0x80;//0,5.3,1,20.68
+                                        m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
+                                        //转换成位移控制速度
+                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * m_Lc * 1000.0);
+
+                                        TestMethodDis(this.txtMethod, "屈服阶段控制:eLc\r\n", Color.Crimson);
+                                        TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " /s\r\n", Color.Crimson);
+
+                                        break;
+                                }
+                                #endregion
+
+                                #region 屈服阶段停止转换点
+
+                                //停止转换点：位移 0x80,负荷 0x81,变形 0x82, 应力,应变,
+                                switch (controlType2[2])
+                                {
+                                    case "0":
+                                        //停止的类型 位移
+                                        //泛型命令组
+                                        m_Command2.m_StopPointType = 0x80;
+                                        m_Command2.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
+                                        m_Command2.m_StopPoint = (int)(float.Parse(controlType2[3]) * 1000.0);
+                                        TestMethodDis(this.txtMethod, "屈服阶段结束:位移\r\n", Color.Crimson);
+                                        TestMethodDis(this.txtMethod, "结束值:" + controlType2[3].ToString() + " mm\r\n", Color.Crimson);
+                                        break;
+                                    case "1":
+                                        //停止的类型 负荷
+                                        m_ScaleValue = m_SensorArray[m_LSensorArray[0].SensorIndex].scale;
+                                        m_ScaleValue = m_ScaleValue >> 8;
+                                        m_ScaleValue = (int)(m_ScaleValue * Math.Pow(10.0, m_SensorArray[m_LSensorArray[0].SensorIndex].scale & 0x000f));
+                                        //泛型命令组
+                                        m_Command2.m_StopPointType = 0x81;
+                                        m_Command2.m_StopPointChannel = m_LSensorArray[0].SensorIndex;
+                                        double m_SR = (m_ScaleValue * 1.0d) / (m_Resolution * 1.0d);
+                                        m_Command2.m_StopPoint = (int)((double.Parse(controlType2[3]) * 1000.0 / m_SR) + 0.2d);
+                                        TestMethodDis(this.txtMethod, "屈服阶段结束:负荷\r\n", Color.Crimson);
+                                        TestMethodDis(this.txtMethod, "结束值:" + controlType2[3].ToString() + " kN\r\n", Color.Crimson);
+                                        break;
+                                    case "2":
+                                        //停止的类型 变形
+                                        m_ScaleValue = m_SensorArray[m_ESensorArray[0].SensorIndex].scale;
+                                        m_ScaleValue = m_ScaleValue >> 8;
+                                        m_ScaleValue = (int)(m_ScaleValue * Math.Pow(10.0, m_SensorArray[m_ESensorArray[0].SensorIndex].scale & 0x000f));
+
+                                        //泛型命令组
+                                        m_Command2.m_StopPointType = 0x82;
+                                        m_Command2.m_StopPointChannel = m_ESensorArray[0].SensorIndex;
+                                        double m_SR1 = (m_ScaleValue * 1.0d) / (m_Resolution * 1.0d);
+                                        m_Command2.m_StopPoint = (int)((double.Parse(controlType2[3]) * 1000.0 / m_SR1) + 0.2d);
+                                        TestMethodDis(this.txtMethod, "屈服阶段结束:变形\r\n", Color.Crimson);
+                                        TestMethodDis(this.txtMethod, "结束值:" + controlType2[3].ToString() + " mm\r\n", Color.Crimson);
+
+                                        break;
+                                    case "3":
+                                        //停止类型 应力 转换为负荷 为 应力*面积 = 负荷；1Mp * 1mm^2 = 1N                                   
+                                        m_ScaleValue = m_SensorArray[m_LSensorArray[0].SensorIndex].scale;
+                                        m_ScaleValue = m_ScaleValue >> 8;
+                                        m_ScaleValue = (int)(m_ScaleValue * Math.Pow(10.0, m_SensorArray[m_LSensorArray[0].SensorIndex].scale & 0x000f));
+                                        //泛型命令组
+                                        m_Command2.m_StopPointType = 0x81;
+                                        m_Command2.m_StopPointChannel = m_LSensorArray[0].SensorIndex;
+                                        double m_SR2 = (m_ScaleValue * 1.0d) / (m_Resolution * 1.0d);
+                                        m_Command2.m_StopPoint = (int)((double.Parse(controlType2[3]) * m_S0 * 1000.0 / m_SR2) + 0.2d);
+                                        TestMethodDis(this.txtMethod, "屈服阶段结束:应力\r\n", Color.Crimson);
+                                        TestMethodDis(this.txtMethod, "结束值:" + controlType2[3].ToString() + " MPa\r\n", Color.Crimson);
+
+                                        break;
+                                    case "4":
+                                        //停止类型 （应变 = 变形/标距） 转换成 （变形 = 应变 * 引伸计标距Le）
+
+                                        m_ScaleValue = m_SensorArray[m_ESensorArray[0].SensorIndex].scale;
+                                        m_ScaleValue = m_ScaleValue >> 8;
+                                        m_ScaleValue = (int)(m_ScaleValue * Math.Pow(10.0, m_SensorArray[m_ESensorArray[0].SensorIndex].scale & 0x000f));
+
+                                        //泛型命令组
+                                        m_Command2.m_StopPointType = 0x82;
+                                        m_Command2.m_StopPointChannel = m_ESensorArray[0].SensorIndex;
+                                        double m_SR3 = (m_ScaleValue * 1.0d) / (m_Resolution * 1.0d);
+                                        m_Command2.m_StopPoint = (int)((double.Parse(controlType2[3]) * 1000.0 * m_Le / m_SR3) + 0.2d);
+
+                                        TestMethodDis(this.txtMethod, "屈服阶段结束:应变\r\n", Color.Crimson);
+                                        TestMethodDis(this.txtMethod, "结束值:" + controlType2[3].ToString() + " %\r\n", Color.Crimson);
+
+                                        break;
+                                }
+
+                                #endregion
+
+                                m_CtrlCommandList.Add(m_Command2);
+                            }
+
+
+                            #endregion
+                        }
+
+                        if (model3354Method.isLxqf == 1 || model3354Method.isLxqf == 2)
+                        {
+                            #region//////////////////加工硬化阶段//////////////////
+
+
+                            TestMethodDis(this.txtMethod, "--------\r\n", Color.Black);
+
+                            Struc.ctrlcommand m_Command3 = new Struc.ctrlcommand();
+                            string[] controlType3 = null;
+                            if (model3354Method.isLxqf == 1)
+                                controlType3 = model3354Method.controlType3.Split(',');
+                            if (model3354Method.isLxqf == 2)
+                                controlType3 = model3354Method.controlType2.Split(',');
+
+                            if (controlType3.Length == 2)
+                            {
+                                #region 加工硬化阶段控制
+                                //控制方式：位移
+                                switch (controlType3[0])
+                                {// 0,5.3,1,20.68
+                                    case "0":
+                                        m_Command3.m_CtrlType = 0x80;
+                                        m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
+                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * 1000.0);//位移控制速度
+
+                                        m_ScaleValue = GetScale(m_SensorArray[m_LSensorArray[0].SensorIndex].scale);
+                                        m_Command3.m_StopPointType = 0x81;
+                                        m_Command3.m_StopPointChannel = m_LSensorArray[0].SensorIndex;
+                                        m_Command3.m_StopPoint = m_ScaleValue;//加工硬化阶段停止点为负荷量程
+
+                                        TestMethodDis(this.txtMethod, "加工硬化阶段控制:位移\r\n", Color.Purple);
+                                        TestMethodDis(this.txtMethod, "速度:" + controlType3[1].ToString() + " mm/min\r\n", Color.Purple);
+
+                                        break;
+                                    case "1"://eLc控制 eLc * Lc =位移速度
+                                        m_Command3.m_CtrlType = 0x80;//0,5.3,1,20.68
+                                        m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
+                                        //转换成位移控制速度
+                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * m_Lc * 1000.0);
+
+                                        ////停止的类型 位移
+                                        //m_Command3.m_StopPointType = 0x80;
+                                        //m_Command3.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
+
+                                        //m_ScaleValue = m_SensorArray[m_DSensorArray[0].SensorIndex].scale;
+                                        //m_ScaleValue = m_ScaleValue >> 8;
+                                        //m_ScaleValue = (int)(m_ScaleValue * Math.Pow(10.0, m_SensorArray[m_DSensorArray[0].SensorIndex].scale & 0x000f));
+
+                                        //m_Command3.m_StopPoint = (int)(m_ScaleValue);//加工硬化阶段停止点为量程
+
+                                        //停止的类型 负荷
+                                        m_ScaleValue = GetScale(m_SensorArray[m_LSensorArray[0].SensorIndex].scale);
+                                        m_Command3.m_StopPointType = 0x81;
+                                        m_Command3.m_StopPointChannel = m_LSensorArray[0].SensorIndex;
+                                        m_Command3.m_StopPoint = m_ScaleValue;//加工硬化阶段停止点为负荷量程 
+
+                                        TestMethodDis(this.txtMethod, "加工硬化阶段控制:eLc\r\n", Color.Crimson);
+                                        TestMethodDis(this.txtMethod, "速度:" + controlType3[1].ToString() + " /s\r\n", Color.Crimson);
+
+                                        break;
+                                }
+
+                                #endregion
+
+                                m_CtrlCommandList.Add(m_Command3);
+                            }
+
+                            #endregion
+                        }
+
+
+                        if (model3354Method.isTakeDownExten)
+                        {
+                            TestMethodDis(this.txtMethod, "试验过程取引伸计:是\r\n", Color.Green);
+                            switch (model3354Method.selResultID)
+                            {
+                                case 0://%
+                                    m_extenValue = (float)model3354Method.extenValue;
+                                    m_extenType = 0;
+                                    TestMethodDis(this.txtMethod, "取引伸计值:" + model3354Method.extenValue.ToString() + "%\r\n", Color.Green);
+                                    TestMethodDis(this.txtMethod, "取引伸计通道:" + model3354Method.extenChannel.ToString() + "\r\n", Color.Green);
+                                    break;
+                                case 1://mm
+                                    m_extenValue = (float)model3354Method.extenValue * 1000;
+                                    m_extenType = 1;
+                                    TestMethodDis(this.txtMethod, "取引伸计值:" + model3354Method.extenValue.ToString() + "mm\r\n", Color.Green);
+                                    TestMethodDis(this.txtMethod, "取引伸计通道:" + model3354Method.extenChannel.ToString() + "\r\n", Color.Green);
+                                    break;
+                                default:
+                                    m_extenType = 2;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            TestMethodDis(this.txtMethod, "试验过程未使用引伸计\r\n", Color.Green);
+                        }
+
+                        #endregion
+
+                        #region 自定义试验
+                        if (model3354Method.isLxqf == 3)
+                        {
+                            TestMethodDis(this.txtMethod, "试验类型:自定义试验\r\n--------\r\n", Color.Black);
+
+                            string[] customControlType1 = model3354Method.controlType1.Split(',');
+                            if (customControlType1.Length == 4)
+                            {
+                                m_CtrlCommandList.Add(GetCtrlCommand(customControlType1, "1"));
+                            }
+
+                            string[] customControlType2 = model3354Method.controlType2.Split(',');
+                            if (customControlType2.Length == 4)
+                            {
+                                m_CtrlCommandList.Add(GetCtrlCommand(customControlType2, "2"));
+                            }
+
+                            string[] customControlType3 = model3354Method.controlType3.Split(',');
+                            if (customControlType2.Length == 4)
+                            {
+                                m_CtrlCommandList.Add(GetCtrlCommand(customControlType3, "3"));
+                            }
+
+                            string[] customControlType4 = model3354Method.controlType4.Split(',');
+                            if (customControlType4.Length == 4)
+                            {
+                                m_CtrlCommandList.Add(GetCtrlCommand(customControlType4, "4"));
+                            }
+
+                            string[] customControlType5 = model3354Method.controlType5.Split(',');
+                            if (customControlType5.Length == 4)
+                            {
+                                m_CtrlCommandList.Add(GetCtrlCommand(customControlType5, "5"));
+                            }
+
+                            string[] customControlType6 = model3354Method.controlType6.Split(',');
+                            if (customControlType6.Length == 4)
+                            {
+                                m_CtrlCommandList.Add(GetCtrlCommand(customControlType6, "6"));
+                            }
+
+                            string[] customControlType7 = model3354Method.controlType7.Split(',');
+                            if (customControlType7.Length == 4)
+                            {
+                                m_CtrlCommandList.Add(GetCtrlCommand(customControlType7, "7"));
+                            }
+
+                            string[] customControlType8 = model3354Method.controlType8.Split(',');
+                            if (customControlType8.Length == 4)
+                            {
+                                m_CtrlCommandList.Add(GetCtrlCommand(customControlType8, "8"));
+                            }
+
+                            string[] customControlType9 = model3354Method.controlType9.Split(',');
+                            if (customControlType9.Length == 4)
+                            {
+                                m_CtrlCommandList.Add(GetCtrlCommand(customControlType9, "9"));
+                            }
+
+                            string[] customControlType10 = model3354Method.controlType10.Split(',');
+                            if (customControlType10.Length == 4)
+                            {
+                                m_CtrlCommandList.Add(GetCtrlCommand(customControlType10, "10"));
+                            }
+
+                            //string[] customControlType11 = modelControlMethod.controlType11.Split(',');
+                            //if (customControlType11.Length == 4)
+                            //{
+                            //    m_CtrlCommandList.Add(GetCtrlCommand(customControlType11, "11"));
+                            //}
+
+                            //string[] customControlType12 = modelControlMethod.controlType12.Split(',');
+                            //if (customControlType12.Length == 4)
+                            //{
+                            //    m_CtrlCommandList.Add(GetCtrlCommand(customControlType12, "12"));
+                            //}
+                        }
+                        #endregion
+
+                        //commandArray = m_CtrlCommandList.ToArray();
+                        for (int i = 0; i < m_CtrlCommandList.Count; i++)
+                        {
+                            commandArray[i] = m_CtrlCommandList[i];
+                        }
+
+                        //最后一项是返回速度
+                        int returnspeed = 200000;
+
+                        if (!string.IsNullOrEmpty(model3354Method.controlType12))
+                            returnspeed = int.Parse(model3354Method.controlType12.ToString()) * 1000;
+                        Struc.ctrlcommand speedorder = new Struc.ctrlcommand();
+                        speedorder.m_CtrlSpeed = returnspeed;
+                        commandArray[11] = speedorder;
+
+                        m_StopValue = (float)model3354Method.stopValue;
+                        if (m_StopValue == 0)
+                            m_StopValue = 80;
+                        loopCount = (int)model3354Method.circleNum;
 
                         m_methodContent = methodContent;
                     }

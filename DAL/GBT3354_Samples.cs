@@ -29,6 +29,196 @@ namespace HR_Test.DAL
             return DbHelperOleDb.Exists(strSql.ToString(), parameters);
         }
 
+        public DataSet GetNotOverlapList(string strWhere)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append("select distinct testNo,testMethodName,w,h,d0,Do ");
+            strSql.Append(" FROM tb_GBT3354_Samples ");
+            if (strWhere.Trim() != "")
+            {
+                strSql.Append(" where " + strWhere);
+            }
+            return DbHelperOleDb.Query(strSql.ToString());
+        }
+
+        //获得不重复项的列表
+        public DataSet GetNotOverlapList1(string strWhere)
+        {
+            StringBuilder strSql = new StringBuilder();
+            //strSql.Append("select ID,testMethodName,testNo,testSampleNo,reportNo,sendCompany,stuffCardNo,stuffSpec,stuffType,hotStatus,temperature,humidity,testStandard,testMethod,mathineType,testCondition,sampleCharacter,getSample,tester,assessor,sign,a0,au,b0,bu,d0,du,Do,L0,L01,Lc,Le,Lt,Lu,Lu1,S0,Su,k,Fm,Rm,ReH,ReL,Rp,Rt,Rr,εp,εt,εr,E,m,mE,A,Aee,Agg,Att,Aggtt,Awnwn,Lm,Lf,Z,Avera,SS,Avera1,isFinish,testDate ");
+            strSql.Append(" select Distinct testNo,testMethodName ");//
+            strSql.Append(" FROM tb_GBT3354_Samples ");
+            if (strWhere.Trim() != "")
+            {
+                strSql.Append(" where " + strWhere);
+            }
+            return DbHelperOleDb.Query(strSql.ToString());
+        }
+
+        public DataSet GetMaxFm(string strWhere)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append(" select MAX([Pmax]) as [Pmax] ");//
+            strSql.Append(" FROM tb_GBT3354_Samples ");
+            if (strWhere.Trim() != "")
+            {
+                strSql.Append(" where " + strWhere);
+            }
+            return DbHelperOleDb.Query(strSql.ToString());
+        }
+
+        //获取完成试验列表，求平均
+        public DataSet GetFinishSumList1(string selColAver, string strWhere)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append("select");
+            strSql.Append(selColAver);
+            strSql.Append(" FROM tb_GBT3354_Samples ");
+            if (strWhere.Trim() != "")
+            {
+                strSql.Append(" where " + strWhere);
+            }
+            return DbHelperOleDb.Query(strSql.ToString());
+        }
+
+        //获取完成试验列表1
+        public DataSet GetFinishListReport(string selCol, string strWhere, int ab)
+        {
+            StringBuilder strSql = new StringBuilder();
+            switch (ab)
+            {
+                case 1:
+                    strSql.Append("select testSampleNo as [试样编号],[w] as [a(mm)],[h] as [b(mm)],[lL] as [lL(mm)]");
+                    break;
+                case 2:
+                    strSql.Append("select testSampleNo as [试样编号],[d0] as [d(mm)],[lL] as [lL(mm)]");
+                    break;
+                case 3:
+                    strSql.Append("select testSampleNo as [试样编号],[w] as [w(mm)],[Do] as [D0(mm)],[lL] as [lL(mm)]");
+                    break;
+                default:
+                    strSql.Append("select testSampleNo as [试样编号],[w] as [w(mm)],[h] as [h(mm)],[lL] as [lL(mm)]");
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(selCol))//Fm,Rm,ReH,ReL,E,A,Z,SS as [S],FORMAT(testDate,'YYYY-MM-DD') as [试验日期] 
+            {
+                strSql.Append("," + selCol);
+            }
+            strSql.Append("  FROM tb_GBT3354_Samples ");// ,FORMAT(testDate,'YYYY-MM-DD') as [试验日期]
+            if (strWhere.Trim() != "")
+            {
+                strSql.Append(" where " + strWhere);
+            }
+            strSql.Append(" order by testSampleNo ");
+            return DbHelperOleDb.Query(strSql.ToString());
+        }
+
+        public DataSet GetFinishList(string strWhere, double maxValue)
+        {
+            StringBuilder strSql = new StringBuilder();//εp as [Ep],εt as [Et],εr as [Er],E,m,mE,Rt,Rr,Aee as Ae,Agg as [Ag],Att as [At],Aggtt as [Agt],Awnwn as [Awn],Lm as [△Lm],Lf as [△Lf],SS as [S],
+            strSql.Append("select testSampleNo as [试样编号],[w] as [w(mm)],[h] as [h(mm)],");//[d0] as [d(mm)],
+
+            int dotvalue = Dotvalue(maxValue);
+            if (maxValue < 1000.0)
+            {
+                switch (dotvalue)
+                {
+                    case 2:
+                        strSql.Append(" Format([Pmax],'0.00') as [Pmax(N)],");
+                        break;
+                    case 3:
+                        strSql.Append(" Format([Pmax],'0.000') as [Pmax(N)],");
+                        break;
+                    case 4:
+                        strSql.Append(" Format([Pmax],'0.0000') as [Pmax(N)],");
+                        break;
+                    case 5:
+                        strSql.Append(" Format([Pmax],'0.00000') as [Pmax(N)],");
+                        break;
+                    default:
+                        strSql.Append(" Format([Pmax],'0.00') as [Pmax(N)],");
+                        break;
+                }
+
+            }
+            if (maxValue >= 1000.0)
+            {
+                switch (dotvalue)
+                {
+                    case 2:
+                        strSql.Append(" Format([Pmax]/1000.0,'0.00') as [Pmax(kN)],");
+                        break;
+                    case 3:
+                        strSql.Append(" Format([Pmax]/1000.0,'0.000') as [Pmax(kN)],");
+                        break;
+                    case 4:
+                        strSql.Append(" Format([Pmax]/1000.0,'0.0000') as [Pmax(kN)],");
+                        break;
+                    case 5:
+                        strSql.Append(" Format([Pmax]/1000.0,'0.00000') as [Pmax(kN)],");
+                        break;
+                    default:
+                        strSql.Append(" Format([Pmax]/1000.0,'0.00') as [Pmax(kN)],");
+                        break;
+                }
+            }
+            strSql.Append("[σt] as [σt(MPa)],[Et] as [Et(MPa)],[μ12] as [μ12(MPa)],[ε1t] as [ε1t(mm/mm)],failuremode as [失效模式],testDate as [试验日期]  FROM tb_GBT3354_Samples ");
+            if (strWhere.Trim() != "")
+            {
+                strSql.Append(" where " + strWhere);
+            }
+            strSql.Append(" order by testSampleNo ");
+            return DbHelperOleDb.Query(strSql.ToString());
+        }
+
+        public static int Dotvalue(double _value)
+        {
+            int _dotValue = 0;
+            int _ten = (int)Math.Log10(_value);
+            if (_value < 1000.0)
+                _dotValue = 6 - _ten - 1;
+            if (_value > 1000.0)
+            {
+                _dotValue = 6 - (_ten - 3) - 1;
+            }
+            if (_dotValue < 2)
+                _dotValue = 2;
+            return _dotValue;
+        }
+
+        //获取完成试验列表1
+        public DataSet GetFinishList1(string selCol, string strWhere, int ab)
+        {
+            StringBuilder strSql = new StringBuilder();
+            switch (ab)
+            {
+                case 1:
+                    strSql.Append("select isEffective as [试验无效], testSampleNo as [试样编号],[w] as [w(mm)],[h] as [h(mm)],[lL] as [lL(mm)]");
+                    break;
+                case 2:
+                    strSql.Append("select isEffective as [试验无效], testSampleNo as [试样编号],[d0] as [d(mm)],[lL] as [lL(mm)]");
+                    break;
+                case 3:
+                    strSql.Append("select isEffective as [试验无效], testSampleNo as [试样编号],[w] as [w(mm)],[Do] as [D0(mm)],[lL] as [lL(mm)]");
+                    break;
+                default:
+                    strSql.Append("select isEffective as [试验无效], testSampleNo as [试样编号],[w] as [w(mm)],[h] as [h(mm)],[lL] as [lL(mm)]");
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(selCol))//Fm,Rm,ReH,ReL,E,A,Z,SS as [S],FORMAT(testDate,'YYYY-MM-DD') as [试验日期] 
+            {
+                strSql.Append("," + selCol);
+            }
+            strSql.Append("  FROM tb_GBT3354_Samples ");// ,FORMAT(testDate,'YYYY-MM-DD') as [试验日期]
+            if (strWhere.Trim() != "")
+            {
+                strSql.Append(" where " + strWhere);
+            }
+            strSql.Append(" order by testSampleNo ");
+            return DbHelperOleDb.Query(strSql.ToString());
+        }
 
         /// <summary>
         /// 增加一条数据
@@ -356,6 +546,28 @@ namespace HR_Test.DAL
 					new OleDbParameter("@ID", OleDbType.Integer,4)
 			};
             parameters[0].Value = ID;
+
+            HR_Test.Model.GBT3354_Samples model = new HR_Test.Model.GBT3354_Samples();
+            DataSet ds = DbHelperOleDb.Query(strSql.ToString(), parameters);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return DataRowToModel(ds.Tables[0].Rows[0]);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public HR_Test.Model.GBT3354_Samples GetModel(string testSampleNo)
+        {
+
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append("select ID,testMethodName,testNo,testSampleNo,reportNo,sendCompany,stuffSpec,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,tester,assessor,testDate,testCondition,controlmode,sampleShape,w,h,d0,Do,S0,lL,lT,εz,failuremode,Pmax,σt,Et,μ12,ε1t,isFinish,isUseExtensometer1,isUseExtensometer2,isEffective,sign from tb_GBT3354_Samples ");
+            strSql.Append(" where testSampleNo=@testSampleNo");
+            OleDbParameter[] parameters = {
+					new OleDbParameter("@testSampleNo", OleDbType.VarChar)
+			};
+            parameters[0].Value = testSampleNo;
 
             HR_Test.Model.GBT3354_Samples model = new HR_Test.Model.GBT3354_Samples();
             DataSet ds = DbHelperOleDb.Query(strSql.ToString(), parameters);
