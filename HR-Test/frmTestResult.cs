@@ -35,7 +35,7 @@ namespace HR_Test
          *  b.试验机最低测量范围选择 
          *      0.5% - 2%
          *  c.关于ΔLm求出，如果使用引申计标志，ΔLm为最大力下的变形值，如果没使用引申计,ΔLm为最大力下的位移值。
-         * 
+         *  20170302增加GBT3354-2014标准
          */
 
         //分辨率常量
@@ -185,10 +185,10 @@ namespace HR_Test
         float m_Eb;
         //规定非比例弯曲力
         bool m_isSelFpb = false;
-        float m_Fpb;
+        float m_Fpb=0;
         //规定残余弯曲力
         bool m_isSelFrb = false;
-        float m_Frb;
+        float m_Frb=0;
         //最大弯曲力
         bool m_isSelFbb = false;
         float m_Fbb;
@@ -210,11 +210,7 @@ namespace HR_Test
         //取引伸计后的继续标志
         public bool m_holdContinue = false;
         //实时显示曲线线程
-        Thread _threadShowCurve;
-        //读取测试中的数据线程
-        //Thread _threadReadData;
-        //初始化数据轴线程
-        //Thread _threadInitRealCurve;
+        Thread _threadShowCurve;       
         //读取结果数据线程
         Thread _threadReadCurve;
         //当存储数据超过1k条，开启存储数据线程，而后清空采集的数据
@@ -899,12 +895,12 @@ namespace HR_Test
                             }
 
                             //Test  
-                            //m_Load += 0.3f;
-                            //m_Time = (float)(DateTime.Now - dt).TotalSeconds;
-                            //m_Displacement += 0.128f;
-                            //m_Elongate = 2 * m_Load;
-                            //m_YingBian = (float)(m_Elongate / m_Le) * 100;
-                            //m_YingLi = (float)Math.Log(m_Load);
+                            m_Load += 0.3f;
+                            m_Time = (float)(DateTime.Now - dt).TotalSeconds;
+                            m_Displacement += 0.128f;
+                            m_Elongate = 2 * m_Load;
+                            m_YingBian = (float)(m_Elongate / m_Lt) * 100;
+                            m_YingLi = (float)Math.Log(m_Load);
 
                             if (isTest)
                             {
@@ -1053,23 +1049,24 @@ namespace HR_Test
 
                                 //获取自定义试验的最后一条命令
                                 //如果是位移控制的停止点
-                                if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x80)
-                                {
-                                    if (m_Displacement >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
-                                    {
-                                        isTest = false;
-                                        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
-                                    }
-                                }
-                                //如果是负荷停止点
-                                if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x81)
-                                {
-                                    if (m_Load >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
-                                    {
-                                        isTest = false;
-                                        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
-                                    }
-                                }
+                                //Test屏蔽
+                                //if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x80)
+                                //{
+                                //    if (m_Displacement >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
+                                //    {
+                                //        isTest = false;
+                                //        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
+                                //    }
+                                //}
+                                ////如果是负荷停止点
+                                //if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x81)
+                                //{
+                                //    if (m_Load >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
+                                //    {
+                                //        isTest = false;
+                                //        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
+                                //    }
+                                //}
 
                                 //应力
                                 if (m_S0 != 0)
@@ -2196,8 +2193,9 @@ namespace HR_Test
                             this.dataGridView.UseWaitCursor = true;
                             m_calSuccess = false;
                             isShowResult = false;
-                            _useExten = false;
-                            m_useExten = false;
+                            m_useExten1 = false;
+                            m_useExten2 = false;
+                            _useExten = false; 
                             m_holdPause = false;
                             m_holdContinue = false;
                             btnZeroS.Enabled = true;
@@ -2218,10 +2216,10 @@ namespace HR_Test
                                 //写入试样信息
                                 try
                                 {
-                                    TestStandard.GBT3354_2014.CreateCurveFile(_testpath, model3354);
-                                    Thread.Sleep(5);
-                                    if (m_SensorCount > 0)
-                                    {
+                                    TestStandard.GBT3354_2014.CreateCurveFile(_testpath, model3354); 
+                                    //Test
+                                    //if (m_SensorCount > 0)
+                                    //{
                                         if (ReadMethod("GBT3354-2014", model3354.testMethodName, out m_CtrlCommandArray, out loopCount, out m_methodContent, out m_isProLoad))
                                         {
                                             //写入命令数组 
@@ -2241,12 +2239,12 @@ namespace HR_Test
                                             tsbtn_Start.Enabled = false;
                                             return;
                                         }
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show(this, "请连接设备!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                        tsbtn_Start.Enabled = false;
-                                    }
+                                    //}
+                                    //else
+                                    //{
+                                    //    MessageBox.Show(this, "请连接设备!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    //    tsbtn_Start.Enabled = false;
+                                    //}
                                 }
                                 catch (Exception ee)
                                 {
@@ -2257,16 +2255,13 @@ namespace HR_Test
                                 {
                                     this.dataGridView.UseWaitCursor = false;
                                     //Test
-                                    //tsbtn_Start.Enabled = true;
+                                    tsbtn_Start.Enabled = true;
                                 }
                             }
                         }
                         else if (e.Node.ImageIndex == 1)
                         {
-                            //选择一根已完成的试验试样编号
-                            //m_lstNoTestSamples.Clear();
-                            //this.lblInfo.Text = "当前试样:无\r\n下一个试样:无"; 
-                            //m_TestSampleNo = e.Node.Text;
+                            //选择一根已完成的试验试样编号                          
                             tsbtn_Start.Enabled = false;
                             TestStandard.GBT3354_2014.readFinishSample(this.dataGridView, this.dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
                             ShowResultPanel();
@@ -6318,7 +6313,8 @@ namespace HR_Test
             //m_Time_Test = 0f;              //时间
             //m_Stress_Test = 0f;            //应力
             //m_Strain_Test = 0f;            //应变  
-
+            m_useExten1 = false;
+            m_useExten2 = false;
             m_Fm = 0;//最大力值
             m_Fmax = 0;
             m_FRH = 0;//上屈服力值
@@ -6346,29 +6342,19 @@ namespace HR_Test
             _List_Testing_Data.Clear();
         }
 
+        DateTime dt;
         private void tsbtn_Start_Click(object sender, EventArgs e)
         {
             m_hold_data.D1 = 0;
             m_hold_data.F1 = 0;
             m_hold_data.BX1 = 0;
             //Test
-            //dt = DateTime.Now;
-            if (m_LoadSensorCount == 0)
-            {
-                MessageBox.Show(this, "未连接设备!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            //if (!m_IsReturn)
+            dt = DateTime.Now;
+            //if (m_LoadSensorCount == 0)
             //{
-            //    MessageBox.Show(this, "请 '返回' !", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    MessageBox.Show(this, "未连接设备!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             //    return;
-            //}
-
-            //if (m_lstNoTestSamples.Count == 0)
-            //{
-            //    MessageBox.Show(this, "此组试验已完成,请选择其他组进行试验!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    return;
-            //}
+            //}           
             ShowCurvePanel();
             if (string.IsNullOrEmpty(m_TestSampleNo))
             {
@@ -7494,38 +7480,8 @@ namespace HR_Test
                                     }
                                 }
                                 while (m_FrIndex > tempIndex + 2 || m_FrIndex < tempIndex - 2);
-                            }
-
-
-                            //求取Rtc
-
-
-                            //frmAZ az = new frmAZ();
-                            //az._L0 = (double)mts.L0;
-                            //az._S0 = (double)mts.S0;
-                            //Thread.Sleep(50);
-                            ////是否手动求取AZ
-                            //if (m_isHandaz)
-                            //{
-                            //    if (DialogResult.OK == az.ShowDialog(this))
-                            //    {
-                            //        mts.A = az._A;
-                            //        mts.Z = az._Z;
-                            //        mts.Lu = az._Lu;
-                            //    }
-                            //    else
-                            //    {
-                            //        mts.A = 0;
-                            //        mts.Z = 0;
-                            //        mts.Lu = 0;
-                            //    }
-                            //}
-                            //else
-                            //{
-                            //    mts.A = 0;
-                            //    mts.Z = 0;
-                            //    mts.Lu = 0;
-                            //}
+                            } 
+                     
 
                             mts.testCondition = "-";// this.lblTestMethod.Text; 
                             mts.isFinish = true;
@@ -7810,42 +7766,7 @@ namespace HR_Test
                         ChangeRealTimeXYChart();
                         ReadResultData(m_l);
                     }
-                    //if (this.tvTestSample.SelectedNode.Text.Length > 0)
-                    //{
-                    //    BLL.Bend bllts = new HR_Test.BLL.Bend();
-                    //    Model.Bend mts = bllts.GetModel(this.tvTestSample.SelectedNode.Text);
-
-                    //    //给曲线添加文本框
-                    //    //TextObj text = new TextObj(this.zedGraphControl.GraphPane.CurveList[0].Label.Text + " Max:(" + getFm(_RPPList0).Y + "/" + getFm(_RPPList0).X + ")", 0, 0, CoordType.PaneFraction);
-                    //    //text.Location.AlignH = AlignH.Left;
-                    //    //text.Location.AlignV = AlignV.Top;
-                    //    //text.FontSpec.Size = 5;
-                    //    //text.FontSpec.FontColor = this.zedGraphControl.GraphPane.CurveList[0].Color;
-                    //    //text.FontSpec.StringAlignment = StringAlignment.Far;
-                    //    //this.zedGraphControl.GraphPane.GraphObjList.Add(text);  
-                    //    //写入 变形或位移 
-                    //    mts.testCondition = "-";// this.lblTestMethod.Text;
-                    //    mts.isFinish = true;
-                    //    bllts.Update(mts);
-                    //    readFinishSample_B(this.dataGridView, strTestNo);
-                    //    ReadSample(this.tvTestSample);
-                    //    //MessageBox.Show(_List_Data.Count.ToString());
-                    //    this.btnZeroD.Enabled = this.btnZeroF.Enabled = this.btnZeroS.Enabled = true;
-                    //    //this.tscbX1.Enabled = this.tscbX2.Enabled = this.tscbY1.Enabled = this.tscbY2.Enabled = this.tscbY3.Enabled = true;
-                    //    // File.Create(@"E:\衡新试验数据\" + "data.txt");
-                    //    //保存曲线
-                    //    string curveName = @"E:\衡新试验数据\" + "Curve\\Bend\\" + mts.testSampleNo + ".txt";
-                    //    StreamWriter sw = new StreamWriter(curveName);
-                    //    sw.WriteLine("testType,testSampleNo,a,b,L,ll,D");
-                    //    sw.WriteLine("bend," + mts.testSampleNo + "," + mts.a + "," + mts.b + "," + mts.L + "," + mts.ll + "," + mts.D);
-                    //    //foreach (gdata gd in _List_Data)
-                    //    //{
-                    //    //    sw.WriteLine(gd.F1 + "," + gd.F2 + "," + gd.F3 + "," + gd.D1 + "," + gd.D2 + "," + gd.D3 + "," + gd.BX1 + "," + gd.BX2 + "," + gd.BX3 + "," + gd.YL1 + "," + gd.YL2 + "," + gd.YL3 + "," + gd.YB1 + "," + gd.YB2 + "," + gd.YB3 + "," + gd.Ts);
-                    //    //    sw.Flush();
-                    //    //}
-                    //    //sw.Close();
-                    //    //sw.Dispose();
-                    //}
+        
                     break;
                 #endregion
 
@@ -8103,16 +8024,147 @@ namespace HR_Test
                     }
                     break;
                 #endregion
-            }
 
-            //m_S0 = 0;
-            //m_Lc = 0;
-            //m_Le = 0;
-            //m_Ep = 0;
-            //m_Et = 0;
-            //m_Er = 0;
-            //m_TestSampleNo = string.Empty;
-            //ShowResultPanel();
+                #region GBT3354-2014
+                case "GBT3354-2014_c":
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(m_TestSampleNo))
+                        {
+                            BLL.GBT3354_Samples bll3354 = new HR_Test.BLL.GBT3354_Samples();
+                            Model.GBT3354_Samples m3354 = bll3354.GetModel(m_TestSampleNo);
+
+                            int index = this.tvTestSample.SelectedNode.Parent.Index;
+
+                            //保存曲线
+                            string curveName = "E:\\衡新试验数据\\Curve\\" + m_path + "\\" + m3354.testSampleNo + ".txt";
+                            if (File.Exists(curveName))
+                            {
+                                FileStream fs = new FileStream(curveName, FileMode.Append, FileAccess.Write);
+                                foreach (gdata gd in _List_Testing_Data)//_List_Array_Data
+                                {
+                                    utils.AddText(fs, gd.F1 + "," + gd.F2 + "," + gd.F3 + "," + gd.D1 + "," + gd.D2 + "," + gd.D3 + "," + gd.BX1 + "," + gd.BX2 + "," + gd.BX3 + "," + gd.YL1 + "," + gd.YL2 + "," + gd.YL3 + "," + gd.YB1 + "," + gd.YB2 + "," + gd.YB3 + "," + gd.Ts);
+                                    utils.AddText(fs, "\r\n");
+                                }
+                                fs.Flush();
+                                fs.Close();
+                                fs.Dispose();
+                            }
+
+                            //读取试验方法中是否选取了Rp
+                            BLL.GBT3354_Sel b3354sel = new HR_Test.BLL.GBT3354_Sel();
+                            Model.GBT3354_Sel m3354sel = b3354sel.GetModel(m3354.testMethodName);
+
+                            if (m3354sel == null)
+                                return;
+
+                            //计算数据 Fm ReL ReH
+                            m_l = ReadOneListData(m_path, m_TestSampleNo);
+
+                            //写入最大值 Fm Rm A Z
+                            //MessageBox.Show("m_FRH=" + m_FRH.ToString() + ",m_Fm=" + m_Fm.ToString() + ",m_FRLFirst=" + m_FRLFirst.ToString() + ",m_FRL=" + m_FRL.ToString());
+                            if (m_l.Count > m_FmIndex)
+                            {
+                                m3354.Pmax = Convert.ToDouble((m_l[m_l.Count-2].F1).ToString("f2"));
+                                m3354.σt = Convert.ToDouble(m_l[m_l.Count- 2].YL1.ToString("f2"));
+                            }                            
+                            if(m3354sel.ε1t)
+                                m3354.ε1t = Convert.ToDouble(m_l[m_l.Count - 2].YB1.ToString("f2"));
+
+
+                            //如果使用引伸计，用力-变形曲线求Fp02,并且试验结果选取了Rp,并且试验过程中使用引伸计
+                            //m_extenType 读取数据库确认参数值, m_isSelRp 确认是否试验结果选择了Rp,_useExten 试验界面是否使用引申计
+
+
+                            m3354.testCondition = "-";// this.lblTestMethod.Text; 
+                            //Test
+                            m3354.isFinish = true;
+
+                            if (bll3354.Update(m3354))
+                            {
+                                isShowResult = true;
+                                TestStandard.GBT3354_2014.readFinishSample(this.dataGridView, this.dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
+                                //无刷新左侧树形节点，直接修改imageindex;
+                                //TestStandard.SampleControl.ReadSample(this.tvTestSample, this.dateTimePicker);
+                                this.tvTestSample.SelectedNode.ImageIndex = 1;
+                                this.tvTestSample.Update();
+                                this.tvTestSample.Refresh();
+                                ShowResultCurve();
+
+                                //如果不保存曲线则删除该曲线数据
+                                if (!m3354sel.saveCurve)
+                                    File.Delete(curveName);
+
+                                //默认选择全部完成的试样
+                                this.zedGraphControl.GraphPane.CurveList.Clear();
+                                foreach (DataGridViewRow drow in this.dataGridView.Rows)
+                                {
+                                    drow.Cells[0].Value = false;
+                                    drow.Selected = false;
+                                    dataGridView_CellClick(this.dataGridView, new DataGridViewCellEventArgs(0, drow.Index));
+                                }
+                                if (index >= 0)
+                                    this.tvTestSample.Nodes[index].ExpandAll();
+                            }
+                        }
+
+                        if (m_l != null)
+                        {
+                            ChangeRealTimeXYChart();
+                            //ReadResultCurve(this.pbChart, m_l);
+                            ReadResultData(m_l);
+                        }
+                    }
+                    catch (Exception ee)
+                    {
+                        //MessageBox.Show(ee.ToString()); 
+                        return;
+                    }
+
+                    //查找该试验组未做完试验的试样编号
+                    //查找第一个未做完的试样编号
+                    //if (m_lstNoTestSamples.Count > 0)
+                    //{
+                    //    m_lstNoTestSamples.Remove(m_TestSampleNo);
+                    //    if (m_lstNoTestSamples.Count == 0)
+                    //    {
+                    //        this.e_Node = null;
+                    //        MessageBox.Show("已完成该组试验!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //        return;
+                    //    }
+
+                    //    TreeNode tn = new TreeNode(m_lstNoTestSamples[0]);
+                    //    tn.Text = m_lstNoTestSamples[0];
+                    //    tn.Name = "tensile_c";
+                    //    tn.ImageIndex = 2;
+                    //    tn.SelectedImageIndex = 3;
+                    //    e_Node = new TreeNodeMouseClickEventArgs(tn, MouseButtons.Left, 1, 25, 2);
+                    //    //查找当前试样的编号以便选中
+                    //    TreeNode tf = null;
+                    //    foreach (TreeNode t in this.tvTestSample.Nodes)
+                    //    {
+                    //        tf = FindNodeByValue(t, m_lstNoTestSamples[0]);
+                    //        if (tf != null)
+                    //            break;
+                    //    }
+
+                    //    if (tf != null)
+                    //    {
+                    //        tvTestSample.SelectedNode = tf;
+                    //        if (tf.Parent != null)
+                    //            tf.Parent.Expand();
+                    //    }
+                    //    //如果选择了批量试验
+                    //    if (chkTestAll.Checked)
+                    //    {
+                    //        tvTestSample_NodeMouseClick(this.tvTestSample, e_Node);
+                    //    }
+                    //}          
+
+                    break;
+                #endregion
+
+            } 
         }
 
         void az_LocationChanged(object sender, EventArgs e)
@@ -10879,15 +10931,28 @@ namespace HR_Test
                 case "GBT28289-2012Twist":
                     m_path = "GBT28289-2012Twist";
                     break;
+                case "GBT3354-2014":
+                    m_path = "GBT3354-2014";
+                    break;
                 default:
                     m_path = "";
-                    break;
+                    break;               
             }
 
             if (e.RowIndex >= 0 && e.ColumnIndex != 2)
             {
-                this.dataGridView.Rows[e.RowIndex].Cells[0].Value = !Convert.ToBoolean(this.dataGridView.Rows[e.RowIndex].Cells[0].Value);
-                this.dataGridView.Rows[e.RowIndex].Selected = Convert.ToBoolean(this.dataGridView.Rows[e.RowIndex].Cells[0].Value);
+                //选择和取消选择
+                if (e.ColumnIndex != 4 && dataGridView.Tag.ToString() == "GBT3354-2014")
+                { 
+                    this.dataGridView.Rows[e.RowIndex].Cells[0].Value = !Convert.ToBoolean(this.dataGridView.Rows[e.RowIndex].Cells[0].Value);
+                    this.dataGridView.Rows[e.RowIndex].Selected = Convert.ToBoolean(this.dataGridView.Rows[e.RowIndex].Cells[0].Value);
+                }        
+                else
+                {
+                    //修改失效模式
+                    frmFailureMode ffm = new frmFailureMode();
+                    ffm.ShowDialog();
+                }
                 string selTestSampleNo = string.Empty;
                 _selTestSampleArray = GetSelSample();
                 //显示曲线 
@@ -11046,6 +11111,19 @@ namespace HR_Test
                                 mod28289tw.isEffective = false;
                             if (bll28289tw.Update(mod28289tw))
                                 TestStandard.GBT28289_2012.Twist.readFinishSample(null, this.dataGridViewSum, m_TestNo, dateTimePicker, null);
+                        }
+                        break;
+                    case "GBT3354-2014":
+                        BLL.GBT3354_Samples bll3354 = new HR_Test.BLL.GBT3354_Samples();
+                        Model.GBT3354_Samples mod3354 = bll3354.GetModel(tno);
+                        if (mod3354 != null)
+                        {
+                            if (iseffective)
+                                mod3354.isEffective = true;
+                            else
+                                mod3354.isEffective = false;
+                            if (bll3354.Update(mod3354))
+                                TestStandard.GBT3354_2014.readFinishSample(null, this.dataGridViewSum, m_TestNo, dateTimePicker, null);
                         }
                         break;
                     default:
@@ -13082,10 +13160,6 @@ namespace HR_Test
             //}
         }
 
-        private void tvTestSample_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-
-        }
 
         private void tsbtn_Zero_Click(object sender, EventArgs e)
         {

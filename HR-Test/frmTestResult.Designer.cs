@@ -149,7 +149,6 @@
             this.tvTestSample.SelectedImageIndex = 3;
             this.tvTestSample.Size = new System.Drawing.Size(155, 94);
             this.tvTestSample.TabIndex = 0;
-            this.tvTestSample.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvTestSample_AfterSelect);
             this.tvTestSample.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvTestSample_NodeMouseClick);
             // 
             // imageList
@@ -311,6 +310,7 @@
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));

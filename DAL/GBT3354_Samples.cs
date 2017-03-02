@@ -194,16 +194,16 @@ namespace HR_Test.DAL
             switch (ab)
             {
                 case 1:
-                    strSql.Append("select isEffective as [试验无效], testSampleNo as [试样编号],[w] as [w(mm)],[h] as [h(mm)],[lL] as [lL(mm)]");
+                    strSql.Append("select isEffective as [试验无效], testSampleNo as [试样编号],failuremode as [失效模式],[w] as [w(mm)],[h] as [h(mm)],[lL] as [lL(mm)]");
                     break;
                 case 2:
-                    strSql.Append("select isEffective as [试验无效], testSampleNo as [试样编号],[d0] as [d(mm)],[lL] as [lL(mm)]");
+                    strSql.Append("select isEffective as [试验无效], testSampleNo as [试样编号],failuremode as [失效模式],[d0] as [d(mm)],[lL] as [lL(mm)]");
                     break;
                 case 3:
-                    strSql.Append("select isEffective as [试验无效], testSampleNo as [试样编号],[w] as [w(mm)],[Do] as [D0(mm)],[lL] as [lL(mm)]");
+                    strSql.Append("select isEffective as [试验无效], testSampleNo as [试样编号],failuremode as [失效模式],[w] as [w(mm)],[Do] as [D0(mm)],[lL] as [lL(mm)]");
                     break;
                 default:
-                    strSql.Append("select isEffective as [试验无效], testSampleNo as [试样编号],[w] as [w(mm)],[h] as [h(mm)],[lL] as [lL(mm)]");
+                    strSql.Append("select isEffective as [试验无效], testSampleNo as [试样编号],failuremode as [失效模式],[w] as [w(mm)],[h] as [h(mm)],[lL] as [lL(mm)]");
                     break;
             }
 

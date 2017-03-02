@@ -49,7 +49,7 @@ namespace HR_Test.TestStandard
         {
             //try
             //{
-                //dg.MultiSelect = true; 
+            //dg.MultiSelect = true; 
             if (dg != null)
             {
                 dg.DataSource = null;
@@ -57,135 +57,135 @@ namespace HR_Test.TestStandard
                 dg.RowHeadersVisible = false;
             }
             BLL.GBT3354_Samples bllTs = new HR_Test.BLL.GBT3354_Samples();
-                if (!string.IsNullOrEmpty(testNo))
+            if (!string.IsNullOrEmpty(testNo))
+            {
+                //if (testNo.Contains('-'))
+                //    testNo = testNo.Substring(0, testNo.LastIndexOf("-"));
+                //获取不重复的试验编号列表
+                DataSet ds = bllTs.GetNotOverlapList(" testNo='" + testNo + "' and testDate =#" + dtp.Value.Date + "#");
+                DataTable dt = ds.Tables[0];
+                int ab = 0;
+                if (dt != null)
                 {
-                    //if (testNo.Contains('-'))
-                    //    testNo = testNo.Substring(0, testNo.LastIndexOf("-"));
-                    //获取不重复的试验编号列表
-                    DataSet ds = bllTs.GetNotOverlapList(" testNo='" + testNo + "' and testDate =#" + dtp.Value.Date + "#");
-                    DataTable dt = ds.Tables[0];
-                    int ab = 0;
-                    if (dt != null)
-                    {
-                        if (dt.Rows[0]["w"].ToString() != "0")
-                            ab = 1;
-                        if (dt.Rows[0]["d0"].ToString() != "0")
-                            ab = 2;
-                        if (dt.Rows[0]["Do"].ToString() != "0")
-                            ab = 3;
-                    }
-
-                    DataSet ds1 = bllTs.GetNotOverlapList1(" testNo='" + testNo + "' and testDate =#" + dtp.Value.Date + "#");
-                    DataTable dt1 = ds1.Tables[0];
-
-                    DataSet dsmax = bllTs.GetMaxFm(" testNo='" + testNo + "' and testDate =#" + dtp.Value.Date + "#");
-                    double maxvalue = 0;
-                    if (dsmax != null)
-                    {
-                        if(!string.IsNullOrEmpty(dsmax.Tables[0].Rows[0]["Pmax"].ToString()))
-                            maxvalue = Convert.ToDouble(dsmax.Tables[0].Rows[0]["Pmax"].ToString());
-                    }
-                    string methodName = dt1.Rows[0]["testMethodName"].ToString();
-                    if (dt1 != null)
-                    {
-                        StringBuilder[] tst = strSql_T(methodName,maxvalue);
-                        if (!string.IsNullOrEmpty(tst[0].ToString()) && dg!=null)
-                            dg.DataSource = CreateView_T(tst[0].ToString(), dt1.Rows[0]["testNo"].ToString(), ab);
-                        if (!string.IsNullOrEmpty(tst[1].ToString()))
-                            dgSum.DataSource = CreateAverageView(tst[0], tst[1], dt1.Rows[0]["testNo"].ToString(), ab);
-                    }
-                }
-                else
-                {
-                    DataSet ds = bllTs.GetFinishList(" testNo='" + testNo + "' and testDate=#" + dtp.Value.Date + "#",0);
-                    DataTable dt = ds.Tables[0];
-                    DataRow dr = dt.NewRow();
-                    dt.Rows.Add(dr);
-                    if(dg!=null)
-                        dg.DataSource = dt;
-                    ds.Dispose();
+                    if (dt.Rows[0]["w"].ToString() != "0")
+                        ab = 1;
+                    if (dt.Rows[0]["d0"].ToString() != "0")
+                        ab = 2;
+                    if (dt.Rows[0]["Do"].ToString() != "0")
+                        ab = 3;
                 }
 
+                DataSet ds1 = bllTs.GetNotOverlapList1(" testNo='" + testNo + "' and testDate =#" + dtp.Value.Date + "#");
+                DataTable dt1 = ds1.Tables[0];
 
-                //DataGridViewDisableCheckBoxColumn chkcol = new DataGridViewDisableCheckBoxColumn();
-                //DataGridViewCheckBoxColumn chkeffective = new DataGridViewCheckBoxColumn();
-                //chkeffective.Name = "是否有效";
-                //chkeffective.MinimumWidth = 60;
-                //chkeffective.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-                DataGridViewCheckBoxColumn chkcol = new DataGridViewCheckBoxColumn();
-                chkcol.Name = "选择";
-                chkcol.MinimumWidth = 50;
-                chkcol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                DataSet dsmax = bllTs.GetMaxFm(" testNo='" + testNo + "' and testDate =#" + dtp.Value.Date + "#");
+                double maxvalue = 0;
+                if (dsmax != null)
+                {
+                    if (!string.IsNullOrEmpty(dsmax.Tables[0].Rows[0]["Pmax"].ToString()))
+                        maxvalue = Convert.ToDouble(dsmax.Tables[0].Rows[0]["Pmax"].ToString());
+                }
+                string methodName = dt1.Rows[0]["testMethodName"].ToString();
+                if (dt1 != null)
+                {
+                    StringBuilder[] tst = strSql_T(methodName, maxvalue);
+                    if (!string.IsNullOrEmpty(tst[0].ToString()) && dg != null)
+                        dg.DataSource = CreateView_T(tst[0].ToString(), dt1.Rows[0]["testNo"].ToString(), ab);
+                    if (!string.IsNullOrEmpty(tst[1].ToString()))
+                        dgSum.DataSource = CreateAverageView(tst[0], tst[1], dt1.Rows[0]["testNo"].ToString(), ab);
+                }
+            }
+            else
+            {
+                DataSet ds = bllTs.GetFinishList(" testNo='" + testNo + "' and testDate=#" + dtp.Value.Date + "#", 0);
+                DataTable dt = ds.Tables[0];
+                DataRow dr = dt.NewRow();
+                dt.Rows.Add(dr);
                 if (dg != null)
-                {
-                    DataGridViewTextBoxColumn c = new DataGridViewTextBoxColumn();
-                    c.Name = "";
-                    dg.Columns.Insert(0, chkcol);
-                    dg.Columns.Insert(1, c);
-                    dg.Name = "tensile";
-                    //dg.Rows[0].Cells[0].Value = false;
-                    //dg.Rows[0].Cells[0].Selected = false;
-                    int rCount = dg.Rows.Count;
-                    for (int i = 0; i < rCount; i++)
-                    {
-                        if (!string.IsNullOrEmpty(dg.Rows[i].Cells[2].Value.ToString()))
-                        {
-                            if(Convert.ToBoolean(dg.Rows[i].Cells[2].Value.ToString())==true)
-                                dg.Rows[i].DefaultCellStyle.BackColor = Color.IndianRed;
-                        }
-                        if (i > 19)
-                        {
-                            dg.Rows[i].Cells[1].Style.BackColor = Color.FromName(_Color_Array[i % 20]);
-                            dg.Rows[i].Cells[1].Style.ForeColor = Color.FromName(_Color_Array[i % 20]);
-                            dg.Rows[i].Cells[1].Style.SelectionForeColor = Color.FromName(_Color_Array[i % 20]);
-                            dg.Rows[i].Cells[1].Style.SelectionBackColor = Color.FromName(_Color_Array[i % 20]);
-                            dg.Rows[i].Cells[1].Value = _Color_Array[i % 20].ToString();
-                        }
-                        else
-                        {
-                            dg.Rows[i].Cells[1].Style.BackColor = Color.FromName(_Color_Array[i]);
-                            dg.Rows[i].Cells[1].Style.ForeColor = Color.FromName(_Color_Array[i]);
-                            dg.Rows[i].Cells[1].Style.SelectionBackColor = Color.FromName(_Color_Array[i]);
-                            dg.Rows[i].Cells[1].Style.SelectionForeColor = Color.FromName(_Color_Array[i]);
-                            dg.Rows[i].Cells[1].Value = _Color_Array[i].ToString();
-                        }
-                    }
+                    dg.DataSource = dt;
+                ds.Dispose();
+            } 
 
-                    foreach (DataGridViewColumn dgvc in dg.Columns)
-                    {
-                        dgvc.SortMode = DataGridViewColumnSortMode.NotSortable;
-                        dgvc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                    }
-                    if (dg.Columns.Count > 3)
-                    {
-                        dg.Columns[0].Frozen = true;
-                        dg.Columns[1].Frozen = true;
-                        dg.Columns[2].Frozen = true;
-                    }
-                    if (dg.Columns.Count > 2)
-                        dg.Columns[2].Frozen = true;
-                    dg.Refresh();
-                }
-                if (zed != null)
-                {
-                    //clear all curves
-                    foreach (CurveItem ci in zed.GraphPane.CurveList)
-                    {
-                        ci.Clear();
-                        ci.Label.Text = "";
-                    }
+            DataGridViewCheckBoxColumn chkcol = new DataGridViewCheckBoxColumn();
+            chkcol.Name = "选择";
+            chkcol.MinimumWidth = 50;
+            chkcol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            //按钮
+            //DataGridViewButtonColumn btncol = new DataGridViewButtonColumn();
+            //btncol.Name = "失效模式";
+            //btncol.MinimumWidth = 100;
+            //btncol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            
 
-                    zed.AxisChange();
-                    zed.Refresh();
+            if (dg != null)
+            {
+                DataGridViewTextBoxColumn c = new DataGridViewTextBoxColumn();
+                c.Name = "";
+                dg.Columns.Insert(0, chkcol);
+                dg.Columns.Insert(1, c);
+                //dg.Columns.Insert(4, btncol);
+
+                dg.Name = "tensile"; 
+                int rCount = dg.Rows.Count;
+                for (int i = 0; i < rCount; i++)
+                {
+                    if (!string.IsNullOrEmpty(dg.Rows[i].Cells[2].Value.ToString()))
+                    {
+                        if (Convert.ToBoolean(dg.Rows[i].Cells[2].Value.ToString()) == true)
+                            dg.Rows[i].DefaultCellStyle.BackColor = Color.IndianRed;
+                    }
+                    if (i > 19)
+                    {
+                        dg.Rows[i].Cells[1].Style.BackColor = Color.FromName(_Color_Array[i % 20]);
+                        dg.Rows[i].Cells[1].Style.ForeColor = Color.FromName(_Color_Array[i % 20]);
+                        dg.Rows[i].Cells[1].Style.SelectionForeColor = Color.FromName(_Color_Array[i % 20]);
+                        dg.Rows[i].Cells[1].Style.SelectionBackColor = Color.FromName(_Color_Array[i % 20]);
+                        dg.Rows[i].Cells[1].Value = _Color_Array[i % 20].ToString();
+                    }
+                    else
+                    {
+                        dg.Rows[i].Cells[1].Style.BackColor = Color.FromName(_Color_Array[i]);
+                        dg.Rows[i].Cells[1].Style.ForeColor = Color.FromName(_Color_Array[i]);
+                        dg.Rows[i].Cells[1].Style.SelectionBackColor = Color.FromName(_Color_Array[i]);
+                        dg.Rows[i].Cells[1].Style.SelectionForeColor = Color.FromName(_Color_Array[i]);
+                        dg.Rows[i].Cells[1].Value = _Color_Array[i].ToString();
+                    }
                 }
+
+                foreach (DataGridViewColumn dgvc in dg.Columns)
+                {
+                    dgvc.SortMode = DataGridViewColumnSortMode.NotSortable;
+                    dgvc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+                if (dg.Columns.Count > 3)
+                {
+                    dg.Columns[0].Frozen = true;
+                    dg.Columns[1].Frozen = true;
+                    dg.Columns[2].Frozen = true;
+                }
+                if (dg.Columns.Count > 2)
+                    dg.Columns[2].Frozen = true;
+                dg.Refresh();
+            }
+            if (zed != null)
+            {
+                //clear all curves
+                foreach (CurveItem ci in zed.GraphPane.CurveList)
+                {
+                    ci.Clear();
+                    ci.Label.Text = "";
+                }
+
+                zed.AxisChange();
+                zed.Refresh();
+            }
             //}
             //catch (Exception ee) { throw ee; }
         }
 
 
         //以选择的结果为准
-        public static StringBuilder[] strSql_T(string methodName,double maxValue)
+        public static StringBuilder[] strSql_T(string methodName, double maxValue)
         {
             BLL.GBT3354_Sel bllSel = new HR_Test.BLL.GBT3354_Sel();
             Model.GBT3354_Sel mSel = bllSel.GetModel(methodName);
@@ -196,7 +196,7 @@ namespace HR_Test.TestStandard
             StringBuilder strSelcolAver = new StringBuilder();
             //生成"平均值"的 查询语句 
             if (mSel != null)
-            {                 
+            {
                 int dotvalue = utils.Dotvalue(maxValue);
                 if (mSel.Pmax == true)
                 {
@@ -266,15 +266,15 @@ namespace HR_Test.TestStandard
                     strSelcolAver.Append(" round(Avg([Et]),2) as [Et(MPa)],"); //strSelcolSD.Append("0.001,");strSelcolSD.Append(" round((SUM([ReH])-MAX([ReH])-MIN([ReH]))/(COUNT(*)-2),2) as [ReH],");
                 }
 
-                if (mSel.μ12 == true) 
-                { 
-                    strSelcol.Append(" [μ12] as [μ12],"); 
-                    strSelcolAver.Append(" round(Avg([μ12]),2) as [μ12],"); 
+                if (mSel.μ12 == true)
+                {
+                    strSelcol.Append(" [μ12] as [μ12],");
+                    strSelcolAver.Append(" round(Avg([μ12]),2) as [μ12],");
                 }//strSelcolSD.Append("0.001,");strSelcolSD.Append(" round((SUM([ReL])-MAX([ReL])-MIN([ReL]))/(COUNT(*)-2),2) as [ReL],");
-                if (mSel.ε1t == true) 
-                { 
-                    strSelcol.Append(" [ε1t] as [ε1t],"); 
-                    strSelcolAver.Append(" round(Avg([ε1t]),2) as [ε1t],"); 
+                if (mSel.ε1t == true)
+                {
+                    strSelcol.Append(" [ε1t] as [ε1t],");
+                    strSelcolAver.Append(" round(Avg([ε1t]),2) as [ε1t],");
                 }// strSelcolSD.Append("0.001,");strSelcolSD.Append(" round((SUM([Rp])-MAX([Rp])-MIN([Rp]))/(COUNT(*)-2),2) as [Rp],"); }
 
                 _isSelSD = mSel.SD;
@@ -361,7 +361,7 @@ namespace HR_Test.TestStandard
             List<object> objcv = new List<object>();
             objcv.Add("C.V.:");
             List<object> objmid = new List<object>();
-            objmid.Add("Mid.:");  
+            objmid.Add("Mid.:");
 
 
             //计算标准偏差
@@ -425,13 +425,13 @@ namespace HR_Test.TestStandard
             return dsaverto.Tables[0];
         }
 
-     
+
         public static void CreateCurveFile(string _testpath, Model.GBT3354_Samples modelTensile)
         {
             FileStream fs = new FileStream(_testpath, FileMode.Create, FileAccess.ReadWrite);
             utils.AddText(fs, "testType,testSampleNo,S0,lL,lT,εz");
             utils.AddText(fs, "\r\n");
-            utils.AddText(fs, "tensile," + modelTensile.testSampleNo + "," + modelTensile.S0 + "," + modelTensile.lL + "," + modelTensile.lT + "," + modelTensile.εz );
+            utils.AddText(fs, "tensile," + modelTensile.testSampleNo + "," + modelTensile.S0 + "," + modelTensile.lL + "," + modelTensile.lT + "," + modelTensile.εz);
             utils.AddText(fs, "\r\n");
             fs.Flush();
             fs.Close();
@@ -571,7 +571,7 @@ namespace HR_Test.TestStandard
 
 
         //查询结果
-        public static  void ReadGBT228(DataGridView dg,string testNo,string testSampleNo,DateTimePicker dtpFrom, DateTimePicker dtpTo,ZedGraph.ZedGraphControl zed)
+        public static void ReadGBT228(DataGridView dg, string testNo, string testSampleNo, DateTimePicker dtpFrom, DateTimePicker dtpTo, ZedGraph.ZedGraphControl zed)
         {
             BLL.TestSample bllTs = new HR_Test.BLL.TestSample();
             string strWhere = string.Empty;
@@ -652,10 +652,10 @@ namespace HR_Test.TestStandard
             {
                 ci.Clear();
                 ci.Label.Text = "";
-            }        
+            }
             zed.AxisChange();
             zed.Refresh();
             ds.Dispose();
-        } 
+        }
     }
 }

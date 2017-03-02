@@ -493,6 +493,16 @@ namespace HR_Test.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap mode {
+            get {
+                object obj = ResourceManager.GetObject("mode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap pause1 {
             get {
                 object obj = ResourceManager.GetObject("pause1", resourceCulture);
