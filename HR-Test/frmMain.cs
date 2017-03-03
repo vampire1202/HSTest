@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 namespace HR_Test
 {
 
@@ -126,7 +128,7 @@ namespace HR_Test
             ftr.TopLevel = false;
             ftr.Name = "c_testResult";
             ftr.GetTestValue();
-            TestStandard.SampleControl.ReadSample(ftr.tvTestSample, ftr.dateTimePicker); 
+            Task t= TestStandard.SampleControl.ReadSample(ftr.tvTestSample, ftr.dateTimePicker); 
             ftr._showThreadFlag = true;
             ftr.ThreadSendOrder();           
             ftr.Parent = this.panelContainer; 

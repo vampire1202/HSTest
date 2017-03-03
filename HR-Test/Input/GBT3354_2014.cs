@@ -173,6 +173,30 @@ namespace HR_Test.Input
                 }
             }
 
+            if (this._εz1.Text.Trim().Length == 0)
+            {
+                strErr += "'纵向应变范围起始值'不能为空！\r\n\r\n";
+            }
+            else
+            {
+                if (double.Parse(this._εz1.Text.Trim()) == 0d)
+                {
+                    strErr += "'纵向应变范围起始值'不能为0！\r\n\r\n";
+                }
+            }
+
+            if (this._εz2.Text.Trim().Length == 0)
+            {
+                strErr += "'纵向应变范围终点值'不能为空！\r\n\r\n";
+            }
+            else
+            {
+                if (double.Parse(this._εz2.Text.Trim()) == 0d)
+                {
+                    strErr += "'纵向应变范围终点值'不能为0！\r\n\r\n";
+                }
+            }
+
 
             if (strErr != "")
             {
@@ -200,8 +224,8 @@ namespace HR_Test.Input
             string lL = (!string.IsNullOrEmpty(this._lL.Text) ? this._lL.Text : "0");
             string lT = (!string.IsNullOrEmpty(this._lT.Text) ? this._lT.Text : "0");
             string S0 = this._S0.Text;
-            string εz = (!string.IsNullOrEmpty(this._εz.Text) ? this._εz.Text : "0");
-
+            double εz1 = double.Parse(this._εz1.Text);
+            double εz2 = double.Parse(this._εz2.Text);
             Model.GBT3354_Samples model = new Model.GBT3354_Samples();
             model.adhesive = _adhesive.Text;
             model.assessor = "-";
@@ -245,7 +269,8 @@ namespace HR_Test.Input
             model.testStandard = testStandard;
             model.w = double.Parse(w);
             model.ε1t = 0;
-            model.εz = _εz.Text;
+            model.εz1 = εz1;
+            model.εz2 = εz2;
             model.μ12 = 0;
             model.σt = 0;
 
@@ -296,7 +321,8 @@ namespace HR_Test.Input
                 _humidity.Text = ds.Tables[0].Rows[0]["humidity"].ToString();
                 _lL.Text = ds.Tables[0].Rows[0]["lL"].ToString();
                 _lT.Text = ds.Tables[0].Rows[0]["lT"].ToString();
-                _εz.Text = ds.Tables[0].Rows[0]["εz"].ToString();
+                _εz1.Text = ds.Tables[0].Rows[0]["εz1"].ToString();
+                _εz2.Text = ds.Tables[0].Rows[0]["εz2"].ToString();
 
                 _mathineType.Text = ds.Tables[0].Rows[0]["mathineType"].ToString();
                 _tester.Text = ds.Tables[0].Rows[0]["tester"].ToString();
@@ -412,16 +438,7 @@ namespace HR_Test.Input
         private void gBtnAddToMethod1_Click(object sender, EventArgs e)
         {
             string strErr = "";
-
-            //if (this._testNo.Text.Trim().Length == 0)
-            //{
-            //    strErr += "'试验编号'不能为空！\r\n\r\n";
-            //}
-            //if (this._testSampleNo.Text.Trim().Length == 0)
-            //{
-            //    strErr += "'试样编号'不能为空！\r\n\r\n";
-            //}
-
+          
             if (string.IsNullOrEmpty(this._sendCompany.Text))
             {
                 strErr += "'送检单位'不能为空！\r\n\r\n";
@@ -439,20 +456,30 @@ namespace HR_Test.Input
                 strErr += "'加强片信息'不能为空！\r\n\r\n";
             }
 
-            //if (string.IsNullOrEmpty(this._temperature.Text))
-            //{
-            //    strErr += "'试验温度'不能为空！\r\n\r\n";
-            //}
+            if (this._εz1.Text.Trim().Length == 0)
+            {
+                strErr += "'纵向应变范围起始值'不能为空！\r\n\r\n";
+            }
+            else
+            {
+                if (double.Parse(this._εz1.Text.Trim()) == 0d)
+                {
+                    strErr += "'纵向应变范围起始值'不能为0！\r\n\r\n";
+                }
+            }
 
-            //if (string.IsNullOrEmpty(this._condition))
-            //{
-            //    strErr += "'试验条件'不能为空！\r\n\r\n";
-            //}
+            if (this._εz2.Text.Trim().Length == 0)
+            {
+                strErr += "'纵向应变范围终点值'不能为空！\r\n\r\n";
+            }
+            else
+            {
+                if (double.Parse(this._εz2.Text.Trim()) == 0d)
+                {
+                    strErr += "'纵向应变范围终点值'不能为0！\r\n\r\n";
+                }
+            }
 
-            //if (string.IsNullOrEmpty(this._controlMode))
-            //{
-            //    strErr += "'控制方式'不能为空！\r\n\r\n";
-            //}
 
             if (this._testMethod.Text.Trim().Length == 0)
             {
@@ -472,51 +499,7 @@ namespace HR_Test.Input
             {
                 strErr += "'试验员'不能为空！\r\n\r\n";
             }
-
-            //if (rdoRect.Checked)
-            //{
-            //    if (this._w.Text.Trim().Length == 0)
-            //    {
-            //        strErr += "'a0'不能为空！\r\n\r\n";
-            //    }
-            //    if (this._h.Text.Trim().Length == 0)
-            //    {
-            //        strErr += "'b0'不能为空！\r\n\r\n";
-            //    }
-            //}
-
-            //if (rdoCircle.Checked)
-            //{
-            //    if (this._d0.Text.Trim().Length == 0)
-            //    {
-            //        strErr += "'d0'不能为空！\r\n\r\n";
-            //    }
-            //}
-
-
-            //if (rdoPipe.Checked)
-            //{
-            //    if (this._w.Text.Trim().Length == 0)
-            //    {
-            //        strErr += "'a0'不能为空！\r\n\r\n";
-            //    }
-            //    if (this._Do.Text.Trim().Length == 0)
-            //    {
-            //        strErr += "'Do'不能为空！\r\n\r\n";
-            //    }
-            //}
-
-            //if (this._S0.Text.Trim().Length == 0)
-            //{
-            //    strErr += "'S0'不能为空！\r\n\r\n";
-            //}
-            //else
-            //{
-            //    if (double.Parse(this._S0.Text.Trim()) == 0d)
-            //    {
-            //        strErr += "'S0'不能为0！\r\n\r\n";
-            //    }
-            //}
+        
 
 
             if (this._lL.Text.Trim().Length == 0)
@@ -571,22 +554,18 @@ namespace HR_Test.Input
             string lL = (!string.IsNullOrEmpty(this._lL.Text) ? this._lL.Text : "0");
             string lT = (!string.IsNullOrEmpty(this._lT.Text) ? this._lT.Text : "0");
             string S0 = this._S0.Text;
-            string εz = (!string.IsNullOrEmpty(this._εz.Text) ? this._εz.Text : "0");
+            string εz = (!string.IsNullOrEmpty(this._εz1.Text) ? this._εz1.Text : "0");
             BLL.GBT3354_Method bll = new BLL.GBT3354_Method();
             Model.GBT3354_Method model = bll.GetModel(_testMethod.Text);
             if (model != null)
             {
                 model.adhesive = _adhesive.Text;
                 model.assessor = "-";
-                //model.d0 = double.Parse(d0);
-                //model.Do = double.Parse(Do);
                 model.getSample = getSample;
-                //model.h = double.Parse(h);
                 model.humidity = double.Parse(humidity);
                 model.lL = double.Parse(lL);
                 model.lT = double.Parse(lT);
                 model.mathineType = mathineType;
-                //model.S0 = double.Parse(S0);
                 if (rdoRect.Checked)
                     model.sampleShape = "矩形";
                 if (rdoCircle.Checked)
@@ -598,12 +577,11 @@ namespace HR_Test.Input
                 model.sign = _sign.Text;
                 model.strengthPlate = _strengthPlate.Text;
                 model.temperature = double.Parse(temperature);
-                //model.testDate = this._testDate.Value.Date;
                 model.tester = tester;
                 model.testMethod = testMethod;
                 model.testStandard = testStandard;
-                //model.w = double.Parse(w);
-                model.εz = _εz.Text;
+                model.εz1 = double.Parse(_εz1.Text);
+                model.εz2 = double.Parse(_εz2.Text);
                 model.testCondition = _condition;
                 model.sampleSpec = stuffSpec;
             }

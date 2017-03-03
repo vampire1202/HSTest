@@ -17,13 +17,19 @@ namespace HR_Test
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        string _mode;
+        public string _Mode
         {
-
+            get { return _mode; }
+            set { _mode = value; }
         }
 
-         
-
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.cmbA.SelectedIndex = 3;
+            this.cmbB.SelectedIndex = 0;
+            this.cmbC.SelectedIndex = 1;
+        }
 
         private void frmFailureMode_Load(object sender, EventArgs e)
         {
@@ -75,6 +81,81 @@ namespace HR_Test
             {
                 cmbC.Items.Add(item.Char + " - " + item.Info);
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.cmbA.SelectedIndex = 2;
+            this.cmbB.SelectedIndex = 1;
+            this.cmbC.SelectedIndex = 1;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.cmbA.SelectedIndex = 3;
+            this.cmbB.SelectedIndex = 1;
+            this.cmbC.SelectedIndex = 1;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.cmbA.SelectedIndex = 1;
+            this.cmbB.SelectedIndex = 3;
+            this.cmbC.SelectedIndex = 4;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            this.cmbA.SelectedIndex = 3;
+            this.cmbB.SelectedIndex = 3;
+            this.cmbC.SelectedIndex = 4;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            this.cmbA.SelectedIndex = 5;
+            this.cmbB.SelectedIndex = 3;
+            this.cmbC.SelectedIndex = 4;
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            this.cmbA.SelectedIndex = 0;
+            this.cmbB.SelectedIndex = 3;
+            this.cmbC.SelectedIndex = 4;
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            this.cmbA.SelectedIndex = 6;
+            this.cmbB.SelectedIndex = 3;
+            this.cmbC.SelectedIndex = 4;
+        }
+
+        bool canClose = false;
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            if (this.cmbA.SelectedIndex == -1 || this.cmbB.SelectedIndex == -1 || this.cmbC.SelectedIndex == -1)
+                canClose = false;
+            else
+            {
+                canClose = true;
+                _mode = this.lstcharA[this.cmbA.SelectedIndex].Char + this.lstcharB[this.cmbB.SelectedIndex].Char + this.lstcharC[this.cmbC.SelectedIndex].Char;
+            }
+        }
+
+        private void frmFailureMode_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (canClose)
+                e.Cancel = false;
+            else
+                e.Cancel = true;
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            canClose = true;
         }
     }
 

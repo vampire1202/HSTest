@@ -483,6 +483,7 @@ namespace HR_Test
                         SaveGBT23615Method(controlType1, controlType2, controlType3, "tensileheng");
                         break;
                     #endregion
+
                     #region 定向纤维复合材料拉伸GBT3354
                     case "tb_GBT3354_Samples":
                         SaveGBT3354Method(controlType1, controlType2, controlType3, "tensile");
@@ -633,8 +634,8 @@ namespace HR_Test
             model.S0 = 0;
             model.lL = 0;
             model.lT = 0;
-            model.εz = "-";
-
+            model.εz1 =0;
+            model.εz2 = 0;
             model.selResultID = 0;
             model.extenValue = 0;
             model.extenChannel = 0;

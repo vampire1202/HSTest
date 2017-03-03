@@ -54,7 +54,7 @@
             this._sampleState = new System.Windows.Forms.TextBox();
             this._humidity = new System.Windows.Forms.TextBox();
             this._testStandard = new System.Windows.Forms.TextBox();
-            this._εz = new System.Windows.Forms.TextBox();
+            this._εz1 = new System.Windows.Forms.TextBox();
             this._lT = new System.Windows.Forms.TextBox();
             this._tester = new System.Windows.Forms.TextBox();
             this._mathineType = new System.Windows.Forms.TextBox();
@@ -106,6 +106,8 @@
             this.gBtnAddToMethod1 = new Glass.GlassButton();
             this.label51 = new System.Windows.Forms.Label();
             this._testMethod = new System.Windows.Forms.TextBox();
+            this._εz2 = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
             this.gbTensile.SuspendLayout();
             this.panel26.SuspendLayout();
             this.gbTensileC.SuspendLayout();
@@ -161,7 +163,8 @@
             this.gbTensileC.Controls.Add(this._sampleState);
             this.gbTensileC.Controls.Add(this._humidity);
             this.gbTensileC.Controls.Add(this._testStandard);
-            this.gbTensileC.Controls.Add(this._εz);
+            this.gbTensileC.Controls.Add(this._εz2);
+            this.gbTensileC.Controls.Add(this._εz1);
             this.gbTensileC.Controls.Add(this._lT);
             this.gbTensileC.Controls.Add(this._tester);
             this.gbTensileC.Controls.Add(this._mathineType);
@@ -189,6 +192,7 @@
             this.gbTensileC.Controls.Add(this.label3);
             this.gbTensileC.Controls.Add(this._testSampleNo);
             this.gbTensileC.Controls.Add(this._sign);
+            this.gbTensileC.Controls.Add(this.label21);
             this.gbTensileC.Controls.Add(this.label4);
             this.gbTensileC.Controls.Add(this.label49);
             this.gbTensileC.Controls.Add(this.label9);
@@ -205,7 +209,7 @@
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label14.ForeColor = System.Drawing.Color.Red;
-            this.label14.Location = new System.Drawing.Point(656, 197);
+            this.label14.Location = new System.Drawing.Point(648, 198);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(281, 24);
             this.label14.TabIndex = 142;
@@ -213,7 +217,7 @@
             // 
             // _lL
             // 
-            this._lL.Location = new System.Drawing.Point(93, 167);
+            this._lL.Location = new System.Drawing.Point(93, 171);
             this._lL.Name = "_lL";
             this._lL.Size = new System.Drawing.Size(148, 24);
             this._lL.TabIndex = 0;
@@ -274,17 +278,17 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(682, 170);
+            this.label5.Location = new System.Drawing.Point(649, 173);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(75, 15);
+            this.label5.Size = new System.Drawing.Size(105, 15);
             this.label5.TabIndex = 141;
-            this.label5.Text = "应变范围:\r\n";
+            this.label5.Text = "纵向应变范围:\r\n";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(341, 165);
+            this.label15.Location = new System.Drawing.Point(341, 169);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(82, 30);
             this.label15.TabIndex = 141;
@@ -294,7 +298,7 @@
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(13, 163);
+            this.label42.Location = new System.Drawing.Point(13, 167);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(82, 30);
             this.label42.TabIndex = 141;
@@ -398,17 +402,18 @@
             this._testStandard.Size = new System.Drawing.Size(146, 24);
             this._testStandard.TabIndex = 0;
             // 
-            // _εz
+            // _εz1
             // 
-            this._εz.Location = new System.Drawing.Point(760, 167);
-            this._εz.Name = "_εz";
-            this._εz.Size = new System.Drawing.Size(146, 24);
-            this._εz.TabIndex = 0;
-            this._εz.TextChanged += new System.EventHandler(this._a0_TextChanged);
+            this._εz1.Location = new System.Drawing.Point(760, 170);
+            this._εz1.Name = "_εz1";
+            this._εz1.Size = new System.Drawing.Size(61, 24);
+            this._εz1.TabIndex = 0;
+            this._εz1.Text = "0.0005";
+            this._εz1.TextChanged += new System.EventHandler(this._a0_TextChanged);
             // 
             // _lT
             // 
-            this._lT.Location = new System.Drawing.Point(429, 167);
+            this._lT.Location = new System.Drawing.Point(429, 171);
             this._lT.Name = "_lT";
             this._lT.Size = new System.Drawing.Size(146, 24);
             this._lT.TabIndex = 0;
@@ -938,6 +943,25 @@
             this._testMethod.Size = new System.Drawing.Size(344, 24);
             this._testMethod.TabIndex = 0;
             // 
+            // _εz2
+            // 
+            this._εz2.Location = new System.Drawing.Point(845, 170);
+            this._εz2.Name = "_εz2";
+            this._εz2.Size = new System.Drawing.Size(61, 24);
+            this._εz2.TabIndex = 0;
+            this._εz2.Text = "0.0015";
+            this._εz2.TextChanged += new System.EventHandler(this._a0_TextChanged);
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.ForeColor = System.Drawing.Color.Black;
+            this.label21.Location = new System.Drawing.Point(821, 176);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(22, 15);
+            this.label21.TabIndex = 2;
+            this.label21.Text = "～";
+            // 
             // GBT3354_2014
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1032,7 +1056,7 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox _sampleState;
-        private System.Windows.Forms.TextBox _εz;
+        private System.Windows.Forms.TextBox _εz1;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.TextBox _humidity;
@@ -1042,5 +1066,7 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.TextBox _sendCompany;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox _εz2;
+        private System.Windows.Forms.Label label21;
     }
 }

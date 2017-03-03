@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using ZedGraph;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace HR_Test
 {
@@ -153,6 +154,8 @@ namespace HR_Test
         private bool m_useExten = false;
         private bool m_useExten1 = false;
         private bool m_useExten2 = false;
+        private double m_e1 = 0;
+        private double m_e2 = 0;
         private float m_extenValue;
         private int m_extenType = 2;
 
@@ -185,10 +188,10 @@ namespace HR_Test
         float m_Eb;
         //规定非比例弯曲力
         bool m_isSelFpb = false;
-        float m_Fpb=0;
+        float m_Fpb = 0;
         //规定残余弯曲力
         bool m_isSelFrb = false;
-        float m_Frb=0;
+        float m_Frb = 0;
         //最大弯曲力
         bool m_isSelFbb = false;
         float m_Fbb;
@@ -210,7 +213,7 @@ namespace HR_Test
         //取引伸计后的继续标志
         public bool m_holdContinue = false;
         //实时显示曲线线程
-        Thread _threadShowCurve;       
+        Thread _threadShowCurve;
         //读取结果数据线程
         Thread _threadReadCurve;
         //当存储数据超过1k条，开启存储数据线程，而后清空采集的数据
@@ -231,15 +234,7 @@ namespace HR_Test
         float m_Load = 0f;              //力
         float m_Time = 0f;              //时间
         float m_YingLi = 0f;            //应力
-        float m_YingBian = 0f;            //应变  
-
-        //float m_Displacement_Test = 0f;      //位移
-        //float m_Elongate_Test = 0f;          //变形
-        //float m_Load_Test = 0f;              //力
-        //float m_Time_Test = 0f;              //时间
-        //float m_Stress_Test = 0f;            //应力
-        //float m_Strain_Test = 0f;            //应变  
-
+        float m_YingBian = 0f;            //应变 
 
         string m_TestSampleNo;
         string m_TestNo;
@@ -285,7 +280,7 @@ namespace HR_Test
         bool m_FlagStage2Stop;          //阶段2结束标注
         bool m_FlagStage3Start;
         bool m_FlagStage3Stop;
-        float m_StopValue;
+        double m_StopValue;
 
         bool m_FlagFRH;                 //上屈服点已求出标志
         bool m_FlagFRL;                 //下屈服点已求出标志
@@ -627,7 +622,7 @@ namespace HR_Test
         public string FloatDisplay(Int32 Number, UInt16 Scale, UInt32 Resolution, byte FlagLFE)
         {
             string strDisp;
-            float floatnumber;
+            double floatnumber;
             UInt32 _scale = 1;
             UInt16 _e = 0;
             UInt16 Resolution_E = 0;
@@ -680,7 +675,7 @@ namespace HR_Test
             if (Math.Abs(floatnumber) >= 1000)
             {
                 //采集代码除以1000
-                floatnumber = (float)(floatnumber / 1000.0);
+                floatnumber = (double)(floatnumber / 1000.0);
                 //小数点位数加3
                 DotValue = DotValue + 3;
             }
@@ -704,434 +699,830 @@ namespace HR_Test
             return strDisp;
         }
 
-        //Test
-        //DateTime dt = DateTime.Now;
-        public void ThreadSendOrder()
+
+        async Task TskSendOrder()
         {
-            new Thread(() =>
+            //Test
+            dt = DateTime.Now;
+            while (_showThreadFlag)
             {
-                Thread.CurrentThread.IsBackground = true;
-                Thread.CurrentThread.Priority = ThreadPriority.Normal;
-                while (_showThreadFlag)
+                await Task.Delay(40);
+                int ret;
+                int offset = 0;
+                int len = 2;
+                int m_lvalue = 0;
+                int m_dvalue = 0;
+                int m_evalue = 0;
+                int m_tvalue = 0;
+                int m_valueS = 0;
+                int m_index = 0;
+                if ((m_SensorArrayFlag == 1) && (m_SensorCount != 0))
                 {
-                    //采集频率 40ms
-                    Thread.Sleep(40);
-                    BeginInvoke(new Action(() =>
+                    buf[0] = 0x03;									                //命令字节
+                    buf[1] = Convert.ToByte(offset / 256);							//偏移量
+                    buf[2] = Convert.ToByte(offset % 256);
+                    buf[3] = Convert.ToByte(len / 256);								//每次读的长度
+                    buf[4] = Convert.ToByte(len % 256);
+
+                    ret = RwUsb.WriteData1582(1, buf, 5, 1000);				        //发送读命令
+
+                    len = (m_SensorCount + 2) * 4;
+
+                    ret = RwUsb.ReadData1582(4, buf, len, 1000);				    //读数据
+
+                    //0x01位移 0x02负荷 0x03变形 0x04大变形
+
+                    /*---------------------m_Load display----------------*/
+
+                    if (m_LoadSensorCount != 0)
                     {
-                        lock (m_state)
+                        m_index = m_LSensorArray[0].SensorIndex * 4 + 3;
+                        m_lvalue = buf[m_index];
+
+                        m_lvalue = m_lvalue << 8;
+                        m_index = m_LSensorArray[0].SensorIndex * 4 + 2;
+                        m_lvalue |= buf[m_index];
+
+                        m_lvalue = m_lvalue << 8;
+                        m_index = m_LSensorArray[0].SensorIndex * 4 + 1;
+                        m_lvalue |= buf[m_index];
+
+                        m_lvalue = m_lvalue << 8;
+                        m_index = m_LSensorArray[0].SensorIndex * 4 + 0;
+                        m_lvalue |= buf[m_index];
+                        //如果是单空间和试验为压缩或弯曲试验 GBT228-2010
+                        if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
+                            m_lvalue = -m_lvalue;
+                        m_ppreload = m_Load;
+                        m_Load = (float)(m_lvalue * m_LoadResolutionValue);
+                        if (m_CtrlCommandArray[0].m_StopPointType == 0x81)//如果I一阶段为负荷停止点
                         {
-                            int ret;
-                            int offset = 0;
-                            int len = 2;
-                            int m_lvalue = 0;
-                            int m_dvalue = 0;
-                            int m_evalue = 0;
-                            int m_tvalue = 0;
-                            int m_valueS = 0;
-                            int m_index = 0;
-                            if ((m_SensorArrayFlag == 1) && (m_SensorCount != 0))
+                            //转换点时记录数据
+                            if (m_Load >= m_CtrlCommandArray[0].m_StopPoint * m_LoadResolutionValue && m_pcount == 0)
+                                m_isaddcount = true;
+                            if (m_isaddcount)
                             {
-                                buf[0] = 0x03;									                //命令字节
-                                buf[1] = Convert.ToByte(offset / 256);							//偏移量
-                                buf[2] = Convert.ToByte(offset % 256);
-                                buf[3] = Convert.ToByte(len / 256);								//每次读的长度
-                                buf[4] = Convert.ToByte(len % 256);
-
-                                ret = RwUsb.WriteData1582(1, buf, 5, 1000);				        //发送读命令
-                                //		if (ret != 5) 	
-                                //		{	
-                                //			buf[0] = 0x03;
-                                //			WriteData1582(1,buf,1,1000);				        //发送停止命令
-                                //			return -1;
-                                //		}
-                                len = (m_SensorCount + 2) * 4;
-
-                                ret = RwUsb.ReadData1582(4, buf, len, 1000);				    //读数据
-                                //		if (ret != len)  
-                                //		{
-                                //			buf[0] = 0x03;
-                                //			WriteData1582(1,buf,5,1000);				        //发送停止命令
-                                //			return -1;
-                                //		}
-
-                                //0x01位移 0x02负荷 0x03变形 0x04大变形
-
-                                /*---------------------m_Load display----------------*/
-
-                                if (m_LoadSensorCount != 0)
+                                if (m_CtrlCommandArray[0].m_CtrlSpeed > 0 && m_CtrlCommandArray[1].m_CtrlSpeed > 0)
                                 {
-                                    m_index = m_LSensorArray[0].SensorIndex * 4 + 3;
-                                    m_lvalue = buf[m_index];
-
-                                    m_lvalue = m_lvalue << 8;
-                                    m_index = m_LSensorArray[0].SensorIndex * 4 + 2;
-                                    m_lvalue |= buf[m_index];
-
-                                    m_lvalue = m_lvalue << 8;
-                                    m_index = m_LSensorArray[0].SensorIndex * 4 + 1;
-                                    m_lvalue |= buf[m_index];
-
-                                    m_lvalue = m_lvalue << 8;
-                                    m_index = m_LSensorArray[0].SensorIndex * 4 + 0;
-                                    m_lvalue |= buf[m_index];
-                                    //如果是单空间和试验为压缩或弯曲试验 GBT228-2010
-                                    if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
-                                        m_lvalue = -m_lvalue;
-                                    m_ppreload = m_Load;
-                                    m_Load = (float)(m_lvalue * m_LoadResolutionValue);
-                                    if (m_CtrlCommandArray[0].m_StopPointType == 0x81)//如果I一阶段为负荷停止点
-                                    {
-                                        //转换点时记录数据
-                                        if (m_Load >= m_CtrlCommandArray[0].m_StopPoint * m_LoadResolutionValue && m_pcount == 0)
-                                            m_isaddcount = true;
-                                        if (m_isaddcount)
-                                        {
-                                            if (m_CtrlCommandArray[0].m_CtrlSpeed > 0 && m_CtrlCommandArray[1].m_CtrlSpeed > 0)
-                                            {
-                                                m_pcount++;
-                                                if (m_pcount > 10)
-                                                    m_isaddcount = false;
-                                                if (m_Load < m_ppreload)
-                                                    m_Load = m_ppreload;
-                                            }
-                                        }
-                                    }
-
-                                    this.lblFShow.Text = FloatDisplay(m_lvalue, (ushort)m_SensorArray[m_LSensorArray[0].SensorIndex].scale, m_Resolution, 0x02);
-                                    this.lblFShow.Refresh();
-
+                                    m_pcount++;
+                                    if (m_pcount > 10)
+                                        m_isaddcount = false;
+                                    if (m_Load < m_ppreload)
+                                        m_Load = m_ppreload;
                                 }
-
-                                /*---------------------m_Displacement display----------------*/
-
-                                if (m_DisplacementSensorCount != 0)
-                                {
-                                    m_index = m_DSensorArray[0].SensorIndex * 4 + 3;
-                                    m_dvalue = buf[m_index];
-
-                                    m_dvalue = m_dvalue << 8;
-                                    m_index = m_DSensorArray[0].SensorIndex * 4 + 2;
-                                    m_dvalue |= buf[m_index];
-
-                                    m_dvalue = m_dvalue << 8;
-                                    m_index = m_DSensorArray[0].SensorIndex * 4 + 1;
-                                    m_dvalue |= buf[m_index];
-
-                                    m_dvalue = m_dvalue << 8;
-                                    m_index = m_DSensorArray[0].SensorIndex * 4 + 0;
-                                    m_dvalue |= buf[m_index];
-
-                                    if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
-                                        m_dvalue = -m_dvalue;
-                                    //记录前一点位移
-                                    m_ppredis = m_Displacement;
-                                    //位移
-                                    m_Displacement = (float)(m_dvalue);
-                                    if (m_CtrlCommandArray[0].m_StopPointType == 0x80)//如果I一阶段为位移停止点
-                                    {
-                                        //转换点时记录数据
-                                        if (m_Displacement >= m_CtrlCommandArray[0].m_StopPoint && m_pcount == 0)
-                                            m_isaddcount = true;
-                                        if (m_isaddcount)
-                                        {
-                                            if (m_CtrlCommandArray[0].m_CtrlSpeed > 0 & m_CtrlCommandArray[1].m_CtrlSpeed > 0)
-                                            {
-                                                m_pcount++;
-                                                if (m_pcount > 10)
-                                                    m_isaddcount = false;
-                                                //if (m_Displacement < m_ppredis)
-                                                //    m_Displacement = m_ppredis;
-                                                if (m_Load < m_ppreload)
-                                                    m_Load = m_ppreload;
-                                            }
-                                        }
-                                    }
-                                    this.lblDShow.Text = FloatDisplay(m_dvalue, (ushort)m_SensorArray[m_DSensorArray[0].SensorIndex].scale, m_Resolution, 0x01);
-                                    this.lblDShow.Refresh();
-                                }
-
-                                /*---------------------elongate display----------------*/
-
-                                if (m_ElongateSensorCount != 0)
-                                {
-                                    m_index = m_ESensorArray[0].SensorIndex * 4 + 3;
-                                    m_evalue = buf[m_index];
-
-                                    m_evalue = m_evalue << 8;
-                                    m_index = m_ESensorArray[0].SensorIndex * 4 + 2;
-                                    m_evalue |= buf[m_index];
-
-                                    m_evalue = m_evalue << 8;
-                                    m_index = m_ESensorArray[0].SensorIndex * 4 + 1;
-                                    m_evalue |= buf[m_index];
-
-                                    m_evalue = m_evalue << 8;
-                                    m_index = m_ESensorArray[0].SensorIndex * 4 + 0;
-                                    m_evalue |= buf[m_index];
-
-                                    if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
-                                        m_evalue = -m_evalue;
-
-                                    //变形
-                                    m_Elongate = (float)(m_evalue * m_ElongateResolutionValue);
-
-                                    if (!isTest)
-                                    {
-                                        this.lblBXShow.Text = FloatDisplay(m_evalue, (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
-                                        this.lblBXShow.Refresh();
-                                    }
-                                }
-
-                                /*-------------------time display-----------------------*/
-                                m_valueS = buf[m_SensorCount * 4 + 2];     //+2
-                                m_valueS = m_valueS << 4;
-                                m_tvalue = buf[m_SensorCount * 4 + 1] & 0x0f0;//+1
-                                m_tvalue = m_tvalue >> 4;
-                                m_valueS |= (m_tvalue & 0x0f);
-                                m_tvalue = buf[m_SensorCount * 4 + 1] & 0x0f;  //+1
-                                m_tvalue = m_tvalue << 8;
-                                m_tvalue |= buf[m_SensorCount * 4 + 0];      //+0
-                                m_Time = (float)((m_valueS * 1000.0f + m_tvalue) / 1000.0f);
-                            }
-
-                            //Test  
-                            m_Load += 0.3f;
-                            m_Time = (float)(DateTime.Now - dt).TotalSeconds;
-                            m_Displacement += 0.128f;
-                            m_Elongate = 2 * m_Load;
-                            m_YingBian = (float)(m_Elongate / m_Lt) * 100;
-                            m_YingLi = (float)Math.Log(m_Load);
-
-                            if (isTest)
-                            {
-                                gdata gd = new gdata();
-
-                                #region 如果使用引申计
-                                if (_useExten)
-                                {
-                                    switch (m_extenType)
-                                    {
-                                        case 0://% 应变
-                                            if (m_YingBian >= m_extenValue)
-                                            {
-                                                //取引伸计暂停时的值
-                                                SendPauseTest();
-                                                //m_hold_data.BX1 = m_Elongate;
-                                                //m_hold_data.D1 = m_Displacement;
-                                                //m_hold_data.F1 = m_Load;
-                                                _useExten = false;
-                                                m_holdPause = true;
-                                                m_holdContinue = false;
-                                                btnZeroS.Enabled = false;
-                                                //弹出取引伸计框
-                                                //Thread.Sleep(50);
-                                                m_fh.Show();
-                                                m_fh.TopMost = true;
-                                            }
-                                            break;
-                                        case 1://mm 变形
-                                            if (m_Elongate >= m_extenValue)
-                                            {
-                                                SendPauseTest();
-                                                //取引伸计暂停时的值
-                                                //m_hold_data.BX1 = m_Elongate;
-                                                //m_hold_data.D1 = m_Displacement;
-                                                //m_hold_data.F1 = m_Load;
-                                                _useExten = false;
-                                                m_holdPause = true;
-                                                m_holdContinue = false;
-                                                btnZeroS.Enabled = false;
-                                                //弹出取引伸计框
-                                                //Thread.Sleep(50);
-                                                m_fh.Show();
-                                                m_fh.TopMost = true;
-                                            }
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                }
-                                #endregion
-
-                                #region 当取引伸计 暂停时
-                                if (m_pause && m_holdPause)
-                                {
-                                    if (m_Load < m_hold_data.F1)
-                                        m_Load = (float)m_hold_data.F1;
-                                    m_Elongate = (float)m_hold_data.BX1;
-                                }
-                                #endregion
-
-                                #region 当取引申计后 , 保持
-                                if (m_holdContinue)
-                                {
-                                    if (m_Load <= m_hold_data.F1)
-                                        m_Load = (float)m_hold_data.F1;
-                                    if (m_Load > m_hold_data.F1)
-                                        m_hold_data.F1 = 0;
-                                    m_Elongate = m_Displacement - (float)m_hold_data.D1 + (float)m_hold_data.BX1;
-                                }
-                                #endregion
-
-
-                                //if (m_Load < 0) m_Load = 0;
-                                //if (m_Displacement < 0) m_Displacement =0;
-                                //if (m_Elongate < 0) m_Elongate = 0;
-                                //this.lblBXShow.Text = m_Elongate.ToString("G6");
-                                //this.lblBXShow.Refresh();
-
-                                if (m_ElongateResolutionValue != 0)
-                                {
-                                    this.lblBXShow.Text = FloatDisplay((int)(m_Elongate / m_ElongateResolutionValue), (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
-                                    this.lblBXShow.Refresh();
-                                }
-
-                                gd.F1 = (float)Math.Round(m_Load, 3);
-                                gd.F2 = 0;
-                                gd.F3 = 0;
-                                gd.D1 = (float)Math.Round(m_Displacement, 3);
-                                gd.D2 = 0;
-                                gd.D3 = 0;
-                                gd.BX1 = (float)Math.Round(m_Elongate, 3);
-                                gd.BX2 = 0;
-                                gd.BX3 = 0;
-                                gd.YL1 = (float)Math.Round(m_YingLi, 3);
-                                gd.YL2 = 0;
-                                gd.YL3 = 0;
-                                gd.YB1 = (float)Math.Round(m_YingBian, 6);
-                                gd.YB2 = 0;
-                                gd.YB3 = 0;
-                                gd.Ts = (float)Math.Round(m_Time, 3);
-
-                                //_List_Data.Add(gd);
-                                _List_Testing_Data.Add(gd);
-
-                                //自动存储线程                                    
-                                if (_List_Testing_Data.Count >= 500)
-                                {
-                                    gdata[] temp = new gdata[500];
-                                    _List_Testing_Data.CopyTo(temp);
-                                    _List_Testing_Data.RemoveRange(0, 500);
-                                    if (_threadSaveData == null)
-                                    {
-                                        _threadSaveData = new Thread(new ParameterizedThreadStart(SaveCurveData));
-                                        _threadSaveData.IsBackground = true;
-                                        _threadSaveData.Start(temp);
-                                        //while (_threadSaveData.IsAlive) ;
-                                        //Thread.Sleep(20);
-                                        _threadSaveData.Join();
-                                        _threadSaveData = null;
-                                    }
-                                }
-
-                                //存储前一点的值
-                                m_Fn = m_F;
-                                //实时得值
-                                m_F = m_Load;
-
-                                //当力超过传感器量程的1/200,启动判断
-                                if (m_CheckStop)
-                                {
-                                    if (m_F > m_CheckStopValue)
-                                    {
-                                        m_Check = true;
-                                        m_CheckStop = false;
-                                    }
-                                }
-
-                                //自动停止
-                                if (m_F < Math.Abs(m_Fn) * (m_StopValue / 100.0) && m_Check)
-                                {
-                                    isTest = false;
-                                    SendStopTest();
-                                    tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
-                                }
-
-                                //获取自定义试验的最后一条命令
-                                //如果是位移控制的停止点
-                                //Test屏蔽
-                                //if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x80)
-                                //{
-                                //    if (m_Displacement >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
-                                //    {
-                                //        isTest = false;
-                                //        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
-                                //    }
-                                //}
-                                ////如果是负荷停止点
-                                //if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x81)
-                                //{
-                                //    if (m_Load >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
-                                //    {
-                                //        isTest = false;
-                                //        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
-                                //    }
-                                //}
-
-                                //应力
-                                if (m_S0 != 0)
-                                    m_YingLi = m_Load / m_S0;
-                                else
-                                    m_YingLi = 0;
-
-                                //应变 百分比
-                                if (m_Le != 0)
-                                    m_YingBian = m_Elongate / (m_Le * 10.0f);
-                                else
-                                    m_YingBian = 0;
                             }
                         }
+                        this.BeginInvoke(new Action(() =>
+                            {
+                                this.lblFShow.Text = FloatDisplay(m_lvalue, (ushort)m_SensorArray[m_LSensorArray[0].SensorIndex].scale, m_Resolution, 0x02);
+                                this.lblFShow.Refresh();
+                            }));
 
-                        if (Math.Abs(m_Load) >= 1000)
-                        {
-                            lblkN.Text = "kN";
-                            lblkN.Refresh();
-                        }
-                        else
-                        {
-                            lblkN.Text = "N";
-                            lblkN.Refresh();
-                        }
+                    }
 
+                    /*---------------------m_Displacement display----------------*/
+
+                    if (m_DisplacementSensorCount != 0)
+                    {
+                        m_index = m_DSensorArray[0].SensorIndex * 4 + 3;
+                        m_dvalue = buf[m_index];
+
+                        m_dvalue = m_dvalue << 8;
+                        m_index = m_DSensorArray[0].SensorIndex * 4 + 2;
+                        m_dvalue |= buf[m_index];
+
+                        m_dvalue = m_dvalue << 8;
+                        m_index = m_DSensorArray[0].SensorIndex * 4 + 1;
+                        m_dvalue |= buf[m_index];
+
+                        m_dvalue = m_dvalue << 8;
+                        m_index = m_DSensorArray[0].SensorIndex * 4 + 0;
+                        m_dvalue |= buf[m_index];
+
+                        if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
+                            m_dvalue = -m_dvalue;
+                        //记录前一点位移
+                        m_ppredis = m_Displacement;
                         //位移
-                        if (Math.Abs(m_Displacement) >= 1000.0)
+                        m_Displacement = (float)(m_dvalue);
+                        if (m_CtrlCommandArray[0].m_StopPointType == 0x80)//如果I一阶段为位移停止点
                         {
-                            lblmm1.Text = "mm";
-                            lblmm1.Refresh();
+                            //转换点时记录数据
+                            if (m_Displacement >= m_CtrlCommandArray[0].m_StopPoint && m_pcount == 0)
+                                m_isaddcount = true;
+                            if (m_isaddcount)
+                            {
+                                if (m_CtrlCommandArray[0].m_CtrlSpeed > 0 & m_CtrlCommandArray[1].m_CtrlSpeed > 0)
+                                {
+                                    m_pcount++;
+                                    if (m_pcount > 10)
+                                        m_isaddcount = false;
+                                    //if (m_Displacement < m_ppredis)
+                                    //    m_Displacement = m_ppredis;
+                                    if (m_Load < m_ppreload)
+                                        m_Load = m_ppreload;
+                                }
+                            }
                         }
-                        else
-                        {
-                            lblmm1.Text = "μm";
-                            lblmm1.Refresh();
-                        }
+                        this.BeginInvoke(new Action(() =>
+                            {
+                                this.lblDShow.Text = FloatDisplay(m_dvalue, (ushort)m_SensorArray[m_DSensorArray[0].SensorIndex].scale, m_Resolution, 0x01);
+                                this.lblDShow.Refresh();
+                            }));
+                    }
+
+                    /*---------------------elongate display----------------*/
+
+                    if (m_ElongateSensorCount != 0)
+                    {
+                        m_index = m_ESensorArray[0].SensorIndex * 4 + 3;
+                        m_evalue = buf[m_index];
+
+                        m_evalue = m_evalue << 8;
+                        m_index = m_ESensorArray[0].SensorIndex * 4 + 2;
+                        m_evalue |= buf[m_index];
+
+                        m_evalue = m_evalue << 8;
+                        m_index = m_ESensorArray[0].SensorIndex * 4 + 1;
+                        m_evalue |= buf[m_index];
+
+                        m_evalue = m_evalue << 8;
+                        m_index = m_ESensorArray[0].SensorIndex * 4 + 0;
+                        m_evalue |= buf[m_index];
+
+                        if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
+                            m_evalue = -m_evalue;
 
                         //变形
-                        if (Math.Abs(m_Elongate) > 1000 && lblBXShow.Visible == true)
+                        m_Elongate = (float)(m_evalue * m_ElongateResolutionValue);
+
+                        if (!isTest)
                         {
-                            lblmm2.Text = "mm";
-                            lblmm2.Refresh();
+                            this.BeginInvoke(new Action(() =>
+                            {
+                                this.lblBXShow.Text = FloatDisplay(m_evalue, (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
+                                this.lblBXShow.Refresh();
+                            }));
                         }
-                        else
-                        {
-                            lblmm2.Text = "μm";
-                            lblmm2.Refresh();
-                        }
+                    }
 
-                        //应变
-                        lblYBShow.Text = m_YingBian.ToString("f4");
-                        lblYBShow.Refresh();
-
-                        //应力
-                        lblYLShow.Text = m_YingLi.ToString("f2");
-                        lblYLShow.Refresh();
-
-                        //时间
-                        lblTimeShow.Text = m_Time.ToString("f2");
-                        lblTimeShow.Refresh();
-
-                    }));
+                    /*-------------------time display-----------------------*/
+                    m_valueS = buf[m_SensorCount * 4 + 2];     //+2
+                    m_valueS = m_valueS << 4;
+                    m_tvalue = buf[m_SensorCount * 4 + 1] & 0x0f0;//+1
+                    m_tvalue = m_tvalue >> 4;
+                    m_valueS |= (m_tvalue & 0x0f);
+                    m_tvalue = buf[m_SensorCount * 4 + 1] & 0x0f;  //+1
+                    m_tvalue = m_tvalue << 8;
+                    m_tvalue |= buf[m_SensorCount * 4 + 0];      //+0
+                    m_Time = (float)((m_valueS * 1000.0f + m_tvalue) / 1000.0f);
                 }
-            }).Start();
+
+                //Test  
+                m_Load += 0.3f;
+                m_Time = (float)(DateTime.Now - dt).TotalSeconds;
+                m_Displacement += 0.128f;
+                m_Elongate = 2 * m_Load;
+                m_YingBian = (float)(m_Elongate / m_Lt) * 100;
+                m_YingLi = (float)Math.Log(m_Load);
+
+                if (isTest)
+                {
+                    gdata gd = new gdata();
+
+                    #region 如果使用引申计
+                    if (_useExten)
+                    {
+                        switch (m_extenType)
+                        {
+                            case 0://% 应变
+                                if (m_YingBian >= m_extenValue)
+                                {
+                                    //取引伸计暂停时的值
+                                    SendPauseTest();
+                                    _useExten = false;
+                                    m_holdPause = true;
+                                    m_holdContinue = false;
+                                    this.BeginInvoke(new Action(() =>
+                            {
+                                btnZeroS.Enabled = false;
+                                //弹出取引伸计框
+                                m_fh.Show();
+                                m_fh.TopMost = true;
+                            }));
+                                }
+                                break;
+                            case 1://mm 变形
+                                if (m_Elongate >= m_extenValue)
+                                {
+                                    SendPauseTest();
+                                    _useExten = false;
+                                    m_holdPause = true;
+                                    m_holdContinue = false;
+
+                                    this.BeginInvoke(new Action(() =>
+                            {
+                                btnZeroS.Enabled = false;
+                                m_fh.Show();
+                                m_fh.TopMost = true;
+                            }));
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    #endregion
+
+                    #region 当取引伸计 暂停时
+                    if (m_pause && m_holdPause)
+                    {
+                        if (m_Load < m_hold_data.F1)
+                            m_Load = (float)m_hold_data.F1;
+                        m_Elongate = (float)m_hold_data.BX1;
+                    }
+                    #endregion
+
+                    #region 当取引申计后 , 保持
+                    if (m_holdContinue)
+                    {
+                        if (m_Load <= m_hold_data.F1)
+                            m_Load = (float)m_hold_data.F1;
+                        if (m_Load > m_hold_data.F1)
+                            m_hold_data.F1 = 0;
+                        m_Elongate = m_Displacement - (float)m_hold_data.D1 + (float)m_hold_data.BX1;
+                    }
+                    #endregion
+
+
+                    if (m_ElongateResolutionValue != 0)
+                    {
+                        this.BeginInvoke(new Action(() =>
+                            {
+                                this.lblBXShow.Text = FloatDisplay((int)(m_Elongate / m_ElongateResolutionValue), (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
+                                this.lblBXShow.Refresh();
+                            }));
+                    }
+
+                    gd.F1 = (float)Math.Round(m_Load, 3);
+                    gd.F2 = 0;
+                    gd.F3 = 0;
+                    gd.D1 = (float)Math.Round(m_Displacement, 3);
+                    gd.D2 = 0;
+                    gd.D3 = 0;
+                    gd.BX1 = (float)Math.Round(m_Elongate, 3);
+                    gd.BX2 = 0;
+                    gd.BX3 = 0;
+                    gd.YL1 = (float)Math.Round(m_YingLi, 3);
+                    gd.YL2 = 0;
+                    gd.YL3 = 0;
+                    gd.YB1 = (float)Math.Round(m_YingBian, 6);
+                    gd.YB2 = 0;
+                    gd.YB3 = 0;
+                    gd.Ts = (float)Math.Round(m_Time, 3);
+
+                    //_List_Data.Add(gd);
+                    _List_Testing_Data.Add(gd);
+
+                    //自动存储线程                                    
+                    if (_List_Testing_Data.Count >= 500)
+                    {
+                        gdata[] temp = new gdata[500];
+                        _List_Testing_Data.CopyTo(temp);
+                        _List_Testing_Data.RemoveRange(0, 500);
+                        if (_threadSaveData == null)
+                        {
+                            _threadSaveData = new Thread(new ParameterizedThreadStart(SaveCurveData));
+                            _threadSaveData.IsBackground = true;
+                            _threadSaveData.Start(temp);
+                            _threadSaveData.Join();
+                            _threadSaveData = null;
+                        }
+                    }
+
+                    //存储前一点的值
+                    m_Fn = m_F;
+                    //实时得值
+                    m_F = m_Load;
+
+                    //当力超过传感器量程的1/200,启动判断
+                    if (m_CheckStop)
+                    {
+                        if (m_F > m_CheckStopValue)
+                        {
+                            m_Check = true;
+                            m_CheckStop = false;
+                        }
+                    }
+
+                    //自动停止
+                    if (m_F < Math.Abs(m_Fn) * (m_StopValue / 100.0) && m_Check)
+                    {
+                        isTest = false;
+                        SendStopTest();
+                        this.BeginInvoke(new Action(() =>
+                            {
+                                tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
+                            }));
+                    }
+
+                    //获取自定义试验的最后一条命令
+                    //如果是位移控制的停止点
+                    //Test屏蔽
+                    //if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x80)
+                    //{
+                    //    if (m_Displacement >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
+                    //    {
+                    //        isTest = false;
+                    //        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
+                    //    }
+                    //}
+                    ////如果是负荷停止点
+                    //if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x81)
+                    //{
+                    //    if (m_Load >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
+                    //    {
+                    //        isTest = false;
+                    //        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
+                    //    }
+                    //}
+
+                    //应力
+                    if (m_S0 != 0)
+                        m_YingLi = m_Load / m_S0;
+                    else
+                        m_YingLi = 0;
+
+                    //应变 百分比
+                    if (m_Le != 0)
+                        m_YingBian = m_Elongate / (m_Le * 10.0f);
+                    else
+                        m_YingBian = 0;
+                }
+
+                this.BeginInvoke(
+                    new Action(() =>
+                                {
+                                    if (Math.Abs(m_Load) >= 1000)
+                                    {
+                                        lblkN.Text = "kN";
+                                        lblkN.Refresh();
+                                    }
+                                    else
+                                    {
+                                        lblkN.Text = "N";
+                                        lblkN.Refresh();
+                                    }
+
+                                    //位移
+                                    if (Math.Abs(m_Displacement) >= 1000.0)
+                                    {
+                                        lblmm1.Text = "mm";
+                                        lblmm1.Refresh();
+                                    }
+                                    else
+                                    {
+                                        lblmm1.Text = "μm";
+                                        lblmm1.Refresh();
+                                    }
+
+                                    //变形
+                                    if (Math.Abs(m_Elongate) > 1000 && lblBXShow.Visible == true)
+                                    {
+                                        lblmm2.Text = "mm";
+                                        lblmm2.Refresh();
+                                    }
+                                    else
+                                    {
+                                        lblmm2.Text = "μm";
+                                        lblmm2.Refresh();
+                                    }
+
+                                    //应变
+                                    lblYBShow.Text = m_YingBian.ToString("f4");
+                                    lblYBShow.Refresh();
+
+                                    //应力
+                                    lblYLShow.Text = m_YingLi.ToString("f2");
+                                    lblYLShow.Refresh();
+
+                                    //时间
+                                    lblTimeShow.Text = m_Time.ToString("f2");
+                                    lblTimeShow.Refresh();
+                                }));
+            }
+        }
+
+        public void ThreadSendOrder()
+        {
+            Task t = TskSendOrder();
+            //new Thread(() =>
+            //{
+            //    Thread.CurrentThread.IsBackground = true;
+            //    Thread.CurrentThread.Priority = ThreadPriority.Normal;
+            //    while (_showThreadFlag)
+            //    {
+            //        //采集频率 40ms
+            //        Thread.Sleep(40);
+            //        BeginInvoke(new Action(() =>
+            //        {
+            //            lock (m_state)
+            //            {
+            //                int ret;
+            //                int offset = 0;
+            //                int len = 2;
+            //                int m_lvalue = 0;
+            //                int m_dvalue = 0;
+            //                int m_evalue = 0;
+            //                int m_tvalue = 0;
+            //                int m_valueS = 0;
+            //                int m_index = 0;
+            //                if ((m_SensorArrayFlag == 1) && (m_SensorCount != 0))
+            //                {
+            //                    buf[0] = 0x03;									                //命令字节
+            //                    buf[1] = Convert.ToByte(offset / 256);							//偏移量
+            //                    buf[2] = Convert.ToByte(offset % 256);
+            //                    buf[3] = Convert.ToByte(len / 256);								//每次读的长度
+            //                    buf[4] = Convert.ToByte(len % 256);
+
+            //                    ret = RwUsb.WriteData1582(1, buf, 5, 1000);				        //发送读命令
+
+            //                    len = (m_SensorCount + 2) * 4;
+
+            //                    ret = RwUsb.ReadData1582(4, buf, len, 1000);				    //读数据
+
+            //                    //0x01位移 0x02负荷 0x03变形 0x04大变形
+
+            //                    /*---------------------m_Load display----------------*/
+
+            //                    if (m_LoadSensorCount != 0)
+            //                    {
+            //                        m_index = m_LSensorArray[0].SensorIndex * 4 + 3;
+            //                        m_lvalue = buf[m_index];
+
+            //                        m_lvalue = m_lvalue << 8;
+            //                        m_index = m_LSensorArray[0].SensorIndex * 4 + 2;
+            //                        m_lvalue |= buf[m_index];
+
+            //                        m_lvalue = m_lvalue << 8;
+            //                        m_index = m_LSensorArray[0].SensorIndex * 4 + 1;
+            //                        m_lvalue |= buf[m_index];
+
+            //                        m_lvalue = m_lvalue << 8;
+            //                        m_index = m_LSensorArray[0].SensorIndex * 4 + 0;
+            //                        m_lvalue |= buf[m_index];
+            //                        //如果是单空间和试验为压缩或弯曲试验 GBT228-2010
+            //                        if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
+            //                            m_lvalue = -m_lvalue;
+            //                        m_ppreload = m_Load;
+            //                        m_Load = (double)(m_lvalue * m_LoadResolutionValue);
+            //                        if (m_CtrlCommandArray[0].m_StopPointType == 0x81)//如果I一阶段为负荷停止点
+            //                        {
+            //                            //转换点时记录数据
+            //                            if (m_Load >= m_CtrlCommandArray[0].m_StopPoint * m_LoadResolutionValue && m_pcount == 0)
+            //                                m_isaddcount = true;
+            //                            if (m_isaddcount)
+            //                            {
+            //                                if (m_CtrlCommandArray[0].m_CtrlSpeed > 0 && m_CtrlCommandArray[1].m_CtrlSpeed > 0)
+            //                                {
+            //                                    m_pcount++;
+            //                                    if (m_pcount > 10)
+            //                                        m_isaddcount = false;
+            //                                    if (m_Load < m_ppreload)
+            //                                        m_Load = m_ppreload;
+            //                                }
+            //                            }
+            //                        }
+
+            //                        this.lblFShow.Text = FloatDisplay(m_lvalue, (ushort)m_SensorArray[m_LSensorArray[0].SensorIndex].scale, m_Resolution, 0x02);
+            //                        this.lblFShow.Refresh();
+
+            //                    }
+
+            //                    /*---------------------m_Displacement display----------------*/
+
+            //                    if (m_DisplacementSensorCount != 0)
+            //                    {
+            //                        m_index = m_DSensorArray[0].SensorIndex * 4 + 3;
+            //                        m_dvalue = buf[m_index];
+
+            //                        m_dvalue = m_dvalue << 8;
+            //                        m_index = m_DSensorArray[0].SensorIndex * 4 + 2;
+            //                        m_dvalue |= buf[m_index];
+
+            //                        m_dvalue = m_dvalue << 8;
+            //                        m_index = m_DSensorArray[0].SensorIndex * 4 + 1;
+            //                        m_dvalue |= buf[m_index];
+
+            //                        m_dvalue = m_dvalue << 8;
+            //                        m_index = m_DSensorArray[0].SensorIndex * 4 + 0;
+            //                        m_dvalue |= buf[m_index];
+
+            //                        if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
+            //                            m_dvalue = -m_dvalue;
+            //                        //记录前一点位移
+            //                        m_ppredis = m_Displacement;
+            //                        //位移
+            //                        m_Displacement = (double)(m_dvalue);
+            //                        if (m_CtrlCommandArray[0].m_StopPointType == 0x80)//如果I一阶段为位移停止点
+            //                        {
+            //                            //转换点时记录数据
+            //                            if (m_Displacement >= m_CtrlCommandArray[0].m_StopPoint && m_pcount == 0)
+            //                                m_isaddcount = true;
+            //                            if (m_isaddcount)
+            //                            {
+            //                                if (m_CtrlCommandArray[0].m_CtrlSpeed > 0 & m_CtrlCommandArray[1].m_CtrlSpeed > 0)
+            //                                {
+            //                                    m_pcount++;
+            //                                    if (m_pcount > 10)
+            //                                        m_isaddcount = false;
+            //                                    //if (m_Displacement < m_ppredis)
+            //                                    //    m_Displacement = m_ppredis;
+            //                                    if (m_Load < m_ppreload)
+            //                                        m_Load = m_ppreload;
+            //                                }
+            //                            }
+            //                        }
+            //                        this.lblDShow.Text = FloatDisplay(m_dvalue, (ushort)m_SensorArray[m_DSensorArray[0].SensorIndex].scale, m_Resolution, 0x01);
+            //                        this.lblDShow.Refresh();
+            //                    }
+
+            //                    /*---------------------elongate display----------------*/
+
+            //                    if (m_ElongateSensorCount != 0)
+            //                    {
+            //                        m_index = m_ESensorArray[0].SensorIndex * 4 + 3;
+            //                        m_evalue = buf[m_index];
+
+            //                        m_evalue = m_evalue << 8;
+            //                        m_index = m_ESensorArray[0].SensorIndex * 4 + 2;
+            //                        m_evalue |= buf[m_index];
+
+            //                        m_evalue = m_evalue << 8;
+            //                        m_index = m_ESensorArray[0].SensorIndex * 4 + 1;
+            //                        m_evalue |= buf[m_index];
+
+            //                        m_evalue = m_evalue << 8;
+            //                        m_index = m_ESensorArray[0].SensorIndex * 4 + 0;
+            //                        m_evalue |= buf[m_index];
+
+            //                        if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
+            //                            m_evalue = -m_evalue;
+
+            //                        //变形
+            //                        m_Elongate = (double)(m_evalue * m_ElongateResolutionValue);
+
+            //                        if (!isTest)
+            //                        {
+            //                            this.lblBXShow.Text = FloatDisplay(m_evalue, (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
+            //                            this.lblBXShow.Refresh();
+            //                        }
+            //                    }
+
+            //                    /*-------------------time display-----------------------*/
+            //                    m_valueS = buf[m_SensorCount * 4 + 2];     //+2
+            //                    m_valueS = m_valueS << 4;
+            //                    m_tvalue = buf[m_SensorCount * 4 + 1] & 0x0f0;//+1
+            //                    m_tvalue = m_tvalue >> 4;
+            //                    m_valueS |= (m_tvalue & 0x0f);
+            //                    m_tvalue = buf[m_SensorCount * 4 + 1] & 0x0f;  //+1
+            //                    m_tvalue = m_tvalue << 8;
+            //                    m_tvalue |= buf[m_SensorCount * 4 + 0];      //+0
+            //                    m_Time = (double)((m_valueS * 1000.0f + m_tvalue) / 1000.0f);
+            //                }
+
+            //                //Test  
+            //                m_Load += 0.3f;
+            //                m_Time = (double)(DateTime.Now - dt).TotalSeconds;
+            //                m_Displacement += 0.128f;
+            //                m_Elongate = 2 * m_Load;
+            //                m_YingBian = (double)(m_Elongate / m_Lt) * 100;
+            //                m_YingLi = (double)Math.Log(m_Load);
+
+            //                if (isTest)
+            //                {
+            //                    gdata gd = new gdata();
+
+            //                    #region 如果使用引申计
+            //                    if (_useExten)
+            //                    {
+            //                        switch (m_extenType)
+            //                        {
+            //                            case 0://% 应变
+            //                                if (m_YingBian >= m_extenValue)
+            //                                {
+            //                                    //取引伸计暂停时的值
+            //                                    SendPauseTest();
+            //                                    //m_hold_data.BX1 = m_Elongate;
+            //                                    //m_hold_data.D1 = m_Displacement;
+            //                                    //m_hold_data.F1 = m_Load;
+            //                                    _useExten = false;
+            //                                    m_holdPause = true;
+            //                                    m_holdContinue = false;
+            //                                    btnZeroS.Enabled = false;
+            //                                    //弹出取引伸计框
+            //                                    //Thread.Sleep(50);
+            //                                    m_fh.Show();
+            //                                    m_fh.TopMost = true;
+            //                                }
+            //                                break;
+            //                            case 1://mm 变形
+            //                                if (m_Elongate >= m_extenValue)
+            //                                {
+            //                                    SendPauseTest();
+            //                                    //取引伸计暂停时的值
+            //                                    //m_hold_data.BX1 = m_Elongate;
+            //                                    //m_hold_data.D1 = m_Displacement;
+            //                                    //m_hold_data.F1 = m_Load;
+            //                                    _useExten = false;
+            //                                    m_holdPause = true;
+            //                                    m_holdContinue = false;
+            //                                    btnZeroS.Enabled = false;
+            //                                    //弹出取引伸计框
+            //                                    //Thread.Sleep(50);
+            //                                    m_fh.Show();
+            //                                    m_fh.TopMost = true;
+            //                                }
+            //                                break;
+            //                            default:
+            //                                break;
+            //                        }
+            //                    }
+            //                    #endregion
+
+            //                    #region 当取引伸计 暂停时
+            //                    if (m_pause && m_holdPause)
+            //                    {
+            //                        if (m_Load < m_hold_data.F1)
+            //                            m_Load = (double)m_hold_data.F1;
+            //                        m_Elongate = (double)m_hold_data.BX1;
+            //                    }
+            //                    #endregion
+
+            //                    #region 当取引申计后 , 保持
+            //                    if (m_holdContinue)
+            //                    {
+            //                        if (m_Load <= m_hold_data.F1)
+            //                            m_Load = (double)m_hold_data.F1;
+            //                        if (m_Load > m_hold_data.F1)
+            //                            m_hold_data.F1 = 0;
+            //                        m_Elongate = m_Displacement - (double)m_hold_data.D1 + (double)m_hold_data.BX1;
+            //                    }
+            //                    #endregion
+
+
+            //                    if (m_ElongateResolutionValue != 0)
+            //                    {
+            //                        this.lblBXShow.Text = FloatDisplay((int)(m_Elongate / m_ElongateResolutionValue), (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
+            //                        this.lblBXShow.Refresh();
+            //                    }
+
+            //                    gd.F1 = (double)Math.Round(m_Load, 3);
+            //                    gd.F2 = 0;
+            //                    gd.F3 = 0;
+            //                    gd.D1 = (double)Math.Round(m_Displacement, 3);
+            //                    gd.D2 = 0;
+            //                    gd.D3 = 0;
+            //                    gd.BX1 = (double)Math.Round(m_Elongate, 3);
+            //                    gd.BX2 = 0;
+            //                    gd.BX3 = 0;
+            //                    gd.YL1 = (double)Math.Round(m_YingLi, 3);
+            //                    gd.YL2 = 0;
+            //                    gd.YL3 = 0;
+            //                    gd.YB1 = (double)Math.Round(m_YingBian, 6);
+            //                    gd.YB2 = 0;
+            //                    gd.YB3 = 0;
+            //                    gd.Ts = (double)Math.Round(m_Time, 3);
+
+            //                    //_List_Data.Add(gd);
+            //                    _List_Testing_Data.Add(gd);
+
+            //                    //自动存储线程                                    
+            //                    if (_List_Testing_Data.Count >= 500)
+            //                    {
+            //                        gdata[] temp = new gdata[500];
+            //                        _List_Testing_Data.CopyTo(temp);
+            //                        _List_Testing_Data.RemoveRange(0, 500);
+            //                        if (_threadSaveData == null)
+            //                        {
+            //                            _threadSaveData = new Thread(new ParameterizedThreadStart(SaveCurveData));
+            //                            _threadSaveData.IsBackground = true;
+            //                            _threadSaveData.Start(temp);
+            //                            //while (_threadSaveData.IsAlive) ;
+            //                            //Thread.Sleep(20);
+            //                            _threadSaveData.Join();
+            //                            _threadSaveData = null;
+            //                        }
+            //                    }
+
+            //                    //存储前一点的值
+            //                    m_Fn = m_F;
+            //                    //实时得值
+            //                    m_F = m_Load;
+
+            //                    //当力超过传感器量程的1/200,启动判断
+            //                    if (m_CheckStop)
+            //                    {
+            //                        if (m_F > m_CheckStopValue)
+            //                        {
+            //                            m_Check = true;
+            //                            m_CheckStop = false;
+            //                        }
+            //                    }
+
+            //                    //自动停止
+            //                    if (m_F < Math.Abs(m_Fn) * (m_StopValue / 100.0) && m_Check)
+            //                    {
+            //                        isTest = false;
+            //                        SendStopTest();
+            //                        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
+            //                    }
+
+            //                    //获取自定义试验的最后一条命令
+            //                    //如果是位移控制的停止点
+            //                    //Test屏蔽
+            //                    //if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x80)
+            //                    //{
+            //                    //    if (m_Displacement >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
+            //                    //    {
+            //                    //        isTest = false;
+            //                    //        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
+            //                    //    }
+            //                    //}
+            //                    ////如果是负荷停止点
+            //                    //if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x81)
+            //                    //{
+            //                    //    if (m_Load >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
+            //                    //    {
+            //                    //        isTest = false;
+            //                    //        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
+            //                    //    }
+            //                    //}
+
+            //                    //应力
+            //                    if (m_S0 != 0)
+            //                        m_YingLi = m_Load / m_S0;
+            //                    else
+            //                        m_YingLi = 0;
+
+            //                    //应变 百分比
+            //                    if (m_Le != 0)
+            //                        m_YingBian = m_Elongate / (m_Le * 10.0f);
+            //                    else
+            //                        m_YingBian = 0;
+            //                }
+            //            }
+
+            //            if (Math.Abs(m_Load) >= 1000)
+            //            {
+            //                lblkN.Text = "kN";
+            //                lblkN.Refresh();
+            //            }
+            //            else
+            //            {
+            //                lblkN.Text = "N";
+            //                lblkN.Refresh();
+            //            }
+
+            //            //位移
+            //            if (Math.Abs(m_Displacement) >= 1000.0)
+            //            {
+            //                lblmm1.Text = "mm";
+            //                lblmm1.Refresh();
+            //            }
+            //            else
+            //            {
+            //                lblmm1.Text = "μm";
+            //                lblmm1.Refresh();
+            //            }
+
+            //            //变形
+            //            if (Math.Abs(m_Elongate) > 1000 && lblBXShow.Visible == true)
+            //            {
+            //                lblmm2.Text = "mm";
+            //                lblmm2.Refresh();
+            //            }
+            //            else
+            //            {
+            //                lblmm2.Text = "μm";
+            //                lblmm2.Refresh();
+            //            }
+
+            //            //应变
+            //            lblYBShow.Text = m_YingBian.ToString("f4");
+            //            lblYBShow.Refresh();
+
+            //            //应力
+            //            lblYLShow.Text = m_YingLi.ToString("f2");
+            //            lblYLShow.Refresh();
+
+            //            //时间
+            //            lblTimeShow.Text = m_Time.ToString("f2");
+            //            lblTimeShow.Refresh();
+
+            //        }));
+            //    }
+            //}).Start();
         }
 
         private void ReadCurveSet()
@@ -1679,8 +2070,8 @@ namespace HR_Test
                         BLL.GBT236152009_TensileZong bll23615z = new HR_Test.BLL.GBT236152009_TensileZong();
                         Model.GBT236152009_TensileZong model23615z = bll23615z.GetModel(m_TestSampleNo);
 
-                        m_S0 = (float)model23615z.S0;
-                        m_L0 = (float)model23615z.L0;
+                        m_S0 = (float)model23615z.S0.Value;
+                        m_L0 = (float)model23615z.L0.Value;
 
                         m_useExten = model23615z.isUseExtensometer;
                         if (e.Node.ImageIndex == 0)//表示已完成的试验组
@@ -1820,8 +2211,8 @@ namespace HR_Test
                         Model.GBT236152009_TensileHeng model23615h = bll23615h.GetModel(m_TestSampleNo);
 
                         m_S0 = (float)model23615h.S0;
-                        //m_L0 = (float)model23615h.L;
-                        //m_t = (float)model23615h.t;
+                        //m_L0 = (double)model23615h.L;
+                        //m_t = (double)model23615h.t;
 
                         m_useExten = model23615h.isUseExtensometer;
                         if (e.Node.ImageIndex == 0)//表示已完成的试验组
@@ -2167,8 +2558,9 @@ namespace HR_Test
                         //读取参数
                         m_S0 = (float)model3354.S0.Value;
                         m_Ll = (float)model3354.lL.Value;
-                        m_Lt = (float)model3354.lT.Value; 
-                        
+                        m_Lt = (float)model3354.lT.Value;
+                        m_e1 = model3354.εz1.Value;
+                        m_e2 = model3354.εz2.Value;
                         m_useExten1 = model3354.isUseExtensometer1;
                         m_useExten2 = model3354.isUseExtensometer2;
 
@@ -2195,7 +2587,7 @@ namespace HR_Test
                             isShowResult = false;
                             m_useExten1 = false;
                             m_useExten2 = false;
-                            _useExten = false; 
+                            _useExten = false;
                             m_holdPause = false;
                             m_holdContinue = false;
                             btnZeroS.Enabled = true;
@@ -2209,36 +2601,36 @@ namespace HR_Test
                             }
                             TestStandard.GBT3354_2014.readFinishSample(this.dataGridView, this.dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
 
-                  
+
                             //读取试验方法生成控制命令数组 
                             if (!string.IsNullOrEmpty(m_TestSampleNo))
                             {
                                 //写入试样信息
                                 try
                                 {
-                                    TestStandard.GBT3354_2014.CreateCurveFile(_testpath, model3354); 
+                                    TestStandard.GBT3354_2014.CreateCurveFile(_testpath, model3354);
                                     //Test
                                     //if (m_SensorCount > 0)
                                     //{
-                                        if (ReadMethod("GBT3354-2014", model3354.testMethodName, out m_CtrlCommandArray, out loopCount, out m_methodContent, out m_isProLoad))
+                                    if (ReadMethod("GBT3354-2014", model3354.testMethodName, out m_CtrlCommandArray, out loopCount, out m_methodContent, out m_isProLoad))
+                                    {
+                                        //写入命令数组 
+                                        if (loopCount == 0) loopCount = 1;
+                                        if (WriteCommand(m_CtrlCommandArray, 12, loopCount, m_isProLoad, "tensile", RWconfig.GetAppSettings("machineType")))
                                         {
-                                            //写入命令数组 
-                                            if (loopCount == 0) loopCount = 1;
-                                            if (WriteCommand(m_CtrlCommandArray, 12, loopCount, m_isProLoad, "tensile", RWconfig.GetAppSettings("machineType")))
-                                            {
-                                                tsbtn_Start.Enabled = true;
-                                            }
-                                            else
-                                            {
-                                                tsbtn_Start.Enabled = false;
-                                            }
+                                            tsbtn_Start.Enabled = true;
                                         }
                                         else
                                         {
-                                            MessageBox.Show(this, "该试样所指定的试验方法不存在,请重新选择!", "警告", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
                                             tsbtn_Start.Enabled = false;
-                                            return;
                                         }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(this, "该试样所指定的试验方法不存在,请重新选择!", "警告", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                                        tsbtn_Start.Enabled = false;
+                                        return;
+                                    }
                                     //}
                                     //else
                                     //{
@@ -2273,7 +2665,7 @@ namespace HR_Test
                                 this.dataGridView.Rows[i].Selected = false;
                                 if (this.dataGridView.Rows[i].Cells[3].Value.ToString() == m_TestSampleNo)
                                 {
-                                    dataGridView_CellClick(this.dataGridView, new DataGridViewCellEventArgs(0, this.dataGridView.Rows[i].Index));                                   
+                                    dataGridView_CellClick(this.dataGridView, new DataGridViewCellEventArgs(0, this.dataGridView.Rows[i].Index));
                                 }
                             }
                         }
@@ -3486,7 +3878,7 @@ namespace HR_Test
                                     case "0"://位移控制
                                         m_Command2.m_CtrlType = 0x80;
                                         m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * 1000.0);//位移控制速度
+                                        m_Command2.m_CtrlSpeed = (int)(double.Parse(controlType2[1]) * 1000.0);//位移控制速度
 
                                         TestMethodDis(this.txtMethod, "屈服阶段控制:位移\r\n", Color.Blue);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " mm/min \r\n", Color.Blue);
@@ -3496,7 +3888,7 @@ namespace HR_Test
                                         m_Command2.m_CtrlType = 0x80;//0,5.3,1,20.68
                                         m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                                         //转换成位移控制速度
-                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * m_Lc * 1000.0);
+                                        m_Command2.m_CtrlSpeed = (int)(double.Parse(controlType2[1]) * m_Lc * 1000.0);
 
                                         TestMethodDis(this.txtMethod, "屈服阶段控制:eLc\r\n", Color.Crimson);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " /s\r\n", Color.Crimson);
@@ -3515,7 +3907,7 @@ namespace HR_Test
                                         //泛型命令组
                                         m_Command2.m_StopPointType = 0x80;
                                         m_Command2.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command2.m_StopPoint = (int)(float.Parse(controlType2[3]) * 1000.0);
+                                        m_Command2.m_StopPoint = (int)(double.Parse(controlType2[3]) * 1000.0);
                                         TestMethodDis(this.txtMethod, "屈服阶段结束:位移\r\n", Color.Crimson);
                                         TestMethodDis(this.txtMethod, "结束值:" + controlType2[3].ToString() + " mm\r\n", Color.Crimson);
                                         break;
@@ -3612,7 +4004,7 @@ namespace HR_Test
                                     case "0":
                                         m_Command3.m_CtrlType = 0x80;
                                         m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * 1000.0);//位移控制速度
+                                        m_Command3.m_CtrlSpeed = (int)(double.Parse(controlType3[1]) * 1000.0);//位移控制速度
 
                                         m_ScaleValue = GetScale(m_SensorArray[m_LSensorArray[0].SensorIndex].scale);
                                         m_Command3.m_StopPointType = 0x81;
@@ -3627,7 +4019,7 @@ namespace HR_Test
                                         m_Command3.m_CtrlType = 0x80;//0,5.3,1,20.68
                                         m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                                         //转换成位移控制速度
-                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * m_Lc * 1000.0);
+                                        m_Command3.m_CtrlSpeed = (int)(double.Parse(controlType3[1]) * m_Lc * 1000.0);
 
                                         ////停止的类型 位移
                                         //m_Command3.m_StopPointType = 0x80;
@@ -3783,7 +4175,7 @@ namespace HR_Test
                         speedorder.m_CtrlSpeed = returnspeed;
                         commandArray[11] = speedorder;
 
-                        m_StopValue = (float)modelControlMethod.stopValue;
+                        m_StopValue = (double)modelControlMethod.stopValue;
                         if (m_StopValue == 0)
                             m_StopValue = 80;
                         loopCount = (int)modelControlMethod.circleNum;
@@ -3885,7 +4277,7 @@ namespace HR_Test
                                     case "0"://位移控制
                                         m_Command2.m_CtrlType = 0x80;
                                         m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * 1000.0);//位移控制速度
+                                        m_Command2.m_CtrlSpeed = (int)(double.Parse(controlType2[1]) * 1000.0);//位移控制速度
 
                                         TestMethodDis(this.txtMethod, "屈服阶段控制:位移\r\n", Color.Blue);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " mm/min \r\n", Color.Blue);
@@ -3895,7 +4287,7 @@ namespace HR_Test
                                         m_Command2.m_CtrlType = 0x80;//0,5.3,1,20.68
                                         m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                                         //转换成位移控制速度
-                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * m_Lc * 1000.0);
+                                        m_Command2.m_CtrlSpeed = (int)(double.Parse(controlType2[1]) * m_Lc * 1000.0);
 
                                         TestMethodDis(this.txtMethod, "屈服阶段控制:eLc\r\n", Color.Crimson);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " /s\r\n", Color.Crimson);
@@ -3914,7 +4306,7 @@ namespace HR_Test
                                         //泛型命令组
                                         m_Command2.m_StopPointType = 0x80;
                                         m_Command2.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command2.m_StopPoint = (int)(float.Parse(controlType2[3]) * 1000.0);
+                                        m_Command2.m_StopPoint = (int)(double.Parse(controlType2[3]) * 1000.0);
                                         TestMethodDis(this.txtMethod, "屈服阶段结束:位移\r\n", Color.Crimson);
                                         TestMethodDis(this.txtMethod, "结束值:" + controlType2[3].ToString() + " mm\r\n", Color.Crimson);
                                         break;
@@ -4011,7 +4403,7 @@ namespace HR_Test
                                     case "0":
                                         m_Command3.m_CtrlType = 0x80;
                                         m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * 1000.0);//位移控制速度
+                                        m_Command3.m_CtrlSpeed = (int)(double.Parse(controlType3[1]) * 1000.0);//位移控制速度
 
                                         m_ScaleValue = GetScale(m_SensorArray[m_LSensorArray[0].SensorIndex].scale);
                                         m_Command3.m_StopPointType = 0x81;
@@ -4026,7 +4418,7 @@ namespace HR_Test
                                         m_Command3.m_CtrlType = 0x80;//0,5.3,1,20.68
                                         m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                                         //转换成位移控制速度
-                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * m_Lc * 1000.0);
+                                        m_Command3.m_CtrlSpeed = (int)(double.Parse(controlType3[1]) * m_Lc * 1000.0);
 
                                         ////停止的类型 位移
                                         //m_Command3.m_StopPointType = 0x80;
@@ -4182,7 +4574,7 @@ namespace HR_Test
                         speedorder.m_CtrlSpeed = returnspeed;
                         commandArray[11] = speedorder;
 
-                        m_StopValue = (float)model3354Method.stopValue;
+                        m_StopValue = (double)model3354Method.stopValue;
                         if (m_StopValue == 0)
                             m_StopValue = 80;
                         loopCount = (int)model3354Method.circleNum;
@@ -4306,7 +4698,7 @@ namespace HR_Test
                                     case "0"://位移控制
                                         m_Command2.m_CtrlType = 0x80;
                                         m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * 1000.0);//位移控制速度
+                                        m_Command2.m_CtrlSpeed = (int)(double.Parse(controlType2[1]) * 1000.0);//位移控制速度
 
                                         TestMethodDis(this.txtMethod, "屈服阶段控制:位移\r\n", Color.Blue);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " mm/min \r\n", Color.Blue);
@@ -4316,7 +4708,7 @@ namespace HR_Test
                                         m_Command2.m_CtrlType = 0x80;//0,5.3,1,20.68
                                         m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                                         //转换成位移控制速度
-                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * m_Lc * 1000.0);
+                                        m_Command2.m_CtrlSpeed = (int)(double.Parse(controlType2[1]) * m_Lc * 1000.0);
 
                                         TestMethodDis(this.txtMethod, "屈服阶段控制:eLc\r\n", Color.Crimson);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " /s\r\n", Color.Crimson);
@@ -4335,7 +4727,7 @@ namespace HR_Test
                                         //泛型命令组
                                         m_Command2.m_StopPointType = 0x80;
                                         m_Command2.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command2.m_StopPoint = (int)(float.Parse(controlType2[3]) * 1000.0);
+                                        m_Command2.m_StopPoint = (int)(double.Parse(controlType2[3]) * 1000.0);
                                         TestMethodDis(this.txtMethod, "屈服阶段结束:位移\r\n", Color.Crimson);
                                         TestMethodDis(this.txtMethod, "结束值:" + controlType2[3] + " mm\r\n", Color.Crimson);
                                         break;
@@ -4428,7 +4820,7 @@ namespace HR_Test
                                     case "0":
                                         m_Command3.m_CtrlType = 0x80;
                                         m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * 1000.0);//位移控制速度
+                                        m_Command3.m_CtrlSpeed = (int)(double.Parse(controlType3[1]) * 1000.0);//位移控制速度
 
                                         m_Command3.m_StopPointType = 0x80;
                                         m_Command3.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
@@ -4440,7 +4832,7 @@ namespace HR_Test
                                         m_Command3.m_StopPoint = (int)(m_ScaleValue);//加工硬化阶段停止点为量程
 
                                         //methodContent += "加工硬化阶段控制:位移\r\n";
-                                        //methodContent += "速度:" + float.Parse(controlType3[1]) + " mm/min\r\n";
+                                        //methodContent += "速度:" + double.Parse(controlType3[1]) + " mm/min\r\n";
                                         TestMethodDis(this.txtMethod, "加工硬化阶段控制:位移\r\n", Color.Purple);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType3[1].ToString() + " mm/min\r\n", Color.Purple);
 
@@ -4449,7 +4841,7 @@ namespace HR_Test
                                         m_Command3.m_CtrlType = 0x80;//0,5.3,1,20.68
                                         m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                                         //转换成位移控制速度
-                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * m_Lc * 1000.0);
+                                        m_Command3.m_CtrlSpeed = (int)(double.Parse(controlType3[1]) * m_Lc * 1000.0);
 
                                         //停止的类型 位移
                                         m_Command3.m_StopPointType = 0x80;
@@ -4569,7 +4961,7 @@ namespace HR_Test
                         speedorder.m_CtrlSpeed = returnspeed;
                         commandArray[11] = speedorder;
 
-                        m_StopValue = (float)modelControlMethod_C.stopValue;
+                        m_StopValue = (double)modelControlMethod_C.stopValue;
                         if (m_StopValue == 0)
                             m_StopValue = 80;
                         loopCount = (int)modelControlMethod_C.circleNum;
@@ -4695,7 +5087,7 @@ namespace HR_Test
                                     case "0"://位移控制
                                         m_Command2.m_CtrlType = 0x80;
                                         m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * 1000.0);//位移控制速度
+                                        m_Command2.m_CtrlSpeed = (int)(double.Parse(controlType2[1]) * 1000.0);//位移控制速度
 
                                         TestMethodDis(this.txtMethod, "屈服阶段控制:位移\r\n", Color.Blue);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " mm/min \r\n", Color.Blue);
@@ -4705,7 +5097,7 @@ namespace HR_Test
                                         m_Command2.m_CtrlType = 0x80;//0,5.3,1,20.68
                                         m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                                         //转换成位移控制速度
-                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * m_Lc * 1000.0);
+                                        m_Command2.m_CtrlSpeed = (int)(double.Parse(controlType2[1]) * m_Lc * 1000.0);
 
                                         TestMethodDis(this.txtMethod, "屈服阶段控制:eLc\r\n", Color.Crimson);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " /s\r\n", Color.Crimson);
@@ -4724,7 +5116,7 @@ namespace HR_Test
                                         //泛型命令组
                                         m_Command2.m_StopPointType = 0x80;
                                         m_Command2.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command2.m_StopPoint = (int)(float.Parse(controlType2[3]) * 1000.0);
+                                        m_Command2.m_StopPoint = (int)(double.Parse(controlType2[3]) * 1000.0);
                                         TestMethodDis(this.txtMethod, "屈服阶段结束:位移\r\n", Color.Crimson);
                                         TestMethodDis(this.txtMethod, "结束值:" + controlType2[3] + " mm\r\n", Color.Crimson);
                                         break;
@@ -4817,7 +5209,7 @@ namespace HR_Test
                                     case "0":
                                         m_Command3.m_CtrlType = 0x80;
                                         m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * 1000.0);//位移控制速度
+                                        m_Command3.m_CtrlSpeed = (int)(double.Parse(controlType3[1]) * 1000.0);//位移控制速度
 
                                         m_Command3.m_StopPointType = 0x80;
                                         m_Command3.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
@@ -4829,7 +5221,7 @@ namespace HR_Test
                                         m_Command3.m_StopPoint = (int)(m_ScaleValue);//加工硬化阶段停止点为量程
 
                                         //methodContent += "加工硬化阶段控制:位移\r\n";
-                                        //methodContent += "速度:" + float.Parse(controlType3[1]) + " mm/min\r\n";
+                                        //methodContent += "速度:" + double.Parse(controlType3[1]) + " mm/min\r\n";
                                         TestMethodDis(this.txtMethod, "加工硬化阶段控制:位移\r\n", Color.Purple);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType3[1].ToString() + " mm/min\r\n", Color.Purple);
 
@@ -4838,7 +5230,7 @@ namespace HR_Test
                                         m_Command3.m_CtrlType = 0x80;//0,5.3,1,20.68
                                         m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                                         //转换成位移控制速度
-                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * m_Lc * 1000.0);
+                                        m_Command3.m_CtrlSpeed = (int)(double.Parse(controlType3[1]) * m_Lc * 1000.0);
 
                                         //停止的类型 位移
                                         m_Command3.m_StopPointType = 0x80;
@@ -4958,7 +5350,7 @@ namespace HR_Test
                         speedorder.m_CtrlSpeed = returnspeed;
                         commandArray[11] = speedorder;
                         //m_CtrlCommandArray.CopyTo(commandArray, 0);
-                        m_StopValue = (float)modelControlMethod_B.stopValue;
+                        m_StopValue = (double)modelControlMethod_B.stopValue;
                         if (m_StopValue == 0)
                             m_StopValue = 80;
                         loopCount = (int)modelControlMethod_B.circleNum;
@@ -5083,7 +5475,7 @@ namespace HR_Test
                                     case "0"://位移控制
                                         m_Command2.m_CtrlType = 0x80;
                                         m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * 1000.0);//位移控制速度
+                                        m_Command2.m_CtrlSpeed = (int)(double.Parse(controlType2[1]) * 1000.0);//位移控制速度
 
                                         TestMethodDis(this.txtMethod, "屈服阶段控制:位移\r\n", Color.Blue);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " mm/min \r\n", Color.Blue);
@@ -5093,7 +5485,7 @@ namespace HR_Test
                                         m_Command2.m_CtrlType = 0x80;//0,5.3,1,20.68
                                         m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                                         //转换成位移控制速度
-                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * m_Lc * 1000.0);
+                                        m_Command2.m_CtrlSpeed = (int)(double.Parse(controlType2[1]) * m_Lc * 1000.0);
 
                                         TestMethodDis(this.txtMethod, "屈服阶段控制:eLc\r\n", Color.Crimson);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " /s\r\n", Color.Crimson);
@@ -5112,7 +5504,7 @@ namespace HR_Test
                                         //泛型命令组
                                         m_Command2.m_StopPointType = 0x80;
                                         m_Command2.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command2.m_StopPoint = (int)(float.Parse(controlType2[3]) * 1000.0);
+                                        m_Command2.m_StopPoint = (int)(double.Parse(controlType2[3]) * 1000.0);
                                         TestMethodDis(this.txtMethod, "屈服阶段结束:位移\r\n", Color.Crimson);
                                         TestMethodDis(this.txtMethod, "结束值:" + controlType2[3] + " mm\r\n", Color.Crimson);
                                         break;
@@ -5205,7 +5597,7 @@ namespace HR_Test
                                     case "0":
                                         m_Command3.m_CtrlType = 0x80;
                                         m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * 1000.0);//位移控制速度
+                                        m_Command3.m_CtrlSpeed = (int)(double.Parse(controlType3[1]) * 1000.0);//位移控制速度
 
                                         m_Command3.m_StopPointType = 0x80;
                                         m_Command3.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
@@ -5217,7 +5609,7 @@ namespace HR_Test
                                         m_Command3.m_StopPoint = (int)(m_ScaleValue);//加工硬化阶段停止点为量程
 
                                         //methodContent += "加工硬化阶段控制:位移\r\n";
-                                        //methodContent += "速度:" + float.Parse(controlType3[1]) + " mm/min\r\n";
+                                        //methodContent += "速度:" + double.Parse(controlType3[1]) + " mm/min\r\n";
                                         TestMethodDis(this.txtMethod, "加工硬化阶段控制:位移\r\n", Color.Purple);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType3[1].ToString() + " mm/min\r\n", Color.Purple);
 
@@ -5226,7 +5618,7 @@ namespace HR_Test
                                         m_Command3.m_CtrlType = 0x80;//0,5.3,1,20.68
                                         m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                                         //转换成位移控制速度
-                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * m_Lc * 1000.0);
+                                        m_Command3.m_CtrlSpeed = (int)(double.Parse(controlType3[1]) * m_Lc * 1000.0);
 
                                         //停止的类型 位移
                                         m_Command3.m_StopPointType = 0x80;
@@ -5346,7 +5738,7 @@ namespace HR_Test
                         speedorder.m_CtrlSpeed = returnspeed;
                         commandArray[11] = speedorder;
 
-                        m_StopValue = (float)mGBT28289Method.stopValue;
+                        m_StopValue = (double)mGBT28289Method.stopValue;
                         if (m_StopValue == 0)
                             m_StopValue = 80;
                         loopCount = (int)mGBT28289Method.circleNum;
@@ -5471,7 +5863,7 @@ namespace HR_Test
                                     case "0"://位移控制
                                         m_Command2.m_CtrlType = 0x80;
                                         m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * 1000.0);//位移控制速度
+                                        m_Command2.m_CtrlSpeed = (int)(double.Parse(controlType2[1]) * 1000.0);//位移控制速度
 
                                         TestMethodDis(this.txtMethod, "屈服阶段控制:位移\r\n", Color.Blue);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " mm/min \r\n", Color.Blue);
@@ -5481,7 +5873,7 @@ namespace HR_Test
                                         m_Command2.m_CtrlType = 0x80;//0,5.3,1,20.68
                                         m_Command2.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                                         //转换成位移控制速度
-                                        m_Command2.m_CtrlSpeed = (int)(float.Parse(controlType2[1]) * m_Lc * 1000.0);
+                                        m_Command2.m_CtrlSpeed = (int)(double.Parse(controlType2[1]) * m_Lc * 1000.0);
 
                                         TestMethodDis(this.txtMethod, "屈服阶段控制:eLc\r\n", Color.Crimson);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType2[1].ToString() + " /s\r\n", Color.Crimson);
@@ -5500,7 +5892,7 @@ namespace HR_Test
                                         //泛型命令组
                                         m_Command2.m_StopPointType = 0x80;
                                         m_Command2.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command2.m_StopPoint = (int)(float.Parse(controlType2[3]) * 1000.0);
+                                        m_Command2.m_StopPoint = (int)(double.Parse(controlType2[3]) * 1000.0);
                                         TestMethodDis(this.txtMethod, "屈服阶段结束:位移\r\n", Color.Crimson);
                                         TestMethodDis(this.txtMethod, "结束值:" + controlType2[3] + " mm\r\n", Color.Crimson);
                                         break;
@@ -5593,7 +5985,7 @@ namespace HR_Test
                                     case "0":
                                         m_Command3.m_CtrlType = 0x80;
                                         m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
-                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * 1000.0);//位移控制速度
+                                        m_Command3.m_CtrlSpeed = (int)(double.Parse(controlType3[1]) * 1000.0);//位移控制速度
 
                                         m_Command3.m_StopPointType = 0x80;
                                         m_Command3.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
@@ -5605,7 +5997,7 @@ namespace HR_Test
                                         m_Command3.m_StopPoint = (int)(m_ScaleValue);//加工硬化阶段停止点为量程
 
                                         //methodContent += "加工硬化阶段控制:位移\r\n";
-                                        //methodContent += "速度:" + float.Parse(controlType3[1]) + " mm/min\r\n";
+                                        //methodContent += "速度:" + double.Parse(controlType3[1]) + " mm/min\r\n";
                                         TestMethodDis(this.txtMethod, "加工硬化阶段控制:位移\r\n", Color.Purple);
                                         TestMethodDis(this.txtMethod, "速度:" + controlType3[1].ToString() + " mm/min\r\n", Color.Purple);
 
@@ -5614,7 +6006,7 @@ namespace HR_Test
                                         m_Command3.m_CtrlType = 0x80;//0,5.3,1,20.68
                                         m_Command3.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                                         //转换成位移控制速度
-                                        m_Command3.m_CtrlSpeed = (int)(float.Parse(controlType3[1]) * m_Lc * 1000.0);
+                                        m_Command3.m_CtrlSpeed = (int)(double.Parse(controlType3[1]) * m_Lc * 1000.0);
 
                                         //停止的类型 位移
                                         m_Command3.m_StopPointType = 0x80;
@@ -5734,7 +6126,7 @@ namespace HR_Test
                         speedorder.m_CtrlSpeed = returnspeed;
                         commandArray[11] = speedorder;
 
-                        m_StopValue = (float)mGBT23615Method.stopValue;
+                        m_StopValue = (double)mGBT23615Method.stopValue;
                         if (m_StopValue == 0)
                             m_StopValue = 80;
                         loopCount = (int)mGBT23615Method.circleNum;
@@ -5776,7 +6168,7 @@ namespace HR_Test
                         m_CustomCommand.m_CtrlType = 0x80;//0,5.3,1,20.68
                         m_CustomCommand.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                         //位移控制速度
-                        m_CustomCommand.m_CtrlSpeed = (int)(float.Parse(customControlType[1]) * 1000.0);
+                        m_CustomCommand.m_CtrlSpeed = (int)(double.Parse(customControlType[1]) * 1000.0);
                         TestMethodDis(this.txtMethod, strIndex + "阶段控制:位移\r\n", Color.Crimson);
                         TestMethodDis(this.txtMethod, "速度:" + customControlType[1].ToString() + " mm/min\r\n", Color.Crimson);
                         break;
@@ -5811,7 +6203,7 @@ namespace HR_Test
                         m_CustomCommand.m_CtrlType = 0x80;//0,5.3,1,20.68
                         m_CustomCommand.m_CtrlChannel = m_DSensorArray[0].SensorIndex;
                         //转换成位移控制速度
-                        m_CustomCommand.m_CtrlSpeed = (int)(float.Parse(customControlType[1]) * m_Lc * 1000.0 + 0.2d);
+                        m_CustomCommand.m_CtrlSpeed = (int)(double.Parse(customControlType[1]) * m_Lc * 1000.0 + 0.2d);
                         TestMethodDis(this.txtMethod, strIndex + "阶段控制:eLc\r\n", Color.Crimson);
                         TestMethodDis(this.txtMethod, "速度:" + customControlType[1].ToString() + " /s\r\n", Color.Crimson);
                         break;
@@ -5847,7 +6239,7 @@ namespace HR_Test
                         //泛型命令组
                         m_CustomCommand.m_StopPointType = 0x80;
                         m_CustomCommand.m_StopPointChannel = m_DSensorArray[0].SensorIndex;
-                        m_CustomCommand.m_StopPoint = (int)(float.Parse(customControlType[3]) * 1000.0);
+                        m_CustomCommand.m_StopPoint = (int)(double.Parse(customControlType[3]) * 1000.0);
                         TestMethodDis(this.txtMethod, strIndex + "阶段结束:位移\r\n", Color.Crimson);
                         TestMethodDis(this.txtMethod, "结束值:" + customControlType[3].ToString() + " mm\r\n", Color.Crimson);
                         break;
@@ -5936,7 +6328,7 @@ namespace HR_Test
         //简易日期查询
         private void dateTimePicker_ValueChanged(object sender, EventArgs e)
         {
-            TestStandard.SampleControl.ReadSample(this.tvTestSample, this.dateTimePicker);
+            Task tskReadSamples = TestStandard.SampleControl.ReadSample(this.tvTestSample, this.dateTimePicker);
         }
 
         delegate void delInitCurveCount(ZedGraph.ZedGraphControl zedGraph, string[] selarry, string sampleMode, string[] colorarray);
@@ -7480,8 +7872,8 @@ namespace HR_Test
                                     }
                                 }
                                 while (m_FrIndex > tempIndex + 2 || m_FrIndex < tempIndex - 2);
-                            } 
-                     
+                            }
+
 
                             mts.testCondition = "-";// this.lblTestMethod.Text; 
                             mts.isFinish = true;
@@ -7766,7 +8158,7 @@ namespace HR_Test
                         ChangeRealTimeXYChart();
                         ReadResultData(m_l);
                     }
-        
+
                     break;
                 #endregion
 
@@ -8065,10 +8457,10 @@ namespace HR_Test
                             //MessageBox.Show("m_FRH=" + m_FRH.ToString() + ",m_Fm=" + m_Fm.ToString() + ",m_FRLFirst=" + m_FRLFirst.ToString() + ",m_FRL=" + m_FRL.ToString());
                             if (m_l.Count > m_FmIndex)
                             {
-                                m3354.Pmax = Convert.ToDouble((m_l[m_l.Count-2].F1).ToString("f2"));
-                                m3354.σt = Convert.ToDouble(m_l[m_l.Count- 2].YL1.ToString("f2"));
-                            }                            
-                            if(m3354sel.ε1t)
+                                m3354.Pmax = Convert.ToDouble((m_l[m_l.Count - 2].F1).ToString("f2"));
+                                m3354.σt = Convert.ToDouble(m_l[m_l.Count - 2].YL1.ToString("f2"));
+                            }
+                            if (m3354sel.ε1t)
                                 m3354.ε1t = Convert.ToDouble(m_l[m_l.Count - 2].YB1.ToString("f2"));
 
 
@@ -8164,7 +8556,7 @@ namespace HR_Test
                     break;
                 #endregion
 
-            } 
+            }
         }
 
         void az_LocationChanged(object sender, EventArgs e)
@@ -10936,22 +11328,31 @@ namespace HR_Test
                     break;
                 default:
                     m_path = "";
-                    break;               
+                    break;
             }
 
             if (e.RowIndex >= 0 && e.ColumnIndex != 2)
             {
                 //选择和取消选择
                 if (e.ColumnIndex != 4 && dataGridView.Tag.ToString() == "GBT3354-2014")
-                { 
+                {
                     this.dataGridView.Rows[e.RowIndex].Cells[0].Value = !Convert.ToBoolean(this.dataGridView.Rows[e.RowIndex].Cells[0].Value);
                     this.dataGridView.Rows[e.RowIndex].Selected = Convert.ToBoolean(this.dataGridView.Rows[e.RowIndex].Cells[0].Value);
-                }        
+                }
                 else
                 {
                     //修改失效模式
                     frmFailureMode ffm = new frmFailureMode();
-                    ffm.ShowDialog();
+                    if (DialogResult.OK == ffm.ShowDialog())
+                    {
+                        BLL.GBT3354_Samples bll3354 = new BLL.GBT3354_Samples();
+                        Model.GBT3354_Samples m3354 = bll3354.GetModel(this.dataGridView.Rows[e.RowIndex].Cells[3].Value.ToString());
+                        m3354.failuremode = ffm._Mode;
+                        if (bll3354.Update(m3354))
+                        {
+                            this.dataGridView.Rows[e.RowIndex].Cells[4].Value = ffm._Mode;
+                        }
+                    }
                 }
                 string selTestSampleNo = string.Empty;
                 _selTestSampleArray = GetSelSample();

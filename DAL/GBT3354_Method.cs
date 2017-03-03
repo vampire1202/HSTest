@@ -37,9 +37,9 @@ namespace HR_Test.DAL
         {
             StringBuilder strSql = new StringBuilder();
             strSql.Append("insert into tb_GBT3354_Method(");
-            strSql.Append("methodName,xmlPath,selResultID,isProLoad,proLoadType,proLoadValue,proLoadControlType,proLoadSpeed,isLxqf,controlType1,controlType2,controlType3,controlType4,controlType5,controlType6,controlType7,controlType8,controlType9,controlType10,controlType11,controlType12,circleNum,stopValue,isTakeDownExten,extenChannel,extenValue,sendCompany,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,testCondition,tester,assessor,testDate,sampleShape,w,h,d0,Do,S0,lL,lT,εz,sign,sampleSpec)");
+            strSql.Append("methodName,xmlPath,selResultID,isProLoad,proLoadType,proLoadValue,proLoadControlType,proLoadSpeed,isLxqf,controlType1,controlType2,controlType3,controlType4,controlType5,controlType6,controlType7,controlType8,controlType9,controlType10,controlType11,controlType12,circleNum,stopValue,isTakeDownExten,extenChannel,extenValue,sendCompany,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,testCondition,tester,assessor,testDate,sampleShape,w,h,d0,Do,S0,lL,lT,εz1,sign,sampleSpec,εz2)");
             strSql.Append(" values (");
-            strSql.Append("@methodName,@xmlPath,@selResultID,@isProLoad,@proLoadType,@proLoadValue,@proLoadControlType,@proLoadSpeed,@isLxqf,@controlType1,@controlType2,@controlType3,@controlType4,@controlType5,@controlType6,@controlType7,@controlType8,@controlType9,@controlType10,@controlType11,@controlType12,@circleNum,@stopValue,@isTakeDownExten,@extenChannel,@extenValue,@sendCompany,@getSample,@strengthPlate,@adhesive,@sampleState,@temperature,@humidity,@testStandard,@testMethod,@mathineType,@testCondition,@tester,@assessor,@testDate,@sampleShape,@w,@h,@d0,@Do,@S0,@lL,@lT,@εz,@sign,@sampleSpec)");
+            strSql.Append("@methodName,@xmlPath,@selResultID,@isProLoad,@proLoadType,@proLoadValue,@proLoadControlType,@proLoadSpeed,@isLxqf,@controlType1,@controlType2,@controlType3,@controlType4,@controlType5,@controlType6,@controlType7,@controlType8,@controlType9,@controlType10,@controlType11,@controlType12,@circleNum,@stopValue,@isTakeDownExten,@extenChannel,@extenValue,@sendCompany,@getSample,@strengthPlate,@adhesive,@sampleState,@temperature,@humidity,@testStandard,@testMethod,@mathineType,@testCondition,@tester,@assessor,@testDate,@sampleShape,@w,@h,@d0,@Do,@S0,@lL,@lT,@εz1,@sign,@sampleSpec,@εz2)");
             OleDbParameter[] parameters = {
 					new OleDbParameter("@methodName", OleDbType.VarChar,100),
 					new OleDbParameter("@xmlPath", OleDbType.VarChar,50),
@@ -89,9 +89,10 @@ namespace HR_Test.DAL
 					new OleDbParameter("@S0", OleDbType.Double),
 					new OleDbParameter("@lL", OleDbType.Double),
 					new OleDbParameter("@lT", OleDbType.Double),
-					new OleDbParameter("@εz", OleDbType.VarChar,100),
+					new OleDbParameter("@εz1", OleDbType.Double),
 					new OleDbParameter("@sign", OleDbType.VarChar,0),
-                    new OleDbParameter("@sampleSpec",OleDbType.VarChar)
+                    new OleDbParameter("@sampleSpec",OleDbType.VarChar),
+                    new OleDbParameter("@εz2", OleDbType.Double)
                                           };
             parameters[0].Value = model.methodName;
             parameters[1].Value = model.xmlPath;
@@ -141,9 +142,10 @@ namespace HR_Test.DAL
             parameters[45].Value = model.S0;
             parameters[46].Value = model.lL;
             parameters[47].Value = model.lT;
-            parameters[48].Value = model.εz;
+            parameters[48].Value = model.εz1;
             parameters[49].Value = model.sign;
             parameters[50].Value = model.sampleSpec;
+            parameters[51].Value = model.εz2;
             int rows = DbHelperOleDb.ExecuteSql(strSql.ToString(), parameters);
             if (rows > 0)
             {
@@ -209,9 +211,10 @@ namespace HR_Test.DAL
             strSql.Append("S0=@S0,");
             strSql.Append("lL=@lL,");
             strSql.Append("lT=@lT,");
-            strSql.Append("εz=@εz,");
+            strSql.Append("εz1=@εz1,");
             strSql.Append("sign=@sign,");
-            strSql.Append("sampleSpec=@sampleSpec");
+            strSql.Append("sampleSpec=@sampleSpec,");
+            strSql.Append("εz2=@εz2");
             strSql.Append(" where ID=@ID");
             OleDbParameter[] parameters = {
 					new OleDbParameter("@methodName", OleDbType.VarChar,100),
@@ -262,9 +265,10 @@ namespace HR_Test.DAL
 					new OleDbParameter("@S0", OleDbType.Double),
 					new OleDbParameter("@lL", OleDbType.Double),
 					new OleDbParameter("@lT", OleDbType.Double),
-					new OleDbParameter("@εz", OleDbType.VarChar,100),
+					new OleDbParameter("@εz1", OleDbType.Double),
 					new OleDbParameter("@sign", OleDbType.VarChar,0),
                     new OleDbParameter("sampleSpec",OleDbType.VarChar),
+                    new OleDbParameter("@εz2", OleDbType.Double),
 					new OleDbParameter("@ID", OleDbType.Integer,4)
                                           };
             parameters[0].Value = model.methodName;
@@ -315,10 +319,11 @@ namespace HR_Test.DAL
             parameters[45].Value = model.S0;
             parameters[46].Value = model.lL;
             parameters[47].Value = model.lT;
-            parameters[48].Value = model.εz;
+            parameters[48].Value = model.εz1;
             parameters[49].Value = model.sign;
             parameters[50].Value = model.sampleSpec;
-            parameters[51].Value = model.ID;
+            parameters[51].Value = model.εz2;
+            parameters[52].Value = model.ID;
 
             int rows = DbHelperOleDb.ExecuteSql(strSql.ToString(), parameters);
             if (rows > 0)
@@ -382,7 +387,7 @@ namespace HR_Test.DAL
         {
 
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select ID,methodName,xmlPath,selResultID,isProLoad,proLoadType,proLoadValue,proLoadControlType,proLoadSpeed,isLxqf,controlType1,controlType2,controlType3,controlType4,controlType5,controlType6,controlType7,controlType8,controlType9,controlType10,controlType11,controlType12,circleNum,stopValue,isTakeDownExten,extenChannel,extenValue,sendCompany,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,testCondition,tester,assessor,testDate,sampleShape,w,h,d0,Do,S0,lL,lT,εz,sign,sampleSpec from tb_GBT3354_Method ");
+            strSql.Append("select ID,methodName,xmlPath,selResultID,isProLoad,proLoadType,proLoadValue,proLoadControlType,proLoadSpeed,isLxqf,controlType1,controlType2,controlType3,controlType4,controlType5,controlType6,controlType7,controlType8,controlType9,controlType10,controlType11,controlType12,circleNum,stopValue,isTakeDownExten,extenChannel,extenValue,sendCompany,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,testCondition,tester,assessor,testDate,sampleShape,w,h,d0,Do,S0,lL,lT,εz1,sign,sampleSpec,εz2 from tb_GBT3354_Method ");
             strSql.Append(" where ID=@ID");
             OleDbParameter[] parameters = {
 					new OleDbParameter("@ID", OleDbType.Integer,4)
@@ -405,7 +410,7 @@ namespace HR_Test.DAL
         {
 
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select ID,methodName,xmlPath,selResultID,isProLoad,proLoadType,proLoadValue,proLoadControlType,proLoadSpeed,isLxqf,controlType1,controlType2,controlType3,controlType4,controlType5,controlType6,controlType7,controlType8,controlType9,controlType10,controlType11,controlType12,circleNum,stopValue,isTakeDownExten,extenChannel,extenValue,sendCompany,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,testCondition,tester,assessor,testDate,sampleShape,w,h,d0,Do,S0,lL,lT,εz,sign,sampleSpec from tb_GBT3354_Method ");
+            strSql.Append("select ID,methodName,xmlPath,selResultID,isProLoad,proLoadType,proLoadValue,proLoadControlType,proLoadSpeed,isLxqf,controlType1,controlType2,controlType3,controlType4,controlType5,controlType6,controlType7,controlType8,controlType9,controlType10,controlType11,controlType12,circleNum,stopValue,isTakeDownExten,extenChannel,extenValue,sendCompany,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,testCondition,tester,assessor,testDate,sampleShape,w,h,d0,Do,S0,lL,lT,εz1,sign,sampleSpec,εz2 from tb_GBT3354_Method ");
             strSql.Append(" where methodName=@methodName");
             OleDbParameter[] parameters = {
 					new OleDbParameter("@methodName", OleDbType.VarChar)
@@ -656,10 +661,16 @@ namespace HR_Test.DAL
                     model.lT = double.Parse(row["lT"].ToString());
                 } 
                 //model.εz=row["εz"].ToString();
-                if (row["εz"] != null && row["εz"].ToString() != "")
+                if (row["εz1"] != null && row["εz1"].ToString() != "")
                 {
-                    model.εz = row["εz"].ToString();
+                    model.εz1 = double.Parse( row["εz1"].ToString());
+                }
+
+                if (row["εz2"] != null && row["εz2"].ToString() != "")
+                {
+                    model.εz2 = double.Parse(row["εz2"].ToString());
                 } 
+
                 if (row["sign"] != null)
                 {
                     model.sign = row["sign"].ToString();
@@ -678,7 +689,7 @@ namespace HR_Test.DAL
         public DataSet GetList(string strWhere)
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select ID,methodName,xmlPath,selResultID,isProLoad,proLoadType,proLoadValue,proLoadControlType,proLoadSpeed,isLxqf,controlType1,controlType2,controlType3,controlType4,controlType5,controlType6,controlType7,controlType8,controlType9,controlType10,controlType11,controlType12,circleNum,stopValue,isTakeDownExten,extenChannel,extenValue,sendCompany,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,testCondition,tester,assessor,testDate,sampleShape,w,h,d0,Do,S0,lL,lT,εz,sign,sampleSpec ");
+            strSql.Append("select ID,methodName,xmlPath,selResultID,isProLoad,proLoadType,proLoadValue,proLoadControlType,proLoadSpeed,isLxqf,controlType1,controlType2,controlType3,controlType4,controlType5,controlType6,controlType7,controlType8,controlType9,controlType10,controlType11,controlType12,circleNum,stopValue,isTakeDownExten,extenChannel,extenValue,sendCompany,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,testCondition,tester,assessor,testDate,sampleShape,w,h,d0,Do,S0,lL,lT,εz1,sign,sampleSpec,εz2 ");
             strSql.Append(" FROM tb_GBT3354_Method ");
             if (strWhere.Trim() != "")
             {

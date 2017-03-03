@@ -429,9 +429,9 @@ namespace HR_Test.TestStandard
         public static void CreateCurveFile(string _testpath, Model.GBT3354_Samples modelTensile)
         {
             FileStream fs = new FileStream(_testpath, FileMode.Create, FileAccess.ReadWrite);
-            utils.AddText(fs, "testType,testSampleNo,S0,lL,lT,εz");
+            utils.AddText(fs, "testType,testSampleNo,S0,lL,lT,εz1,εz2");
             utils.AddText(fs, "\r\n");
-            utils.AddText(fs, "tensile," + modelTensile.testSampleNo + "," + modelTensile.S0 + "," + modelTensile.lL + "," + modelTensile.lT + "," + modelTensile.εz);
+            utils.AddText(fs, "tensile," + modelTensile.testSampleNo + "," + modelTensile.S0 + "," + modelTensile.lL + "," + modelTensile.lT + "," + modelTensile.εz1 + "," + modelTensile.εz2);
             utils.AddText(fs, "\r\n");
             fs.Flush();
             fs.Close();

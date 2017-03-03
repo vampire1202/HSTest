@@ -227,9 +227,9 @@ namespace HR_Test.DAL
         {
             StringBuilder strSql = new StringBuilder();
             strSql.Append("insert into tb_GBT3354_Samples(");
-            strSql.Append("testMethodName,testNo,testSampleNo,reportNo,sendCompany,stuffSpec,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,tester,assessor,testDate,testCondition,controlmode,sampleShape,w,h,d0,Do,S0,lL,lT,εz,failuremode,Pmax,σt,Et,μ12,ε1t,isFinish,isUseExtensometer1,isUseExtensometer2,isEffective,sign)");
+            strSql.Append("testMethodName,testNo,testSampleNo,reportNo,sendCompany,stuffSpec,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,tester,assessor,testDate,testCondition,controlmode,sampleShape,w,h,d0,Do,S0,lL,lT,εz1,failuremode,Pmax,σt,Et,μ12,ε1t,isFinish,isUseExtensometer1,isUseExtensometer2,isEffective,sign,εz2)");
             strSql.Append(" values (");
-            strSql.Append("@testMethodName,@testNo,@testSampleNo,@reportNo,@sendCompany,@stuffSpec,@getSample,@strengthPlate,@adhesive,@sampleState,@temperature,@humidity,@testStandard,@testMethod,@mathineType,@tester,@assessor,@testDate,@testCondition,@controlmode,@sampleShape,@w,@h,@d0,@Do,@S0,@lL,@lT,@εz,@failuremode,@Pmax,@σt,@Et,@μ12,@ε1t,@isFinish,@isUseExtensometer1,@isUseExtensometer2,@isEffective,@sign)");
+            strSql.Append("@testMethodName,@testNo,@testSampleNo,@reportNo,@sendCompany,@stuffSpec,@getSample,@strengthPlate,@adhesive,@sampleState,@temperature,@humidity,@testStandard,@testMethod,@mathineType,@tester,@assessor,@testDate,@testCondition,@controlmode,@sampleShape,@w,@h,@d0,@Do,@S0,@lL,@lT,@εz1,@failuremode,@Pmax,@σt,@Et,@μ12,@ε1t,@isFinish,@isUseExtensometer1,@isUseExtensometer2,@isEffective,@sign,@εz2)");
             OleDbParameter[] parameters = {
 					new OleDbParameter("@testMethodName", OleDbType.VarChar,100),
 					new OleDbParameter("@testNo", OleDbType.VarChar,100),
@@ -259,7 +259,7 @@ namespace HR_Test.DAL
 					new OleDbParameter("@S0", OleDbType.Double),
 					new OleDbParameter("@lL", OleDbType.Double),
 					new OleDbParameter("@lT", OleDbType.Double),
-					new OleDbParameter("@εz", OleDbType.VarChar,255),
+					new OleDbParameter("@εz1", OleDbType.Double),
 					new OleDbParameter("@failuremode", OleDbType.VarChar,255),
 					new OleDbParameter("@Pmax", OleDbType.Double),
 					new OleDbParameter("@σt", OleDbType.Double),
@@ -270,7 +270,9 @@ namespace HR_Test.DAL
 					new OleDbParameter("@isUseExtensometer1", OleDbType.Boolean,1),
 					new OleDbParameter("@isUseExtensometer2", OleDbType.Boolean,1),
 					new OleDbParameter("@isEffective", OleDbType.Boolean,1),
-					new OleDbParameter("@sign", OleDbType.VarChar,255)};
+					new OleDbParameter("@sign", OleDbType.VarChar,255),
+                    new OleDbParameter("@εz2", OleDbType.Double)
+                                          };
             parameters[0].Value = model.testMethodName;
             parameters[1].Value = model.testNo;
             parameters[2].Value = model.testSampleNo;
@@ -299,7 +301,7 @@ namespace HR_Test.DAL
             parameters[25].Value = model.S0;
             parameters[26].Value = model.lL;
             parameters[27].Value = model.lT;
-            parameters[28].Value = model.εz;
+            parameters[28].Value = model.εz1;
             parameters[29].Value = model.failuremode;
             parameters[30].Value = model.Pmax;
             parameters[31].Value = model.σt;
@@ -311,7 +313,7 @@ namespace HR_Test.DAL
             parameters[37].Value = model.isUseExtensometer2;
             parameters[38].Value = model.isEffective;
             parameters[39].Value = model.sign;
-
+            parameters[40].Value = model.εz2;
             int rows = DbHelperOleDb.ExecuteSql(strSql.ToString(), parameters);
             if (rows > 0)
             {
@@ -357,7 +359,7 @@ namespace HR_Test.DAL
             strSql.Append("S0=@S0,");
             strSql.Append("lL=@lL,");
             strSql.Append("lT=@lT,");
-            strSql.Append("εz=@εz,");
+            strSql.Append("εz1=@εz1,");
             strSql.Append("failuremode=@failuremode,");
             strSql.Append("Pmax=@Pmax,");
             strSql.Append("σt=@σt,");
@@ -368,7 +370,8 @@ namespace HR_Test.DAL
             strSql.Append("isUseExtensometer1=@isUseExtensometer1,");
             strSql.Append("isUseExtensometer2=@isUseExtensometer2,");
             strSql.Append("isEffective=@isEffective,");
-            strSql.Append("sign=@sign");
+            strSql.Append("sign=@sign,");
+            strSql.Append("εz2=@εz2");
             strSql.Append(" where ID=@ID");
             OleDbParameter[] parameters = {
 					new OleDbParameter("@testMethodName", OleDbType.VarChar,100),
@@ -399,7 +402,7 @@ namespace HR_Test.DAL
 					new OleDbParameter("@S0", OleDbType.Double),
 					new OleDbParameter("@lL", OleDbType.Double),
 					new OleDbParameter("@lT", OleDbType.Double),
-					new OleDbParameter("@εz", OleDbType.VarChar,255),
+					new OleDbParameter("@εz1", OleDbType.Double),
 					new OleDbParameter("@failuremode", OleDbType.VarChar,255),
 					new OleDbParameter("@Pmax", OleDbType.Double),
 					new OleDbParameter("@σt", OleDbType.Double),
@@ -411,7 +414,9 @@ namespace HR_Test.DAL
 					new OleDbParameter("@isUseExtensometer2", OleDbType.Boolean,1),
 					new OleDbParameter("@isEffective", OleDbType.Boolean,1),
 					new OleDbParameter("@sign", OleDbType.VarChar,255),
-					new OleDbParameter("@ID", OleDbType.Integer,4)};
+                    new OleDbParameter("@εz2", OleDbType.Double),
+					new OleDbParameter("@ID", OleDbType.Integer,4)
+                                          };
             parameters[0].Value = model.testMethodName;
             parameters[1].Value = model.testNo;
             parameters[2].Value = model.testSampleNo;
@@ -440,7 +445,7 @@ namespace HR_Test.DAL
             parameters[25].Value = model.S0;
             parameters[26].Value = model.lL;
             parameters[27].Value = model.lT;
-            parameters[28].Value = model.εz;
+            parameters[28].Value = model.εz1;
             parameters[29].Value = model.failuremode;
             parameters[30].Value = model.Pmax;
             parameters[31].Value = model.σt;
@@ -452,7 +457,8 @@ namespace HR_Test.DAL
             parameters[37].Value = model.isUseExtensometer2;
             parameters[38].Value = model.isEffective;
             parameters[39].Value = model.sign;
-            parameters[40].Value = model.ID;
+            parameters[40].Value = model.εz2;
+            parameters[41].Value = model.ID;
 
             int rows = DbHelperOleDb.ExecuteSql(strSql.ToString(), parameters);
             if (rows > 0)
@@ -540,7 +546,7 @@ namespace HR_Test.DAL
         {
 
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select ID,testMethodName,testNo,testSampleNo,reportNo,sendCompany,stuffSpec,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,tester,assessor,testDate,testCondition,controlmode,sampleShape,w,h,d0,Do,S0,lL,lT,εz,failuremode,Pmax,σt,Et,μ12,ε1t,isFinish,isUseExtensometer1,isUseExtensometer2,isEffective,sign from tb_GBT3354_Samples ");
+            strSql.Append("select ID,testMethodName,testNo,testSampleNo,reportNo,sendCompany,stuffSpec,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,tester,assessor,testDate,testCondition,controlmode,sampleShape,w,h,d0,Do,S0,lL,lT,εz1,failuremode,Pmax,σt,Et,μ12,ε1t,isFinish,isUseExtensometer1,isUseExtensometer2,isEffective,sign,εz2 from tb_GBT3354_Samples ");
             strSql.Append(" where ID=@ID");
             OleDbParameter[] parameters = {
 					new OleDbParameter("@ID", OleDbType.Integer,4)
@@ -562,7 +568,7 @@ namespace HR_Test.DAL
         {
 
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select ID,testMethodName,testNo,testSampleNo,reportNo,sendCompany,stuffSpec,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,tester,assessor,testDate,testCondition,controlmode,sampleShape,w,h,d0,Do,S0,lL,lT,εz,failuremode,Pmax,σt,Et,μ12,ε1t,isFinish,isUseExtensometer1,isUseExtensometer2,isEffective,sign from tb_GBT3354_Samples ");
+            strSql.Append("select ID,testMethodName,testNo,testSampleNo,reportNo,sendCompany,stuffSpec,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,tester,assessor,testDate,testCondition,controlmode,sampleShape,w,h,d0,Do,S0,lL,lT,εz1,failuremode,Pmax,σt,Et,μ12,ε1t,isFinish,isUseExtensometer1,isUseExtensometer2,isEffective,sign,εz2 from tb_GBT3354_Samples ");
             strSql.Append(" where testSampleNo=@testSampleNo");
             OleDbParameter[] parameters = {
 					new OleDbParameter("@testSampleNo", OleDbType.VarChar)
@@ -716,9 +722,13 @@ namespace HR_Test.DAL
                 {
                     model.lT = double.Parse(row["lT"].ToString());
                 }
-                if (row["εz"] != null)
+                if (row["εz1"] != null)
                 {
-                    model.εz = row["εz"].ToString();
+                    model.εz1 = double.Parse(row["εz1"].ToString());
+                }
+                if (row["εz2"] != null)
+                {
+                    model.εz2 = double.Parse(row["εz2"].ToString());
                 }
                 if (row["failuremode"] != null)
                 {
@@ -807,7 +817,7 @@ namespace HR_Test.DAL
         public DataSet GetList(string strWhere)
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select ID,testMethodName,testNo,testSampleNo,reportNo,sendCompany,stuffSpec,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,tester,assessor,testDate,testCondition,controlmode,sampleShape,w,h,d0,Do,S0,lL,lT,εz,failuremode,Pmax,σt,Et,μ12,ε1t,isFinish,isUseExtensometer1,isUseExtensometer2,isEffective,sign ");
+            strSql.Append("select ID,testMethodName,testNo,testSampleNo,reportNo,sendCompany,stuffSpec,getSample,strengthPlate,adhesive,sampleState,temperature,humidity,testStandard,testMethod,mathineType,tester,assessor,testDate,testCondition,controlmode,sampleShape,w,h,d0,Do,S0,lL,lT,εz1,failuremode,Pmax,σt,Et,μ12,ε1t,isFinish,isUseExtensometer1,isUseExtensometer2,isEffective,sign,εz2 ");
             strSql.Append(" FROM tb_GBT3354_Samples ");
             if (strWhere.Trim() != "")
             {

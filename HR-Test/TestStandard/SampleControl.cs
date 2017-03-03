@@ -4,18 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
 namespace HR_Test.TestStandard
 {
     class SampleControl
     {
         //读取指定日期的所有试验
-        public static void ReadSample(TreeView tv,DateTimePicker dtp)
+        public static async Task ReadSample(TreeView tv,DateTimePicker dtp)
         {
-            tv.Nodes.Clear();
+            await Task.Delay(50);
+            tv.Nodes.Clear(); 
             //从 standard 数据库中读取，此处如果有重复的表则要不重复读取
             BLL.Standard bllS = new HR_Test.BLL.Standard();
             DataSet ds = bllS.GetAllListDistinctResultTableName(); //bllS.GetAllList();
-
             int count =ds.Tables[0].Rows.Count;
             List<TreeNode> ltn = new List<TreeNode>();
             if (ds != null)
@@ -55,13 +57,13 @@ namespace HR_Test.TestStandard
                             break;
                         default:
                             break;
-                    }
-
+                    } 
                     if (ltn != null)
                     {
-                        foreach (TreeNode tn in ltn)
+                        
+                        foreach (TreeNode t in ltn)
                         {
-                            tv.Nodes.Add(tn);
+                            tv.Nodes.Add(t);
                         }
                     }
                 }

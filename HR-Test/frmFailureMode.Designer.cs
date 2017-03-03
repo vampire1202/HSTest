@@ -32,20 +32,20 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button8 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.button6 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.button5 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.button4 = new System.Windows.Forms.Button();
             this.cmbC = new System.Windows.Forms.ComboBox();
+            this.button3 = new System.Windows.Forms.Button();
             this.cmbB = new System.Windows.Forms.ComboBox();
             this.cmbA = new System.Windows.Forms.ComboBox();
-            this.button10 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.btnOk = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -94,7 +94,7 @@
             this.button8.TabIndex = 1;
             this.button8.Text = "XGM";
             this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button1_Click);
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // button7
             // 
@@ -105,83 +105,7 @@
             this.button7.TabIndex = 1;
             this.button7.Text = "AGM";
             this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button6
-            // 
-            this.button6.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button6.Location = new System.Drawing.Point(386, 278);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(58, 30);
-            this.button6.TabIndex = 1;
-            this.button6.Text = "SGM";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button5
-            // 
-            this.button5.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button5.Location = new System.Drawing.Point(312, 278);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(58, 30);
-            this.button5.TabIndex = 1;
-            this.button5.Text = "LGM";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button4
-            // 
-            this.button4.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button4.Location = new System.Drawing.Point(238, 278);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(58, 30);
-            this.button4.TabIndex = 1;
-            this.button4.Text = "DGM";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button3.Location = new System.Drawing.Point(164, 278);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(58, 30);
-            this.button3.TabIndex = 1;
-            this.button3.Text = "LAT";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button2.Location = new System.Drawing.Point(90, 278);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(58, 30);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "GAT";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button1
-            // 
-            this.button1.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button1.Location = new System.Drawing.Point(16, 278);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(58, 30);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "LIT";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button9
-            // 
-            this.button9.Font = new System.Drawing.Font("宋体", 12F);
-            this.button9.Location = new System.Drawing.Point(185, 367);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(80, 40);
-            this.button9.TabIndex = 11;
-            this.button9.Text = "确定";
-            this.button9.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // label3
             // 
@@ -192,6 +116,17 @@
             this.label3.TabIndex = 8;
             this.label3.Text = "第三字符:";
             // 
+            // button6
+            // 
+            this.button6.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button6.Location = new System.Drawing.Point(386, 278);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(58, 30);
+            this.button6.TabIndex = 1;
+            this.button6.Text = "SGM";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -201,6 +136,17 @@
             this.label2.TabIndex = 9;
             this.label2.Text = "第二字符:";
             // 
+            // button5
+            // 
+            this.button5.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button5.Location = new System.Drawing.Point(312, 278);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(58, 30);
+            this.button5.TabIndex = 1;
+            this.button5.Text = "LGM";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -209,6 +155,17 @@
             this.label1.Size = new System.Drawing.Size(59, 12);
             this.label1.TabIndex = 10;
             this.label1.Text = "第一字符:";
+            // 
+            // button4
+            // 
+            this.button4.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button4.Location = new System.Drawing.Point(238, 278);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(58, 30);
+            this.button4.TabIndex = 1;
+            this.button4.Text = "DGM";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // cmbC
             // 
@@ -220,6 +177,17 @@
             this.cmbC.Name = "cmbC";
             this.cmbC.Size = new System.Drawing.Size(77, 27);
             this.cmbC.TabIndex = 5;
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button3.Location = new System.Drawing.Point(164, 278);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(58, 30);
+            this.button3.TabIndex = 1;
+            this.button3.Text = "LAT";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // cmbB
             // 
@@ -252,15 +220,51 @@
             this.cmbA.Size = new System.Drawing.Size(77, 27);
             this.cmbA.TabIndex = 7;
             // 
-            // button10
+            // button2
             // 
-            this.button10.Font = new System.Drawing.Font("宋体", 12F);
-            this.button10.Location = new System.Drawing.Point(338, 367);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(80, 40);
-            this.button10.TabIndex = 11;
-            this.button10.Text = "取消";
-            this.button10.UseVisualStyleBackColor = true;
+            this.button2.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button2.Location = new System.Drawing.Point(90, 278);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(58, 30);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "GAT";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button1.Location = new System.Drawing.Point(16, 278);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(58, 30);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "LIT";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // btnOk
+            // 
+            this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOk.Font = new System.Drawing.Font("宋体", 12F);
+            this.btnOk.Location = new System.Drawing.Point(200, 367);
+            this.btnOk.Name = "btnOk";
+            this.btnOk.Size = new System.Drawing.Size(80, 40);
+            this.btnOk.TabIndex = 11;
+            this.btnOk.Text = "确定";
+            this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Font = new System.Drawing.Font("宋体", 12F);
+            this.btnCancel.Location = new System.Drawing.Point(338, 367);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(80, 40);
+            this.btnCancel.TabIndex = 11;
+            this.btnCancel.Text = "取消";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // frmFailureMode
             // 
@@ -268,8 +272,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(607, 416);
-            this.Controls.Add(this.button10);
-            this.Controls.Add(this.button9);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnOk);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -277,6 +281,7 @@
             this.Name = "frmFailureMode";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "选择失效模式";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmFailureMode_FormClosing);
             this.Load += new System.EventHandler(this.frmFailureMode_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);
@@ -297,13 +302,13 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cmbC;
         private System.Windows.Forms.ComboBox cmbB;
         private System.Windows.Forms.ComboBox cmbA;
-        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button btnCancel;
     }
 }
