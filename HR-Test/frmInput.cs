@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO; 
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace HR_Test
 {
@@ -26,8 +28,27 @@ namespace HR_Test
         {
             InitializeComponent();
             _fmMain = fmMain;
-            TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+            Task t = tskReadMethod();
         }
+
+        async Task tskReadMethod()
+        {
+            var t = Task<List<TreeNode>>.Run(() =>
+            {
+                return TestStandard.MethodControl.ReadMethodList();
+            });
+            await t;
+            this.tvTestMethod.Nodes.Clear();
+            this.tvTestMethod.Nodes.Add("试验方法");
+            if(t.Result!=null)
+            {
+                List<TreeNode> lsttn = (List<TreeNode>)t.Result;
+                foreach (TreeNode tn in lsttn)
+                    this.tvTestMethod.Nodes[0].Nodes.Add(tn);
+            }
+            this.tvTestMethod.ExpandAll();
+        }
+
 
         private void frmInput_Load(object sender, EventArgs e)
         {

@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
+using System.Threading.Tasks;
 namespace HR_Test
 {
     public partial class frmTestMethod : Form
@@ -17,6 +19,7 @@ namespace HR_Test
         {
             InitializeComponent();
             _fmMain = fmMain;
+            Task t = tskReadMethod();
         }
 
 
@@ -31,11 +34,28 @@ namespace HR_Test
             cmbTestType_TextChanged(sender, e);
             customPanel1.Dock = DockStyle.Fill;
             customPanel1.BringToFront();
-            TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
             InitDbView(dbViewMethod);
             addYsChl(this.cmbYsChl);
-            //TestStandard.SampleControl.ReadTestStandard(this.cmbTestStandard);
+            TestStandard.SampleControl.ReadTestStandard(this.cmbTestStandard);
             TestStandard.SampleControl.ReadTestType(this.cmbTestType);
+        }
+
+        async Task tskReadMethod()
+        {
+            var t = Task<List<TreeNode>>.Run(() =>
+            {
+                return TestStandard.MethodControl.ReadMethodList();
+            });
+            await t;
+            this.tvTestMethod.Nodes.Clear();
+            this.tvTestMethod.Nodes.Add("试验方法");
+            if (t.Result != null)
+            {
+                List<TreeNode> lsttn = (List<TreeNode>)t.Result;
+                foreach (TreeNode tn in lsttn)
+                    this.tvTestMethod.Nodes[0].Nodes.Add(tn);
+            }
+            this.tvTestMethod.ExpandAll();
         }
 
         private void addYsChl(ComboBox cmbYsChl)
@@ -679,7 +699,7 @@ namespace HR_Test
             if (bllcm.Add(model) && bllSel.Add(mSel))
             {
                 MessageBox.Show("保存成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                Task t = tskReadMethod();
             }
             else
             {
@@ -882,7 +902,7 @@ namespace HR_Test
                     if (bllcm.Add(model) && bllSel.Add(mSel))
                     {
                         MessageBox.Show("保存成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                        Task t = tskReadMethod();
                     }
                     else
                     {
@@ -904,7 +924,7 @@ namespace HR_Test
                     if (bllcm.Add(model) && bllsSel.Add(msSel))
                     {
                         MessageBox.Show("保存成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                        Task t = tskReadMethod();
                     }
                     else
                     {
@@ -1107,7 +1127,7 @@ namespace HR_Test
                     if (bllcm.Add(model) && bllSel.Add(mSel))
                     {
                         MessageBox.Show("保存成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                        Task t = tskReadMethod();
                     }
                     else
                     {
@@ -1136,7 +1156,7 @@ namespace HR_Test
                     if (bllcm.Add(model) && bllsSel.Add(msSel))
                     {
                         MessageBox.Show("保存成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                        Task t = tskReadMethod();
                     }
                     else
                     {
@@ -1156,7 +1176,7 @@ namespace HR_Test
                     if (bllcm.Add(model) && blltSel.Add(mtSel))
                     {
                         MessageBox.Show("保存成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                        Task t = tskReadMethod();
                     }
                     else
                     {
@@ -1409,7 +1429,7 @@ namespace HR_Test
             if (bllcm.Add(model) && bllSel.Add(mSel))
             {
                 MessageBox.Show("保存成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                Task t = tskReadMethod();
             }
             else
             {
@@ -1618,7 +1638,7 @@ namespace HR_Test
             if (bllSel_C.Add(mSel_C) && bllcm_C.Add(model_C))
             {
                 MessageBox.Show("保存成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                Task t = tskReadMethod();
             }
             else
             {
@@ -1843,7 +1863,7 @@ namespace HR_Test
             if (bllcm_B.Add(model_B) && bllSel_B.Add(mSel_B))
             {
                 MessageBox.Show("保存成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                Task t = tskReadMethod();
             }
             else
             {
@@ -5240,7 +5260,7 @@ namespace HR_Test
                             if (bllcm.Update(model) && bllSel.Update(mSel))
                             {
                                 MessageBox.Show("更新成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                Task t = tskReadMethod();
                             }
                             else
                             {
@@ -5270,7 +5290,7 @@ namespace HR_Test
                             if (bllcm.Update(model) && bllsSel.Update(msSel))
                             {
                                 MessageBox.Show("更新成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                Task t = tskReadMethod();
                             }
                             else
                             {
@@ -5466,7 +5486,7 @@ namespace HR_Test
                             if (bllcm.Update(model) && bllSel.Update(mSel))
                             {
                                 MessageBox.Show("更新成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                Task t = tskReadMethod();
                             }
                             else
                             {
@@ -5502,7 +5522,7 @@ namespace HR_Test
                             if (bllcm.Update(model) && bllsSel.Update(msSel))
                             {
                                 MessageBox.Show("更新成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                Task t = tskReadMethod();
                             }
                             else
                             {
@@ -5530,7 +5550,7 @@ namespace HR_Test
                             if (bllcm.Update(model) && blltSel.Update(mtSel))
                             {
                                 MessageBox.Show("更新成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                Task t = tskReadMethod();
                             }
                             else
                             {
@@ -6167,14 +6187,14 @@ namespace HR_Test
                                             BLL.GBT236152009_SelZong selZong = new HR_Test.BLL.GBT236152009_SelZong();
                                             if (bll23615.Delete(this.tvTestMethod.SelectedNode.Text.Trim()) && selZong.Delete(this.tvTestMethod.SelectedNode.Text.Trim()))
                                             {
-                                                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                                Task t = tskReadMethod();
                                             }
                                             break;
                                         case "横向拉伸":
                                             BLL.GBT236152009_SelHeng selHeng = new HR_Test.BLL.GBT236152009_SelHeng();
                                             if (bll23615.Delete(this.tvTestMethod.SelectedNode.Text.Trim()) && selHeng.Delete(this.tvTestMethod.SelectedNode.Text.Trim()))
                                             {
-                                                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                                Task t = tskReadMethod();
                                             }
                                             break;
                                     }
@@ -6186,7 +6206,7 @@ namespace HR_Test
                                 BLL.SelTestResult selCm = new HR_Test.BLL.SelTestResult();
                                 if (bllCm.Delete(this.tvTestMethod.SelectedNode.Text.Trim()) && selCm.Delete(this.tvTestMethod.SelectedNode.Text.Trim()))
                                 {
-                                    TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                    Task t = tskReadMethod();
                                 }
                                 break;
                             case "GB/T 7314-2005":
@@ -6194,7 +6214,7 @@ namespace HR_Test
                                 BLL.SelTestResult_C selCm_C = new HR_Test.BLL.SelTestResult_C();
                                 if (bllCm_C.Delete(this.tvTestMethod.SelectedNode.Text.Trim()) && selCm_C.Delete(this.tvTestMethod.SelectedNode.Text.Trim()))
                                 {
-                                    TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                    Task t = tskReadMethod();
                                 }
                                 break;
 
@@ -6203,7 +6223,7 @@ namespace HR_Test
                                 BLL.SelTestResult_B selCm_B = new HR_Test.BLL.SelTestResult_B();
                                 if (bllCm_B.Delete(this.tvTestMethod.SelectedNode.Text.Trim()) && selCm_B.Delete(this.tvTestMethod.SelectedNode.Text.Trim()))
                                 {
-                                    TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                    Task t = tskReadMethod();
                                 }
                                 break;
                             case "GB/T 28289-2012":
@@ -6218,21 +6238,21 @@ namespace HR_Test
                                             BLL.GBT282892012_TensileSel selT = new HR_Test.BLL.GBT282892012_TensileSel();
                                             if (bll28289.Delete(this.tvTestMethod.SelectedNode.Text.Trim()) && selT.Delete(this.tvTestMethod.SelectedNode.Text.Trim()))
                                             {
-                                                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                                Task t = tskReadMethod();
                                             }
                                             break;
                                         case "剪切试验":
                                             BLL.GBT282892012_ShearSel selS = new HR_Test.BLL.GBT282892012_ShearSel();
                                             if (bll28289.Delete(this.tvTestMethod.SelectedNode.Text.Trim()) && selS.Delete(this.tvTestMethod.SelectedNode.Text.Trim()))
                                             {
-                                                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                                Task t = tskReadMethod();
                                             }
                                             break;
                                         case "扭转试验":
                                             BLL.GBT282892012_TwistSel selTw = new HR_Test.BLL.GBT282892012_TwistSel();
                                             if (bll28289.Delete(this.tvTestMethod.SelectedNode.Text.Trim()) && selTw.Delete(this.tvTestMethod.SelectedNode.Text.Trim()))
                                             {
-                                                TestStandard.MethodControl.ReadMethodList(this.tvTestMethod);
+                                                Task t = tskReadMethod();
                                             }
                                             break;
                                     }

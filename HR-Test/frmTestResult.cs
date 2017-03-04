@@ -151,8 +151,8 @@ namespace HR_Test
 
         //是否使用引伸计数据库标记
         private bool _useExten = false;
+        private bool _useExten2 = false;
         private bool m_useExten = false;
-        private bool m_useExten1 = false;
         private bool m_useExten2 = false;
         private double m_e1 = 0;
         private double m_e2 = 0;
@@ -488,6 +488,7 @@ namespace HR_Test
         {
             InitializeComponent();
             _fmMain = fmain;
+            Task t = tskReadSample();
         }
 
         void zedGraphControl_Invalidated(object sender, InvalidateEventArgs e)
@@ -2561,7 +2562,7 @@ namespace HR_Test
                         m_Lt = (float)model3354.lT.Value;
                         m_e1 = model3354.εz1.Value;
                         m_e2 = model3354.εz2.Value;
-                        m_useExten1 = model3354.isUseExtensometer1;
+                        m_useExten = model3354.isUseExtensometer1;
                         m_useExten2 = model3354.isUseExtensometer2;
 
                         if (e.Node.ImageIndex == 0)//表示已完成的试验组
@@ -2585,7 +2586,7 @@ namespace HR_Test
                             this.dataGridView.UseWaitCursor = true;
                             m_calSuccess = false;
                             isShowResult = false;
-                            m_useExten1 = false;
+                            m_useExten = false;
                             m_useExten2 = false;
                             _useExten = false;
                             m_holdPause = false;
@@ -6328,7 +6329,31 @@ namespace HR_Test
         //简易日期查询
         private void dateTimePicker_ValueChanged(object sender, EventArgs e)
         {
-            Task tskReadSamples = TestStandard.SampleControl.ReadSample(this.tvTestSample, this.dateTimePicker);
+            Task t = tskReadSample();
+        }
+
+        async Task tskReadSample()
+        {
+            var t = Task<List<TreeNode>>.Run(() =>
+             {
+                 return TestStandard.SampleControl.ReadSample(this.dateTimePicker.Value.Date);
+             });
+            await t;
+            //this.BeginInvoke(new Action(() =>
+            //{
+                if (t.Result != null)
+                {
+                    this.tvTestSample.Nodes.Clear();
+                    List<TreeNode> ltn = (List<TreeNode>)t.Result;
+                    foreach (TreeNode tn in ltn)
+                    {
+                        this.tvTestSample.Nodes.Add(tn);
+                    }
+                }
+                else
+                    this.tvTestSample.Nodes.Add("无");
+                this.tvTestSample.ExpandAll();
+            //}));
         }
 
         delegate void delInitCurveCount(ZedGraph.ZedGraphControl zedGraph, string[] selarry, string sampleMode, string[] colorarray);
@@ -6705,7 +6730,7 @@ namespace HR_Test
             //m_Time_Test = 0f;              //时间
             //m_Stress_Test = 0f;            //应力
             //m_Strain_Test = 0f;            //应变  
-            m_useExten1 = false;
+            m_useExten = false;
             m_useExten2 = false;
             m_Fm = 0;//最大力值
             m_Fmax = 0;
@@ -13670,6 +13695,34 @@ namespace HR_Test
             //Thread.Sleep(50);
             m_fh.Show();
             m_fh.TopMost = true;
+        }
+
+        bool isShowBX2 = false;
+        private void btnBXShow2_Click(object sender, EventArgs e)
+        {
+            isShowBX2 = !isShowBX2;
+            if (isShowBX2)
+            {
+                this.lbltime.Text = "变形μ";
+                this.btnBXShow2.Text = "时间";
+                this.lbltum.Text = "μm";
+                this.btnZeroBx2.Visible = true;
+                this.lblBX2State.Visible = true;
+                this.lblBXShow2.Visible = true;
+                this.lblTimeShow.Visible = false;
+            }
+            else
+            {
+                this.lbltime.Text = "时间";
+                this.lbltum.Text = "s";
+                this.btnBXShow2.Text = "变形";
+                this.btnZeroBx2.Visible = false;
+                this.lblBX2State.Visible = false;
+                this.lblBXShow2.Visible = false;
+                this.lblTimeShow.Visible = true;
+            }
+
+
         }
     }
 }

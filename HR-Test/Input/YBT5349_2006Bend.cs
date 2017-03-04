@@ -6,6 +6,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace HR_Test.Input
 {
@@ -543,8 +545,25 @@ namespace HR_Test.Input
         {
             BLL.Bend bllBend = new HR_Test.BLL.Bend();
             bllBend.Delete(this._methodName);
-            TestStandard.MethodControl.ReadMethodList(this.treeviewTestMethod);
+            //Task t = tskReadMethod();
         }
+        //async Task tskReadMethod()
+        //{
+        //    var t = Task<List<TreeNode>>.Run(() =>
+        //    {
+        //        return TestStandard.MethodControl.ReadMethodList();
+        //    });
+        //    await t;
+        //    this.tvTestMethod.Nodes.Clear();
+        //    this.tvTestMethod.Nodes.Add("试验方法");
+        //    if (t.Result != null)
+        //    {
+        //        List<TreeNode> lsttn = (List<TreeNode>)t.Result;
+        //        foreach (TreeNode tn in lsttn)
+        //            this.tvTestMethod.Nodes[0].Nodes.Add(tn);
+        //    }
+        //    this.tvTestMethod.ExpandAll();
+        //}
 
         private void gBtnAddToMethod3_Click(object sender, EventArgs e)
         {

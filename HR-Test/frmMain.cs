@@ -89,9 +89,28 @@ namespace HR_Test
             fi.Parent = this.panelContainer;
             fi.BringToFront();
             fi.Size = this.panelContainer.Size;
-            TestStandard.MethodControl.ReadMethodList(fi.tvTestMethod);
+            //Task t = tskReadMethod();
             fi.Show();
         }
+
+        //async Task tskReadMethod()
+        //{
+        //    var t = Task<List<TreeNode>>.Run(() =>
+        //    {
+        //        return TestStandard.MethodControl.ReadMethodList();
+        //    });
+        //    await t;
+        //    fi.tvTestMethod.Nodes.Clear();
+        //    fi.tvTestMethod.Nodes.Add("试验方法");
+        //    if (t.Result != null)
+        //    {
+        //        List<TreeNode> lsttn = (List<TreeNode>)t.Result;
+        //        foreach (TreeNode tn in lsttn)
+        //            fi.tvTestMethod.Nodes[0].Nodes.Add(tn);
+        //    }
+        //    fi.tvTestMethod.ExpandAll();
+        //}
+
 
         private void gbtnTestMethod_Click(object sender, EventArgs e)
         {
@@ -128,7 +147,7 @@ namespace HR_Test
             ftr.TopLevel = false;
             ftr.Name = "c_testResult";
             ftr.GetTestValue();
-            Task t= TestStandard.SampleControl.ReadSample(ftr.tvTestSample, ftr.dateTimePicker); 
+            //Task t= TestStandard.SampleControl.ReadSample(ftr.tvTestSample, ftr.dateTimePicker); 
             ftr._showThreadFlag = true;
             ftr.ThreadSendOrder();           
             ftr.Parent = this.panelContainer; 

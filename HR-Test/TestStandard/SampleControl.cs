@@ -11,78 +11,78 @@ namespace HR_Test.TestStandard
     class SampleControl
     {
         //读取指定日期的所有试验
-        public static async Task ReadSample(TreeView tv,DateTimePicker dtp)
+        public static List<TreeNode> ReadSample(DateTime dtp)
         {
-            await Task.Delay(50);
-            tv.Nodes.Clear(); 
             //从 standard 数据库中读取，此处如果有重复的表则要不重复读取
             BLL.Standard bllS = new HR_Test.BLL.Standard();
             DataSet ds = bllS.GetAllListDistinctResultTableName(); //bllS.GetAllList();
-            int count =ds.Tables[0].Rows.Count;
+            int count = ds.Tables[0].Rows.Count;
             List<TreeNode> ltn = new List<TreeNode>();
             if (ds != null)
-            {
+            { 
+                ltn.Clear();
                 for (int i = 0; i < count; i++)
                 {
-                    ltn.Clear();
                     string resultTbName = ds.Tables[0].Rows[i]["resultTableName"].ToString();
                     switch (resultTbName)
                     {
                         case "tb_TestSample":
-                            ltn = ReadGBT228Samples(dtp);                           
+                           ltn.AddRange(ReadGBT228Samples(dtp));
                             break;
                         case "tb_Compress":
-                            ltn = ReadGBT7314Samples(dtp);    
+                            ltn.AddRange( ReadGBT7314Samples(dtp));
                             break;
                         case "tb_Bend":
-                            ltn = ReadYBT5349Samples(dtp);
+                            ltn.AddRange( ReadYBT5349Samples(dtp));
                             break;
                         case "tb_GBT282892012_Tensile":
-                            ltn = ReadGBT28289TensileSamples(dtp);
+                            ltn.AddRange(ReadGBT28289TensileSamples(dtp));
                             break;
                         case "tb_GBT282892012_Shear":
-                            ltn = ReadGBT28289ShearSamples(dtp);
+                            ltn.AddRange( ReadGBT28289ShearSamples(dtp));
                             break;
                         case "tb_GBT282892012_Twist":
-                            ltn = ReadGBT28289TwistSamples(dtp);
+                            ltn.AddRange(ReadGBT28289TwistSamples(dtp));
                             break;
                         case "tb_GBT236152009_TensileHeng":
-                            ltn = ReadGBT23615HengSamples(dtp);
+                            ltn.AddRange(ReadGBT23615HengSamples(dtp));
                             break;
                         case "tb_GBT236152009_TensileZong":
-                            ltn = ReadGBT23615ZongSamples(dtp);
+                             ltn.AddRange( ReadGBT23615ZongSamples(dtp));
                             break;
                         case "tb_GBT3354_Samples":
-                            ltn = ReadGBT3354Samples(dtp);
+                            ltn.AddRange(ReadGBT3354Samples(dtp));
                             break;
                         default:
                             break;
-                    } 
-                    if (ltn != null)
-                    {
-                        
-                        foreach (TreeNode t in ltn)
-                        {
-                            tv.Nodes.Add(t);
-                        }
-                    }
-                }
-            }            
-           
-            if (tv.Nodes.Count == 0)
-                tv.Nodes.Add("无");
+                    }                  
+                }                
+            }
+            if (ltn != null)
+            {
+                return ltn;
+                //foreach (TreeNode t in ltn)
+                //{
+                //    tv.Nodes.Add(t);
+                //}
+            }
+            else
+                return null;
+            //if (tv.Nodes.Count == 0)
+            //    tv.Nodes.Add("无");
             //tv.ExpandAll();
+
         }
-        private static List<TreeNode> ReadGBT3354Samples(DateTimePicker dtp)
+        private static List<TreeNode> ReadGBT3354Samples(DateTime dtp)
         {
             BLL.GBT3354_Samples bllTs = new HR_Test.BLL.GBT3354_Samples();
             //查询不重复项
-            DataSet ds = bllTs.GetNotOverlapList1(" testDate = #" + dtp.Value.Date + "#");//distinct testNo,testMethodName
+            DataSet ds = bllTs.GetNotOverlapList1(" testDate = #" + dtp.Date + "#");//distinct testNo,testMethodName
             int rCount = ds.Tables[0].Rows.Count;
             List<TreeNode> ltn = new List<TreeNode>();
             for (int i = 0; i < rCount; i++)
             {
-                DataSet _ds = bllTs.GetList(" testNo='" + ds.Tables[0].Rows[i]["testNo"].ToString() + "' and testMethodName='" + ds.Tables[0].Rows[i]["testMethodName"].ToString() + "' and testDate=#" + dtp.Value.Date + "#");
+                DataSet _ds = bllTs.GetList(" testNo='" + ds.Tables[0].Rows[i]["testNo"].ToString() + "' and testMethodName='" + ds.Tables[0].Rows[i]["testMethodName"].ToString() + "' and testDate=#" + dtp.Date + "#");
                 TreeNode tn = new TreeNode();
                 tn.Text = ds.Tables[0].Rows[i]["testNo"].ToString();
                 tn.Name = "GBT3354-2014";
@@ -118,16 +118,16 @@ namespace HR_Test.TestStandard
             ds.Dispose();
             return ltn;
         }
-        private static List<TreeNode> ReadGBT23615ZongSamples(DateTimePicker dtp)
+        private static List<TreeNode> ReadGBT23615ZongSamples(DateTime dtp)
         {
             BLL.GBT236152009_TensileZong bllTs = new HR_Test.BLL.GBT236152009_TensileZong();
             //查询不重复项
-            DataSet ds = bllTs.GetNotOverlapList(" testDate = #" + dtp.Value.Date + "#");//distinct testNo,testMethodName
+            DataSet ds = bllTs.GetNotOverlapList(" testDate = #" + dtp.Date + "#");//distinct testNo,testMethodName
             int rCount = ds.Tables[0].Rows.Count;
             List<TreeNode> ltn = new List<TreeNode>();
             for (int i = 0; i < rCount; i++)
             {
-                DataSet _ds = bllTs.GetList(" testNo='" + ds.Tables[0].Rows[i]["testNo"].ToString() + "' and testMethodName='" + ds.Tables[0].Rows[i]["testMethodName"].ToString() + "' and testDate=#" + dtp.Value.Date + "#");
+                DataSet _ds = bllTs.GetList(" testNo='" + ds.Tables[0].Rows[i]["testNo"].ToString() + "' and testMethodName='" + ds.Tables[0].Rows[i]["testMethodName"].ToString() + "' and testDate=#" + dtp.Date + "#");
                 TreeNode tn = new TreeNode();
                 tn.Text = ds.Tables[0].Rows[i]["testNo"].ToString();
                 tn.Name = "GBT23615-2009TensileZong";
@@ -164,16 +164,16 @@ namespace HR_Test.TestStandard
             return ltn;
         }
 
-        private static List<TreeNode> ReadGBT23615HengSamples(DateTimePicker dtp)
+        private static List<TreeNode> ReadGBT23615HengSamples(DateTime dtp)
         {
             BLL.GBT236152009_TensileHeng bllTs = new HR_Test.BLL.GBT236152009_TensileHeng();
             //查询不重复项
-            DataSet ds = bllTs.GetNotOverlapList(" testDate = #" + dtp.Value.Date + "#");
+            DataSet ds = bllTs.GetNotOverlapList(" testDate = #" + dtp.Date + "#");
             int rCount = ds.Tables[0].Rows.Count;
             List<TreeNode> ltn = new List<TreeNode>();
             for (int i = 0; i < rCount; i++)
             {
-                DataSet _ds = bllTs.GetList(" testNo='" + ds.Tables[0].Rows[i]["testNo"].ToString() + "' and testMethodName='" + ds.Tables[0].Rows[i]["testMethodName"].ToString() + "' and testDate=#" + dtp.Value.Date + "#");
+                DataSet _ds = bllTs.GetList(" testNo='" + ds.Tables[0].Rows[i]["testNo"].ToString() + "' and testMethodName='" + ds.Tables[0].Rows[i]["testMethodName"].ToString() + "' and testDate=#" + dtp.Date + "#");
                 TreeNode tn = new TreeNode();
                 tn.Text = ds.Tables[0].Rows[i]["testNo"].ToString();
                 tn.Name = "GBT23615-2009TensileHeng";
@@ -210,20 +210,20 @@ namespace HR_Test.TestStandard
             return ltn;
         }
 
-        private static List<TreeNode> ReadGBT228Samples(DateTimePicker dtp)
+        private static List<TreeNode> ReadGBT228Samples(DateTime dtp)
         {
             BLL.TestSample bllTs = new HR_Test.BLL.TestSample();
             //查询不重复项
-            DataSet ds = bllTs.GetNotOverlapList1(" testDate = #" + dtp.Value.Date + "#");
+            DataSet ds = bllTs.GetNotOverlapList1(" testDate = #" + dtp.Date + "#");
             int rCount = ds.Tables[0].Rows.Count;
             List<TreeNode> ltn = new List<TreeNode>();
             for (int i = 0; i < rCount; i++)
-            {             
-                DataSet _ds = bllTs.GetList(" testNo='" + ds.Tables[0].Rows[i]["testNo"].ToString() + "' and testMethodName='" + ds.Tables[0].Rows[i]["testMethodName"].ToString() + "' and testDate=#" + dtp.Value.Date + "#");
+            {
+                DataSet _ds = bllTs.GetList(" testNo='" + ds.Tables[0].Rows[i]["testNo"].ToString() + "' and testMethodName='" + ds.Tables[0].Rows[i]["testMethodName"].ToString() + "' and testDate=#" + dtp.Date + "#");
                 TreeNode tn = new TreeNode();
                 tn.Text = ds.Tables[0].Rows[i]["testNo"].ToString();
                 tn.Name = "GBT228-2010";
-                tn.ImageIndex = 0; 
+                tn.ImageIndex = 0;
 
                 foreach (DataRow dr in _ds.Tables[0].Rows)
                 {
@@ -256,19 +256,19 @@ namespace HR_Test.TestStandard
             return ltn;
         }
 
-        private static List<TreeNode> ReadGBT7314Samples(DateTimePicker dtp)
+        private static List<TreeNode> ReadGBT7314Samples(DateTime dtp)
         {
             BLL.Compress bllC = new HR_Test.BLL.Compress();
-            DataSet dsc = bllC.GetNotOverlapList(" testDate = #" + dtp.Value.Date + "#");
+            DataSet dsc = bllC.GetNotOverlapList(" testDate = #" + dtp.Date + "#");
             int count = dsc.Tables[0].Rows.Count;
             List<TreeNode> ltn = new List<TreeNode>();
             for (int j = 0; j < count; j++)
             {
-                DataSet _dsc = bllC.GetList(" testNo='" + dsc.Tables[0].Rows[j]["testNo"].ToString() + "' and testDate=#" + dtp.Value.Date + "#");
+                DataSet _dsc = bllC.GetList(" testNo='" + dsc.Tables[0].Rows[j]["testNo"].ToString() + "' and testDate=#" + dtp.Date + "#");
                 TreeNode tn = new TreeNode();
                 tn.Text = dsc.Tables[0].Rows[j]["testNo"].ToString();
                 tn.Name = "GBT7314-2005";
-                tn.ImageIndex = 0; 
+                tn.ImageIndex = 0;
                 foreach (DataRow dr in _dsc.Tables[0].Rows)
                 {
                     if (Convert.ToBoolean(dr["isFinish"].ToString()) == true)
@@ -299,19 +299,19 @@ namespace HR_Test.TestStandard
             return ltn;
         }
 
-        private static List<TreeNode> ReadYBT5349Samples(DateTimePicker dtp)
+        private static List<TreeNode> ReadYBT5349Samples(DateTime dtp)
         {
             BLL.Bend bllb = new HR_Test.BLL.Bend();
-            DataSet dsb = bllb.GetNotOverlapList("testDate=#" + dtp.Value.Date + "#");
+            DataSet dsb = bllb.GetNotOverlapList("testDate=#" + dtp.Date + "#");
             int count = dsb.Tables[0].Rows.Count;
             List<TreeNode> ltn = new List<TreeNode>();
             for (int j = 0; j < count; j++)
-            {  
-                DataSet _dsb = bllb.GetList(" testNo='" + dsb.Tables[0].Rows[j]["testNo"].ToString() + "' and testDate=#" + dtp.Value.Date + "#");
+            {
+                DataSet _dsb = bllb.GetList(" testNo='" + dsb.Tables[0].Rows[j]["testNo"].ToString() + "' and testDate=#" + dtp.Date + "#");
                 TreeNode tn = new TreeNode();
                 tn.Text = dsb.Tables[0].Rows[j]["testNo"].ToString();
                 tn.Name = "YBT5349-2006";
-                tn.ImageIndex = 0; 
+                tn.ImageIndex = 0;
                 foreach (DataRow dr in _dsb.Tables[0].Rows)
                 {
                     if (Convert.ToBoolean(dr["isFinish"].ToString()) == true)
@@ -342,15 +342,15 @@ namespace HR_Test.TestStandard
             return ltn;
         }
 
-        private static List<TreeNode> ReadGBT28289TensileSamples(DateTimePicker dtp)
+        private static List<TreeNode> ReadGBT28289TensileSamples(DateTime dtp)
         {
             BLL.GBT282892012_Tensile bllb = new HR_Test.BLL.GBT282892012_Tensile();
-            DataSet dsb = bllb.GetNotOverlapList("testDate=#" + dtp.Value.Date + "#");
+            DataSet dsb = bllb.GetNotOverlapList("testDate=#" + dtp.Date + "#");
             int count = dsb.Tables[0].Rows.Count;
             List<TreeNode> ltn = new List<TreeNode>();
             for (int j = 0; j < count; j++)
             {
-                DataSet _dsb = bllb.GetList(" testNo='" + dsb.Tables[0].Rows[j]["testNo"].ToString() + "' and testDate=#" + dtp.Value.Date + "# ");
+                DataSet _dsb = bllb.GetList(" testNo='" + dsb.Tables[0].Rows[j]["testNo"].ToString() + "' and testDate=#" + dtp.Date + "# ");
                 TreeNode tn = new TreeNode();
                 tn.Text = dsb.Tables[0].Rows[j]["testNo"].ToString();
                 tn.Name = "GBT28289-2012Tensile";
@@ -385,15 +385,15 @@ namespace HR_Test.TestStandard
             return ltn;
         }
 
-        private static List<TreeNode> ReadGBT28289ShearSamples(DateTimePicker dtp)
+        private static List<TreeNode> ReadGBT28289ShearSamples(DateTime dtp)
         {
             BLL.GBT282892012_Shear bllb = new HR_Test.BLL.GBT282892012_Shear();
-            DataSet dsb = bllb.GetNotOverlapList("testDate=#" + dtp.Value.Date + "#");
+            DataSet dsb = bllb.GetNotOverlapList("testDate=#" + dtp.Date + "#");
             int count = dsb.Tables[0].Rows.Count;
             List<TreeNode> ltn = new List<TreeNode>();
             for (int j = 0; j < count; j++)
             {
-                DataSet _dsb = bllb.GetList(" testNo='" + dsb.Tables[0].Rows[j]["testNo"].ToString() + "' and testDate=#" + dtp.Value.Date + "#");
+                DataSet _dsb = bllb.GetList(" testNo='" + dsb.Tables[0].Rows[j]["testNo"].ToString() + "' and testDate=#" + dtp.Date + "#");
                 TreeNode tn = new TreeNode();
                 tn.Text = dsb.Tables[0].Rows[j]["testNo"].ToString();
                 tn.Name = "GBT28289-2012Shear";
@@ -428,15 +428,15 @@ namespace HR_Test.TestStandard
             return ltn;
         }
 
-        private static List<TreeNode> ReadGBT28289TwistSamples(DateTimePicker dtp)
+        private static List<TreeNode> ReadGBT28289TwistSamples(DateTime dtp)
         {
             BLL.GBT282892012_Twist bllb = new HR_Test.BLL.GBT282892012_Twist();
-            DataSet dsb = bllb.GetNotOverlapList("testDate=#" + dtp.Value.Date + "#");
+            DataSet dsb = bllb.GetNotOverlapList("testDate=#" + dtp.Date + "#");
             int count = dsb.Tables[0].Rows.Count;
             List<TreeNode> ltn = new List<TreeNode>();
             for (int j = 0; j < count; j++)
             {
-                DataSet _dsb = bllb.GetList(" testNo='" + dsb.Tables[0].Rows[j]["testNo"].ToString() + "' and testDate=#" + dtp.Value.Date + "#");
+                DataSet _dsb = bllb.GetList(" testNo='" + dsb.Tables[0].Rows[j]["testNo"].ToString() + "' and testDate=#" + dtp.Date + "#");
                 TreeNode tn = new TreeNode();
                 tn.Text = dsb.Tables[0].Rows[j]["testNo"].ToString();
                 tn.Name = "GBT28289-2012Twist";
