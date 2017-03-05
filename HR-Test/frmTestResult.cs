@@ -231,6 +231,7 @@ namespace HR_Test
         //显示值
         float m_Displacement = 0f;      //位移
         float m_Elongate = 0f;          //变形
+        float m_Elongate1 = 0f;          //变形1
         float m_Load = 0f;              //力
         float m_Time = 0f;              //时间
         float m_YingLi = 0f;            //应力
@@ -857,12 +858,39 @@ namespace HR_Test
                         //变形
                         m_Elongate = (float)(m_evalue * m_ElongateResolutionValue);
 
+                        if (m_ESensorArray.Length>1)
+                        {
+                            //变形2
+                            m_index = m_ESensorArray[1].SensorIndex * 4 + 3;
+                            m_evalue = buf[m_index];
+
+                            m_evalue = m_evalue << 8;
+                            m_index = m_ESensorArray[1].SensorIndex * 4 + 2;
+                            m_evalue |= buf[m_index];
+
+                            m_evalue = m_evalue << 8;
+                            m_index = m_ESensorArray[1].SensorIndex * 4 + 1;
+                            m_evalue |= buf[m_index];
+
+                            m_evalue = m_evalue << 8;
+                            m_index = m_ESensorArray[1].SensorIndex * 4 + 0;
+                            m_evalue |= buf[m_index];
+
+                            if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
+                                m_evalue = -m_evalue;
+                            //变形
+                            m_Elongate1 = (float)(m_evalue * m_ElongateResolutionValue);
+                        }
+                      
+
                         if (!isTest)
                         {
                             this.BeginInvoke(new Action(() =>
                             {
                                 this.lblBXShow.Text = FloatDisplay(m_evalue, (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
-                                this.lblBXShow.Refresh();
+                                this.lblBXShow.Invalidate();
+                                this.lblBXShow2.Text = FloatDisplay(m_evalue, (ushort)m_SensorArray[m_ESensorArray[1].SensorIndex].scale, m_Resolution, 0x03);
+                                this.lblBXShow2.Invalidate();
                             }));
                         }
                     }
@@ -6334,16 +6362,16 @@ namespace HR_Test
 
         async Task tskReadSample()
         {
+            this.tvTestSample.Nodes.Clear();
             var t = Task<List<TreeNode>>.Run(() =>
              {
                  return TestStandard.SampleControl.ReadSample(this.dateTimePicker.Value.Date);
              });
             await t;
             //this.BeginInvoke(new Action(() =>
-            //{
+            //{ 
                 if (t.Result != null)
-                {
-                    this.tvTestSample.Nodes.Clear();
+                { 
                     List<TreeNode> ltn = (List<TreeNode>)t.Result;
                     foreach (TreeNode tn in ltn)
                     {
@@ -6352,7 +6380,7 @@ namespace HR_Test
                 }
                 else
                     this.tvTestSample.Nodes.Add("无");
-                this.tvTestSample.ExpandAll();
+                this.tvTestSample.ExpandAll(); 
             //}));
         }
 
@@ -13707,7 +13735,7 @@ namespace HR_Test
                 this.btnBXShow2.Text = "时间";
                 this.lbltum.Text = "μm";
                 this.btnZeroBx2.Visible = true;
-                this.lblBX2State.Visible = true;
+                this.lblUseExten2.Visible = true;
                 this.lblBXShow2.Visible = true;
                 this.lblTimeShow.Visible = false;
             }
@@ -13717,12 +13745,47 @@ namespace HR_Test
                 this.lbltum.Text = "s";
                 this.btnBXShow2.Text = "变形";
                 this.btnZeroBx2.Visible = false;
-                this.lblBX2State.Visible = false;
+                this.lblUseExten2.Visible = false;
                 this.lblBXShow2.Visible = false;
                 this.lblTimeShow.Visible = true;
             }
 
 
+        }
+
+        private void btnZeroBx2_Click(object sender, EventArgs e)
+        {
+            if (m_ElongateSensorCount == 0)
+            {
+                MessageBox.Show(this, "未连接设备!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            // TODO: 在此添加控件通知处理程序代码
+            lock (m_state)
+            {
+                Thread.Sleep(30);
+                byte[] buf = new byte[5];
+                int ret;
+                buf[0] = 0x04;									//命令字节
+                buf[1] = 0xde;									//清零命令
+                buf[2] = m_ESensorArray[1].SensorIndex;			//因为是简单测试程序，所以只取了零号索引。
+                buf[3] = 0;
+                buf[4] = 0;
+                ret = RwUsb.WriteData1582(1, buf, 5, 1000);				//发送写命令
+                Thread.Sleep(30);
+            }
+            //试验过程中使用引伸计
+            _useExten2 = true;
+            //画曲线标志
+            m_useExten2 = true;
+            if (_useExten2)
+            {
+                this.lblUseExten2.Text = "使用引伸计";
+                this.lblUseExten2.ForeColor = Color.Green;
+                //this.tsbtnYSJ.Enabled = true;
+                this.lblUseExten2.Refresh();
+                this.btnAverayBX.Visible = true;
+            }
         }
     }
 }

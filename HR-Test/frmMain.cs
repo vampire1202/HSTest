@@ -154,6 +154,10 @@ namespace HR_Test
             ftr.Invalidate(); 
             ftr.BringToFront();
             ftr.Size = this.panelContainer.Size;
+            if (m_ElongateSensorCount > 1)
+                ftr.btnBXShow2.Enabled = true;
+            else
+                ftr.btnBXShow2.Enabled = false;
             ftr.Show();
         }
 
@@ -206,7 +210,7 @@ namespace HR_Test
             lv.Columns.Add("其他", -2, HorizontalAlignment.Left);
         }
 
-               private void btnAccess_Click(object sender, EventArgs e)
+        private void btnAccess_Click(object sender, EventArgs e)
         {
             /*
 		    在实际的应用程序中，应设置一配置（读取全部传感器信息）完成全局标志。
@@ -233,18 +237,13 @@ namespace HR_Test
           
             len = 203;
             ret = RwUsb.ReadData1582(2, buf, len, 5000);				    //读数据
-            //if (ret != len)
-            //{
-            //    buf[0] = 0x03;
-            //    WriteData1582(1, buf, 5, 1000);				            //发送停止命令
-            //    return -1;
-            //}
+           
             m_ControlCount = len;
             m_NuIni = buf[1];
             m_NuIni = m_NuIni << 8;
             m_NuIni = m_NuIni | buf[0];
             m_SensorCount = buf[2];
-
+            //查找所有传感器
             for (i = 0; i < m_SensorCount; i++)
             {
                 m_SensorArray[i].sockt = buf[i * 10 + 3];
@@ -268,7 +267,7 @@ namespace HR_Test
             m_LoadSensorCount = 0;
             m_DisplacementSensorCount = 0;
             m_ElongateSensorCount = 0;
-
+            //传感器序号及ID
             for (i = 0; i <= m_SensorCount; i++)
             {
                 if (m_SensorArray[i].type == 0x80)
@@ -347,154 +346,13 @@ namespace HR_Test
             ftr.M_DisplacementSensorCount = this.m_DisplacementSensorCount;
             ftr.M_DSensorArray = this.m_DSensorArray;
             ftr.M_ElongateSensorCount = this.m_ElongateSensorCount;
+        
             ftr.M_ESensorArray = this.m_ESensorArray;
             ftr.M_LoadSensorCount = this.m_LoadSensorCount;
             ftr.M_LSensorArray = this.m_LSensorArray;
             ftr.M_SensorArray = this.m_SensorArray;
             ftr.M_SensorArrayFlag = this.SensorArrayFlag;
             ftr.M_SensorCount = this.m_SensorCount;
-                
-                //        m_GridConfig.put_Row(m_index);
-
-                //        wsprintfW(m_temp,L"%d",i);
-                //        m_GridConfig.put_Col(0);
-                //        m_GridConfig.put_Text(m_temp); 
-
-                //if(m_SensorArray[i].type==0x80)
-                //{
-                //    m_string="位移";
-                //    //m_GridConfig.put_Col(1);
-                //    //m_GridConfig.put_Text(m_string);
-                //    _arrSensors[1] = m_string;
-                //    m_value=m_SensorArray[i].scale;
-                //    m_value=m_value>>8;
-                //    m_value=(int)(m_value* Math.Pow(10.0,m_SensorArray[i].scale&0x000f));
-                //    _arrSensors[2] = m_value.ToString();
-
-                //            wsprintfW(m_temp,L"%d um",m_value);
-                //            m_GridConfig.put_Col(2);
-                //            m_GridConfig.put_Text(m_temp);
-                //        }
-                //        else if(m_SensorArray[i].type==0x81)
-                //        {
-                //            m_string="负荷";
-                //            m_GridConfig.put_Col(1);
-                //            m_GridConfig.put_Text(m_string);
-
-                //            m_value=m_SensorArray[i].scale;
-                //            m_value=m_value>>8;
-                //            m_value=(int)(m_value*pow(10.0,m_SensorArray[i].scale&0x000f));
-                //            wsprintfW(m_temp,L"%d N",m_value);
-                //            m_GridConfig.put_Col(2);
-                //            m_GridConfig.put_Text(m_temp);
-                //        }
-                //        else if(m_SensorArray[i].type==0x82)
-                //        {
-                //            m_string="变形";
-                //            m_GridConfig.put_Col(1);
-                //            m_GridConfig.put_Text(m_string);
-
-                //            m_value=m_SensorArray[i].scale;
-                //            m_value=m_value>>8;
-                //            m_value=(int)(m_value*pow(10.0,m_SensorArray[i].scale&0x000f));
-                //            wsprintfW(m_temp,L"%d um",m_value);
-                //            m_GridConfig.put_Col(2);
-                //            m_GridConfig.put_Text(m_temp);
-                //        }
-                //        else 
-                //        {
-                ////			m_string="空";
-                ////			m_GridConfig.put_Col(1);
-                ////			m_GridConfig.put_Text(m_string);
-                //        }
-
-                //    }
-
-                //if (m_DisplacementSensorCount != 0)
-                //{
-                //    m_string = "位移";
-                //    this.cmbControlType1.Items.Add(m_string);
-                //    this.cmbControlType2.Items.Add(m_string);
-                //    this.cmbStopType1.Items.Add(m_string);
-                //    this.cmbStopType2.Items.Add(m_string);
-
-                //    //m_ControlType.AddString(m_string);
-                //    //m_ControlType2.AddString(m_string);
-
-                //    //m_StopType.AddString(m_string);
-                //    //m_StopType2.AddString(m_string);
-
-                //    for (i = 0; i < m_DisplacementSensorCount; i++)
-                //    {
-                //        //wsprintfW(m_temp,L"%d",i);
-                //        //m_CtrlChannel.AddString(m_temp);
-                //        //m_CtrlChannel1.AddString(m_temp);
-                //        //m_StopChannel.AddString(m_temp);
-                //        //m_StopChannel1.AddString(m_temp);
-                //        this.cmbControlChannel1.Items.Add(m_temp);
-                //        this.cmbControlChannel2.Items.Add(m_temp);
-                //        this.cmbStopChannel1.Items.Add(m_temp);
-                //        this.cmbStopChannel2.Items.Add(m_temp);
-                //    }
-
-                //    this.cmbControlType1.Text = m_string;
-                //   // m_StringControlType1 = m_string;
-                //    this.cmbControlChannel1.Text = m_LSensorArray[0].SensorIndex.ToString();
-                //   // m_SendCtrlChannel1 = Convert.ToByte(m_LSensorArray[0].SensorIndex);
-                //   // m_StaticCtrl1 = m_SendCtrlChannel1;
-
-
-                //    this.cmbControlType2.Text = m_string;
-                //   // m_StringControlType2 = m_string;
-                //    this.cmbControlChannel2.Text = m_LSensorArray[0].SensorIndex.ToString();
-                //   // m_SendCtrlChannel2 = Convert.ToByte(m_LSensorArray[0].SensorIndex);
-                //  //  m_StaticCtrl2 = m_SendCtrlChannel2;
-
-                //    this.cmbStopType1.Text = m_string;
-                //  //  m_StringStopType1 = m_string;
-                //    this.cmbStopChannel1.Text = m_LSensorArray[0].SensorIndex.ToString();
-                //  //  m_SendStopChannel1 = Convert.ToByte(m_LSensorArray[0].SensorIndex);
-                //  //  m_StaticCtrlStop1 = m_SendStopChannel1;
-
-                //    this.cmbStopType2.Text = m_string;
-                //  //  m_StringStopType1 = m_string;
-                //    this.cmbStopChannel2.Text = m_LSensorArray[0].SensorIndex.ToString();
-                //  //  m_SendStopChannel1 = Convert.ToByte(m_LSensorArray[0].SensorIndex);
-                //  //  m_StringStopType2 = m_string;
-                // //   m_SendStopChannel2 = Convert.ToByte(m_LSensorArray[0].SensorIndex);
-                //  //  m_StaticCtrlStop2 = m_SendStopChannel2;
-
-                //    this.txtControlSpeed1.Text = this.txtControlSpeed2.Text = this.txtStopValue1.Text = this.txtStopValue2.Text = "0";
-
-                //    //m_StringCtrlChannel="0";
-                //    //m_StringCtrlChannel1="0";
-                //    //m_StringStopChannel="0";
-                //    //m_StringStopChannel1="0";
-
-                //    //m_SendCtrlType1 = _T("位移");
-                //    //m_SendCtrlType2 = _T("位移");
-                //    //m_SendStopType1 = _T("位移");
-                //    //m_SendStopType2 = _T("位移");
-                //}
-
-                //if (m_LoadSensorCount != 0)
-                //{
-                //    m_string = "负荷";
-                //    this.cmbControlType1.Items.Add(m_string); //m_ControlType.AddString(m_string);
-                //    this.cmbControlType2.Items.Add(m_string);//m_ControlType2.AddString(m_string); 
-                //    this.cmbStopType1.Items.Add(m_string);//m_StopType.AddString(m_string);
-                //    this.cmbStopType2.Items.Add(m_string);//m_StopType2.AddString(m_string);
-                //}
-
-                //if (m_ElongateSensorCount != 0)
-                //{
-                //    m_string = "变形";
-                //    this.cmbControlType1.Items.Add(m_string); //m_ControlType.AddString(m_string);
-                //    this.cmbControlType2.Items.Add(m_string);//m_ControlType2.AddString(m_string); 
-                //    this.cmbStopType1.Items.Add(m_string);//m_StopType.AddString(m_string);
-                //    this.cmbStopType2.Items.Add(m_string);//m_StopType2.AddString(m_string);
-                //}
-           // }
         }
 
         private void tsbtnExit_Click(object sender, EventArgs e)

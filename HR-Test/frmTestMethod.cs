@@ -18,26 +18,26 @@ namespace HR_Test
         public frmTestMethod(frmMain fmMain)
         {
             InitializeComponent();
-            _fmMain = fmMain;
-            Task t = tskReadMethod();
+            _fmMain = fmMain; 
+            Task t = tskReadMethod();            
+            TestStandard.SampleControl.ReadTestStandard(this.cmbTestStandard);
+            TestStandard.SampleControl.ReadTestType(this.cmbTestType);
         }
 
 
 
         private void frmTestMethod_Load(object sender, EventArgs e)
-        {
+        { 
             chkAllow_CheckedChanged(sender, e);
             chkYinShen_CheckedChanged(sender, e);
             customTabControl1.TabPages[1].BringToFront();
             _cmbChangeType.SelectedIndex = 0;
             _cmbControlType.SelectedIndex = 0;
-            cmbTestType_TextChanged(sender, e);
             customPanel1.Dock = DockStyle.Fill;
             customPanel1.BringToFront();
             InitDbView(dbViewMethod);
             addYsChl(this.cmbYsChl);
-            TestStandard.SampleControl.ReadTestStandard(this.cmbTestStandard);
-            TestStandard.SampleControl.ReadTestType(this.cmbTestType);
+           
         }
 
         async Task tskReadMethod()
@@ -55,7 +55,7 @@ namespace HR_Test
                 foreach (TreeNode tn in lsttn)
                     this.tvTestMethod.Nodes[0].Nodes.Add(tn);
             }
-            this.tvTestMethod.ExpandAll();
+            this.tvTestMethod.ExpandAll(); 
         }
 
         private void addYsChl(ComboBox cmbYsChl)
@@ -6798,31 +6798,7 @@ namespace HR_Test
         {
 
         }
-
-        private void cmbTestStandard_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //if (cmbTestStandard.SelectedItem != null)
-            //{
-            //    DataRowView dv = (DataRowView)this.cmbTestStandard.SelectedItem;                
-            //    BLL.Standard blls = new HR_Test.BLL.Standard();
-            //    DataSet ds = blls.GetList(" standardNo='" + dv["standardNo"].ToString() + "'");
-            //    this.cmbTestType.DataSource = ds.Tables[0];
-            //    this.cmbTestType.DisplayMember = "testType";
-            //    this.cmbTestType.ValueMember = "ID";
-            //    DataRowView drv =(DataRowView)this.cmbTestType.SelectedItem;
-            //    this.lblStandardTitle.Text = drv["standardName"].ToString();
-            //}
-
-            if (this.cmbTestStandard.DataSource != null)
-            {
-                DataRowView drv = (DataRowView)this.cmbTestStandard.SelectedItem;
-                //根据选择结果表的名称，读取选择结果表的项，添加至  checklistbox中
-                string seltbName = drv["selTableName"].ToString();
-                this.lblStandardTitle.Text = drv["standardName"].ToString();
-                ReadResultSel(seltbName);
-            }
-
-        }
+ 
 
         private void ReadResultSel(string _selTableName)
         {
@@ -6873,19 +6849,6 @@ namespace HR_Test
             }
         }
 
-
-
-        private void cmbTestType_TextChanged(object sender, EventArgs e)
-        {
-            //if (this.cmbTestType.DataSource != null)
-            //{
-            //    DataRowView drv = (DataRowView)this.cmbTestType.SelectedItem;
-            //    //根据选择结果表的名称，读取选择结果表的项，添加至  checklistbox中
-            //    string seltbName = drv["selTableName"].ToString(); 
-            //    ReadResultSel(seltbName);
-            //}
-        }
-
         private void txtSpeed_zidingyi_TextChanged(object sender, EventArgs e)
         {
             TextBox tb = (TextBox)sender;
@@ -6893,24 +6856,16 @@ namespace HR_Test
                 tb.Text = "200";
         }
 
-        private void cmbTestType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cmbTestType.SelectedItem != null)
-            {
-                DataRowView dv = (DataRowView)this.cmbTestType.SelectedItem;
-                BLL.Standard blls = new HR_Test.BLL.Standard();
-                DataSet ds = blls.GetList(" testType='" + dv["testType"].ToString() + "'");
-                this.cmbTestStandard.DataSource = ds.Tables[0];
-                this.cmbTestStandard.DisplayMember = "standardNo";
-                this.cmbTestStandard.ValueMember = "ID";
-                DataRowView drv = (DataRowView)this.cmbTestStandard.SelectedItem;
-                this.lblStandardTitle.Text = drv["standardName"].ToString();
-            }
-        }
-
         private void cmbTestStandard_TextChanged(object sender, EventArgs e)
         {
-
+            if (this.cmbTestStandard.DataSource != null)
+            {
+                DataRowView drv = (DataRowView)this.cmbTestStandard.SelectedItem;
+                //根据选择结果表的名称，读取选择结果表的项，添加至  checklistbox中
+                string seltbName = drv["selTableName"].ToString();
+                this.lblStandardTitle.Text = drv["standardName"].ToString();
+                ReadResultSel(seltbName);
+            }
         }
 
         private void btnSaveStandard_Click(object sender, EventArgs e)
@@ -7020,6 +6975,21 @@ namespace HR_Test
         private void customPanel2_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void cmbTestType_TextChanged(object sender, EventArgs e)
+        {
+            if (cmbTestType.SelectedItem != null)
+            {
+                DataRowView dv = (DataRowView)this.cmbTestType.SelectedItem;
+                BLL.Standard blls = new HR_Test.BLL.Standard();
+                DataSet ds = blls.GetList(" testType='" + dv["testType"].ToString() + "'");
+                this.cmbTestStandard.DataSource = ds.Tables[0];
+                this.cmbTestStandard.DisplayMember = "standardNo";
+                this.cmbTestStandard.ValueMember = "ID";
+                DataRowView drv = (DataRowView)this.cmbTestStandard.SelectedItem;
+                this.lblStandardTitle.Text = drv["standardName"].ToString();
+            }
         }
     }
 }
