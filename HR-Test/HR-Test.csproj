@@ -94,6 +94,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalysiseCurve\GBT3354.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnalysiseCurve\GBT3354.Designer.cs">
+      <DependentUpon>GBT3354.cs</DependentUpon>
+    </Compile>
     <Compile Include="AnalysiseCurve\GBT7314.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -277,6 +283,10 @@
     <Compile Include="PickBox.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AnalysiseCurve\GBT3354.resx">
+      <DependentUpon>GBT3354.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="AnalysiseCurve\GBT228.resx">
       <DependentUpon>GBT228.cs</DependentUpon>
       <SubType>Designer</SubType>

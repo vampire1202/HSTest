@@ -151,9 +151,9 @@ namespace HR_Test
 
         //是否使用引伸计数据库标记
         private bool _useExten = false;
-        private bool _useExten2 = false;
+        private bool _useExten1 = false;
         private bool m_useExten = false;
-        private bool m_useExten2 = false;
+        private bool m_useExten1 = false;
         private double m_e1 = 0;
         private double m_e2 = 0;
         private float m_extenValue;
@@ -231,11 +231,13 @@ namespace HR_Test
         //显示值
         float m_Displacement = 0f;      //位移
         float m_Elongate = 0f;          //变形
-        float m_Elongate1 = 0f;          //变形1
+        float m_Elongate1 = 0f;         //变形1
         float m_Load = 0f;              //力
         float m_Time = 0f;              //时间
         float m_YingLi = 0f;            //应力
-        float m_YingBian = 0f;            //应变 
+        float m_YingBian = 0f;          //应变 
+        float m_YingBian1 = 0f;         //应变2
+        double m_By = 0;
 
         string m_TestSampleNo;
         string m_TestNo;
@@ -247,8 +249,7 @@ namespace HR_Test
         float m_Ep;
         float m_Et;
         float m_Er;
-        float m_Ll;
-        float m_Lt;
+        float m_Lt;//横向引伸计标距
 
         float m_n;                      //挠度计放大倍数
         float m_Y;                      //弯曲计算参数
@@ -858,7 +859,7 @@ namespace HR_Test
                         //变形
                         m_Elongate = (float)(m_evalue * m_ElongateResolutionValue);
 
-                        if (m_ESensorArray.Length>1)
+                        if (m_ESensorArray.Length > 1)
                         {
                             //变形2
                             m_index = m_ESensorArray[1].SensorIndex * 4 + 3;
@@ -881,7 +882,7 @@ namespace HR_Test
                             //变形
                             m_Elongate1 = (float)(m_evalue * m_ElongateResolutionValue);
                         }
-                      
+
 
                         if (!isTest)
                         {
@@ -969,6 +970,7 @@ namespace HR_Test
                         if (m_Load < m_hold_data.F1)
                             m_Load = (float)m_hold_data.F1;
                         m_Elongate = (float)m_hold_data.BX1;
+                        m_Elongate1 = (float)m_hold_data.BX2;
                     }
                     #endregion
 
@@ -980,6 +982,7 @@ namespace HR_Test
                         if (m_Load > m_hold_data.F1)
                             m_hold_data.F1 = 0;
                         m_Elongate = m_Displacement - (float)m_hold_data.D1 + (float)m_hold_data.BX1;
+                        m_Elongate1 = m_Displacement - (float)m_hold_data.D1 + (float)m_hold_data.BX2;
                     }
                     #endregion
 
@@ -1000,13 +1003,13 @@ namespace HR_Test
                     gd.D2 = 0;
                     gd.D3 = 0;
                     gd.BX1 = (float)Math.Round(m_Elongate, 3);
-                    gd.BX2 = 0;
+                    gd.BX2 = (float)Math.Round(m_Elongate1, 3);
                     gd.BX3 = 0;
                     gd.YL1 = (float)Math.Round(m_YingLi, 3);
                     gd.YL2 = 0;
                     gd.YL3 = 0;
                     gd.YB1 = (float)Math.Round(m_YingBian, 6);
-                    gd.YB2 = 0;
+                    gd.YB2 = (float)Math.Round(m_YingBian1, 6);
                     gd.YB3 = 0;
                     gd.Ts = (float)Math.Round(m_Time, 3);
 
@@ -1019,6 +1022,7 @@ namespace HR_Test
                         gdata[] temp = new gdata[500];
                         _List_Testing_Data.CopyTo(temp);
                         _List_Testing_Data.RemoveRange(0, 500);
+                        
                         if (_threadSaveData == null)
                         {
                             _threadSaveData = new Thread(new ParameterizedThreadStart(SaveCurveData));
@@ -1082,11 +1086,24 @@ namespace HR_Test
                     else
                         m_YingLi = 0;
 
-                    //应变 百分比
+                    //纵向应变百分比
                     if (m_Le != 0)
                         m_YingBian = m_Elongate / (m_Le * 10.0f);
                     else
                         m_YingBian = 0;
+                    //横向应变百分比
+                    if (m_Lt != 0)
+                        m_YingBian1 = m_Elongate1 / (m_Lt * 10.0f);
+                    else
+                        m_YingBian1 = 0;
+                    //By值
+                    if (m_YingBian != 0 && m_YingBian1 != 0)
+                    {
+                        m_By = Math.Round(100.0f * (m_YingBian - m_YingBian1) / (m_YingBian + m_YingBian1), 2);
+                    }
+                    //应变是否取平均值
+                    if (m_isShowYbAverage)
+                        m_YingBian = (m_YingBian + m_YingBian1) / 2;
                 }
 
                 this.BeginInvoke(
@@ -1115,7 +1132,7 @@ namespace HR_Test
                                         lblmm1.Refresh();
                                     }
 
-                                    //变形
+                                    //变形1
                                     if (Math.Abs(m_Elongate) > 1000 && lblBXShow.Visible == true)
                                     {
                                         lblmm2.Text = "mm";
@@ -1126,6 +1143,28 @@ namespace HR_Test
                                         lblmm2.Text = "μm";
                                         lblmm2.Refresh();
                                     }
+
+
+                                    //变形2
+                                    if (lblBXShow2.Visible == true)
+                                    {
+                                        if (Math.Abs(m_Elongate1) > 1000)
+                                        {
+                                            lbltum.Text = "mm";
+                                            lbltum.Refresh();
+                                        }
+                                        else
+                                        {
+                                            lbltum.Text = "μm";
+                                            lbltum.Refresh();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        lbltum.Text = "s";
+                                        lbltum.Refresh();
+                                    }
+                                       
 
                                     //应变
                                     lblYBShow.Text = m_YingBian.ToString("f4");
@@ -1138,8 +1177,16 @@ namespace HR_Test
                                     //时间
                                     lblTimeShow.Text = m_Time.ToString("f2");
                                     lblTimeShow.Refresh();
+
+                                    //弯曲百分比
+                                    lblBy.Text = "By:" + m_By.ToString("f2");
                                 }));
             }
+        }
+
+        async Task SaveCurveData()
+        {
+
         }
 
         public void ThreadSendOrder()
@@ -1628,6 +1675,7 @@ namespace HR_Test
             this.tsbtnSetRealtimeCurve.Visible = true;
             this.splitContainer1.Visible = false;
             this.tsbtnShowResultCurve.Visible = false;
+            this.lblBy.BringToFront();
         }
 
         //显示试验结果界面
@@ -1642,6 +1690,7 @@ namespace HR_Test
             this.splitContainer1.Parent = this.panel3;
             this.tsbtnSetRealtimeCurve.Visible = false;
             this.tsbtnShowResultCurve.Visible = true;
+            this.lblBy.SendToBack();
             this.Refresh();
         }
 
@@ -2586,13 +2635,13 @@ namespace HR_Test
                             return;
                         //读取参数
                         m_S0 = (float)model3354.S0.Value;
-                        m_Ll = (float)model3354.lL.Value;
-                        m_Lt = (float)model3354.lT.Value;
+
                         m_e1 = model3354.εz1.Value;
                         m_e2 = model3354.εz2.Value;
                         m_useExten = model3354.isUseExtensometer1;
-                        m_useExten2 = model3354.isUseExtensometer2;
-
+                        m_useExten1 = model3354.isUseExtensometer2;
+                        m_Le = (float)model3354.lL.Value;//纵向引伸计标距
+                        m_Lt = (float)model3354.lT.Value;//横向引伸计标距
                         if (e.Node.ImageIndex == 0)//表示已完成的试验组
                         {
                             m_calSuccess = false;
@@ -2615,7 +2664,7 @@ namespace HR_Test
                             m_calSuccess = false;
                             isShowResult = false;
                             m_useExten = false;
-                            m_useExten2 = false;
+                            m_useExten1 = false;
                             _useExten = false;
                             m_holdPause = false;
                             m_holdContinue = false;
@@ -6370,17 +6419,17 @@ namespace HR_Test
             await t;
             //this.BeginInvoke(new Action(() =>
             //{ 
-                if (t.Result != null)
-                { 
-                    List<TreeNode> ltn = (List<TreeNode>)t.Result;
-                    foreach (TreeNode tn in ltn)
-                    {
-                        this.tvTestSample.Nodes.Add(tn);
-                    }
+            if (t.Result != null)
+            {
+                List<TreeNode> ltn = (List<TreeNode>)t.Result;
+                foreach (TreeNode tn in ltn)
+                {
+                    this.tvTestSample.Nodes.Add(tn);
                 }
-                else
-                    this.tvTestSample.Nodes.Add("无");
-                this.tvTestSample.ExpandAll(); 
+            }
+            else
+                this.tvTestSample.Nodes.Add("无");
+            this.tvTestSample.ExpandAll();
             //}));
         }
 
@@ -6759,7 +6808,7 @@ namespace HR_Test
             //m_Stress_Test = 0f;            //应力
             //m_Strain_Test = 0f;            //应变  
             m_useExten = false;
-            m_useExten2 = false;
+            m_useExten1 = false;
             m_Fm = 0;//最大力值
             m_Fmax = 0;
             m_FRH = 0;//上屈服力值
@@ -9525,6 +9574,73 @@ namespace HR_Test
             {
                 switch (dataGridView.Tag.ToString())
                 {
+                    case "GBT3354-2014":
+                        if (_selTestSampleArray[_selTestSampleArray.Count - 1] != null)
+                        {
+                            AnalysiseCurve.GBT3354 fac = new HR_Test.AnalysiseCurve.GBT3354();
+
+                            fac.M_SR = this.m_LoadResolutionValue;
+                            fac.WindowState = FormWindowState.Maximized;
+                            fac.tslblSampleNo.Text = _selTestSampleArray[_selTestSampleArray.Count - 1]._SelTestSample;
+                            fac._TestSampleNo = _selTestSampleArray[_selTestSampleArray.Count - 1]._SelTestSample;
+                            fac._CurveName = "E:\\衡新试验数据\\Curve\\" + m_path + "\\" + _selTestSampleArray[_selTestSampleArray.Count - 1] + ".txt";
+                            fac._TestType = "GBT7314-2005";
+                            fac._LineColor = "Brown";// this.dataGridView.Rows[dataGridView.SelectedRows.Count
+                            //读取试样结果  
+                            BLL.Compress bllts = new HR_Test.BLL.Compress();
+                            Model.Compress modelTs = bllts.GetModel(_selTestSampleArray[_selTestSampleArray.Count - 1]._SelTestSample);
+                            DataSet dsTestSample = bllts.GetResultRow(" testSampleNo='" + _selTestSampleArray[_selTestSampleArray.Count - 1]._SelTestSample + "'");
+                            //读取选择试验结果表
+                            BLL.SelTestResult_C bllSt = new HR_Test.BLL.SelTestResult_C();
+                            DataSet dsSt = bllSt.GetList(" methodName='" + modelTs.testMethodName + "'");
+
+                            if (dsSt != null)
+                            {
+                                if (dsSt.Tables[0].Rows.Count > 0)
+                                {
+                                    //是否选择上或下屈服
+                                    if (Convert.ToBoolean(dsSt.Tables[0].Rows[0]["ReHc"].ToString()) == true) fac._IsSelReH = true;
+                                    if (Convert.ToBoolean(dsSt.Tables[0].Rows[0]["ReLc"].ToString()) == true) fac._IsSelReL = true;
+
+                                    int cCount = dsSt.Tables[0].Columns.Count;
+                                    for (int i = 2; i < cCount - 5; i++)
+                                    {
+
+                                        if (Convert.ToBoolean(dsSt.Tables[0].Rows[0][i].ToString()) == true)
+                                        {
+                                            UC.Result ucResult = new HR_Test.UC.Result();
+                                            ucResult._FieldName = _lblGBT7314_Result[i] + ":";
+                                            ucResult.Name = _lblGBT7314_Result[i].ToString();
+                                            ucResult.txtFiledContent.Text = dsTestSample.Tables[0].Rows[0][i - 1].ToString();
+                                            fac.flowLayoutPanel1.Controls.Add(ucResult);
+                                        }
+                                        else
+                                        {
+                                            UC.Result ucResult = new HR_Test.UC.Result();
+                                            ucResult._FieldName = _lblGBT7314_Result[i] + ":";
+                                            ucResult.txtFiledContent.Enabled = false;
+                                            ucResult.Visible = false;
+                                            ucResult.Name = (i - 2).ToString();
+                                            ucResult.txtFiledContent.Text = dsTestSample.Tables[0].Rows[0][i - 1].ToString();
+                                            fac.flowLayoutPanel1.Controls.Add(ucResult);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show(this, "该试样的试验方法已不存在!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    dsSt.Dispose();
+                                    dsTestSample.Dispose();
+                                    return;
+                                }
+                            }
+                            dsSt.Dispose();
+                            dsTestSample.Dispose();
+                            fac.ShowDialog();
+                            TestStandard.GBT7314_2005.readFinishSample(dataGridView, dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
+                            dataGridView_CellClick(sender, new DataGridViewCellEventArgs(0, _selTestSampleArray[_selTestSampleArray.Count - 1]._RowIndex));
+                        }
+                        break;
                     case "GBT23615-2009TensileZong":
                         if (_selTestSampleArray[_selTestSampleArray.Count - 1] != null)
                         {
@@ -13775,16 +13891,33 @@ namespace HR_Test
                 Thread.Sleep(30);
             }
             //试验过程中使用引伸计
-            _useExten2 = true;
+            _useExten1 = true;
             //画曲线标志
-            m_useExten2 = true;
-            if (_useExten2)
+            m_useExten1 = true;
+            if (_useExten1)
             {
+                this.lblBy.Visible = true;
+                this.lblBy.BringToFront();
                 this.lblUseExten2.Text = "使用引伸计";
                 this.lblUseExten2.ForeColor = Color.Green;
                 //this.tsbtnYSJ.Enabled = true;
                 this.lblUseExten2.Refresh();
-                this.btnAverayBX.Visible = true;
+                this.btnAverayYB.Visible = true;
+            }
+        }
+
+        bool m_isShowYbAverage = false;
+        private void btnAverayYB_Click(object sender, EventArgs e)
+        {
+            //是否计算平均值
+            m_isShowYbAverage = !m_isShowYbAverage;
+            if (m_isShowYbAverage)
+            {
+                this.btnAverayYB.BackColor = Color.Green;
+            }
+            else
+            {
+                this.btnAverayYB.BackColor = Color.DarkOrange;
             }
         }
     }
