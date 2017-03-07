@@ -18,10 +18,8 @@ namespace HR_Test.AnalysiseCurve
     {
 
         ZedGraph.GraphPane _ResultPanel;
-
         //读取曲线的数据
         RollingPointPairList _RPPList_Read;
-
 
         //存储采集数据
         private List<gdata> _List_Data;
@@ -79,54 +77,13 @@ namespace HR_Test.AnalysiseCurve
         //参与计算的变量
         double m_Fm = 0;//最大力值        
         int m_FmIndex;//最大值的索引值
-        double m_FRH = 0;//上屈服力值
-        int m_FRHIndex;//上屈服力值索引值
-        double m_FRL = 0;//下屈服力值
-        int m_FRLIndex;//下屈服力值索引值
-        double m_FRLFirst = 0;//初始效应值
-        double m_Fn;//实时力值 
-        double m_F = 0;//实时采集力值 
 
-        int m_FrIndex = 0;//Fp02索引值
-        double m_Lm;//最大值时的延伸
-        bool m_FlagStage1Start;//阶段1启动标志
-        bool m_FlagStage1Stop;//阶段1停止标志
-        bool m_FlagStage2Start;//阶段2启动标志
-        bool m_FlagStage2Stop;//阶段2结束标注
-        bool m_FlagStage3Start;
-        bool m_FlagStage3Stop;
-
-        double m_FR05;
-        double m_FR01;
-        double m_LR05;
-        double m_LR01;
-        double m_L0;
+        double m_Ll;
+        double m_Lt;
         double m_S0;
-        double m_Ep;
-        double m_E;
-
-        bool m_FlagFRH;//上屈服点已求出标志
-        bool m_FlagFRL;//下屈服点已求出标志 
-
-        int m_RLCounter;//下屈服计数器
-
-        //手动求Fp02的变量
-        int m_firstPIndex;
-        int m_secondPIndex;
-        int m_midPIndex;
-
-        //手动求上下屈服标志
-        bool m_FlagHandFRL;
-        bool m_FlagHandFRH;
-        double m_HandFeL;
-        double m_HandFeH;
-        double m_HandReL;
-        double m_HandReH;
-
-        //力-位移 求FP02标志
-        bool m_FlagFp02L;
-        //力-变形求Fp02标志
-        bool m_FlagFp02E;
+        double m_Ez1;//
+        double m_Ez2;
+        double m_Et;//弹性模量
 
         Symbol m_zedGraphSyb;
 
@@ -139,27 +96,6 @@ namespace HR_Test.AnalysiseCurve
             get { return this._curveName; }
             set { this._curveName = value; }
         }
-
-        /// <summary>
-        /// 是否选择了计算上或下屈服
-        /// </summary>
-        private bool _isSelReH;
-        public bool _IsSelReH
-        {
-            get { return this._isSelReH; }
-            set { this._isSelReH = value; }
-        }
-
-        /// <summary>
-        /// 是否选择了计算上或下屈服
-        /// </summary>
-        private bool _isSelReL;
-        public bool _IsSelReL
-        {
-            get { return this._isSelReL; }
-            set { this._isSelReL = value; }
-        }
-
 
         private double GetSR(ushort SensorScale)
         {
@@ -184,97 +120,15 @@ namespace HR_Test.AnalysiseCurve
             return m_Scale;
         }
 
-        private void readCurveName()
-        {
-            //若曲线存在
-            if (File.Exists(_curveName))
-            {
-                //先解密文件
-                string outputFile = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\HRData.txt";
-                string sSecretKey;
-
-                string[] key = RWconfig.GetAppSettings("code").ToString().Split('-');
-                byte[] keyee = new byte[8];
-                //转换为 key byte数组
-                for (int j = 0; j < key.Length; j++)
-                {
-                    keyee[j] = Byte.Parse(key[j], System.Globalization.NumberStyles.HexNumber);
-                }
-                sSecretKey = ASCIIEncoding.ASCII.GetString(keyee);
-                GCHandle gch = GCHandle.Alloc(sSecretKey, GCHandleType.Pinned);
-                Safe.DecryptFile(_curveName, outputFile, sSecretKey);
-                Safe.ZeroMemory(gch.AddrOfPinnedObject(), sSecretKey.Length * 2);
-                gch.Free();
-
-                //读取曲线
-                using (StreamReader srLine = new StreamReader(outputFile))
-                {
-                    string[] testSampleInfo1 = srLine.ReadLine().Split(',');
-                    string[] testSampleInfo2 = srLine.ReadLine().Split(',');
-                    string[] testSampleInfo3 = srLine.ReadLine().Split(',');
-                    this.zedGraphControl.PrintDocument.DocumentName = testSampleInfo2[0].ToString() + " 试验曲线";
-                    //this.zedGraphControl.GraphPane.Title.IsVisible = true;
-                    String line;
-                    // Read and display lines from the file until the end of
-                    // the file is reached.
-                    while ((line = srLine.ReadLine()) != null)
-                    {
-                        string[] gdataArray = line.Split(',');
-                        gdata _gdata = new gdata();
-                        _gdata.F1 = float.Parse(gdataArray[0]);
-                        _gdata.F2 = float.Parse(gdataArray[1]);
-                        _gdata.F3 = float.Parse(gdataArray[2]);
-                        _gdata.D1 = float.Parse(gdataArray[3]);
-                        _gdata.D2 = float.Parse(gdataArray[4]);
-                        _gdata.D3 = float.Parse(gdataArray[5]);
-                        _gdata.BX1 = float.Parse(gdataArray[6]);
-                        _gdata.BX2 = float.Parse(gdataArray[7]);
-                        _gdata.BX3 = float.Parse(gdataArray[8]);
-                        _gdata.YL1 = float.Parse(gdataArray[9]);
-                        _gdata.YL2 = float.Parse(gdataArray[10]);
-                        _gdata.YL3 = float.Parse(gdataArray[11]);
-                        _gdata.YB1 = float.Parse(gdataArray[12]);
-                        _gdata.YB2 = float.Parse(gdataArray[13]);
-                        _gdata.YB3 = float.Parse(gdataArray[14]);
-                        _gdata.Ts = float.Parse(gdataArray[15]);
-                        _List_Data.Add(_gdata);
-                    }
-                    srLine.Close();
-                    srLine.Dispose();
-                    //showCurve(_List_Data);
-                    InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, this._testType, this._lineColor);
-                }
-            }
-        }
-
-        private PointD getFm(RollingPointPairList rppl)
-        {
-            PointD fm = new PointD();
-            Int32 i = 0;
-            while (i < rppl.Count)
-            {
-                if (fm.Y < rppl[i].Y)
-                {
-                    fm.Y = rppl[i].Y;
-                    fm.X = rppl[i].X;
-                }
-                i++;
-            }
-            return fm;
-        }
 
         private void tsbtnExit_Click(object sender, EventArgs e)
         {
             this.Dispose();
         }
 
-        private void gbtnExit_Click(object sender, EventArgs e)
-        {
 
-        }
-
-        BLL.TestSample m_t;
-        Model.TestSample m_m;
+        BLL.GBT3354_Samples m_t;
+        Model.GBT3354_Samples m_m;
         private void frmAnalysiseCurve_Load(object sender, EventArgs e)
         {
             //m_SR = GetSR((ushort)_fmMain.m_SensorArray[_fmMain.m_LSensorArray[0].SensorIndex].scale);
@@ -294,61 +148,24 @@ namespace HR_Test.AnalysiseCurve
             m_zedGraphSyb.Fill.Color = Color.DarkRed;
             m_zedGraphSyb.IsVisible = true;
 
-            if (this._List_Data != null)
-            {
-                CalcData(this._List_Data, _isSelReH, _isSelReL);
-            }
-            else
-            {
+            if (this._List_Data == null)
+            {            
                 MessageBox.Show(this, "曲线数据不存在!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 this.Close();
                 this.Dispose();
             }
 
             //将计算后的值呈现在Label上
-            m_t = new HR_Test.BLL.TestSample();
+            m_t = new HR_Test.BLL.GBT3354_Samples();
             m_m = m_t.GetModel(_TestSampleNo);
             if (m_m != null)
             {
                 m_S0 = (double)m_m.S0;
-                m_L0 = (double)m_m.L0;
-                m_Ep = (double)m_m.εp;
-
-                //if (this.flowLayoutPanel1.Controls.Find("Fm", false).Length > 0)
-                //{
-                //    UC.Result lblFm = (UC.Result)this.flowLayoutPanel1.Controls.Find("Fm", false)[0];
-                //    lblFm.Text = (m_Fm / 1000.0).ToString("f3");
-                //    //lblFm.Text = m_m.Fm.ToString();
-                //}
-
-                //if (this.flowLayoutPanel1.Controls.Find("Rm", false).Length > 0)
-                //{
-                //    UC.Result lblRm = (UC.Result)this.flowLayoutPanel1.Controls.Find("Rm", false)[0];
-                //    lblRm.Text = m_m.Rm.ToString();// (m_Fm / m_S0).ToString("G5");
-                //}
-                //if (this.flowLayoutPanel1.Controls.Find("FeL", false).Length > 0)
-                //{
-                //    UC.Result lblFeL = (UC.Result)this.flowLayoutPanel1.Controls.Find("FeL", false)[0];
-                //    lblFeL.Text = (m_m.ReL * m_S0).ToString();// (_List_Data[m_FRLIndex].F1 / 1000.0).ToString("G5");
-                //}
-
-                //if (this.flowLayoutPanel1.Controls.Find("FeH", false).Length > 0)
-                //{
-                //    UC.Result lblFeH = (UC.Result)this.flowLayoutPanel1.Controls.Find("FeH", false)[0];
-                //    lblFeH.Text = (m_m.ReH * m_S0).ToString(); //(_List_Data[m_FRHIndex].F1 / 1000.0).ToString("G5");
-                //}
-                //if (this.flowLayoutPanel1.Controls.Find("ReL", false).Length > 0)
-                //{
-                //    UC.Result lblReL = (UC.Result)this.flowLayoutPanel1.Controls.Find("ReL", false)[0];
-                //    lblReL.Text = m_m.ReL.ToString();// (_List_Data[m_FRLIndex].F1 / m_S0).ToString("G5");
-                //}
-                //if (this.flowLayoutPanel1.Controls.Find("ReH", false).Length > 0)
-                //{
-                //    UC.Result lblReH = (UC.Result)this.flowLayoutPanel1.Controls.Find("ReH", false)[0];
-                //    lblReH.Text = m_m.ReH.ToString();// (_List_Data[m_FRHIndex].F1 / m_S0).ToString("G5");
-                //}
+                m_Ll = (double)m_m.lL;
+                m_Lt = (double)m_m.lT;
+                m_Ez1 = (double)m_m.εz1;
+                m_Ez2 = (double)m_m.εz1;
             }
-
         }
 
         void zedGraphControl_Invalidated(object sender, InvalidateEventArgs e)
@@ -378,33 +195,9 @@ namespace HR_Test.AnalysiseCurve
                             sScale.Format = "0.0";
                         }
                         break;
-                    //case 3://应变                       
-                    //        sScale.Mag = 0;
-                    //        sScale.Format = "0.000";
-                    //    break;
-                    //case 4://变形
-                    //    if (sScale.Max > 1000)
-                    //    {
-                    //        sScale.Mag = 3;
-                    //        sScale.Format = "0.000";
-                    //    }
-                    //    else
-                    //    {
-                    //        sScale.Mag = 0;
-                    //        sScale.Format = "0.0";
-                    //    }
-                    //    break;
-                    //case 5://应力
-                    //    sScale.Mag = 0;
-                    //    sScale.Format = "0.0";
-                    //    break;
+
                 }
 
-                //if (_ResultPanel.XAxis.Scale.Max > 100)
-                //{
-                //    _ResultPanel.XAxis.Scale.Max = ((int)_ResultPanel.XAxis.Scale.Max / 100) * 100 +100;
-                //    _ResultPanel.XAxis.Scale.Min = 0;
-                //}
 
                 _ResultPanel.XAxis.Scale.MajorStep = (_ResultPanel.XAxis.Scale.Max - _ResultPanel.XAxis.Scale.Min) / 5;
                 _ResultPanel.XAxis.Scale.MinorStep = _ResultPanel.XAxis.Scale.MajorStep / 5;
@@ -469,84 +262,34 @@ namespace HR_Test.AnalysiseCurve
                         break;
                 }
 
-                //if (_ResultPanel.YAxis.Scale.Max > 100)
-                //{
-                //    _ResultPanel.YAxis.Scale.Max = ((int)_ResultPanel.YAxis.Scale.Max / 100) * 100+100;
-                //    _ResultPanel.YAxis.Scale.Min = 0;
-                //}
-
                 _ResultPanel.YAxis.Scale.MajorStep = (_ResultPanel.YAxis.Scale.Max - _ResultPanel.YAxis.Scale.Min) / 5;
                 _ResultPanel.YAxis.Scale.MinorStep = _ResultPanel.YAxis.Scale.MajorStep / 5;
             }
-        } 
-
-        // string[] _lblTensile_Result = { "-", "-", "Fm", "Rm", "ReH", "ReL", "Rp", "Rt", "Rr", "εp", "εt", "εr", "E", "m", "mE", "A", "Ae", "Ag", "At", "Agt", "Awn", "Lm", "Lf", "Z", "X", "S", "X￣" };
-
-        // string[] _lblCompress_Result = { "-", "-", "△L", "εpc", "εtc", "n", "F0", "Ff", "Fpc", "Ftc", "FeHc", "FeLc", "Fmc", "Rpc", "Rtc", "ReHc", "ReLc", "Rmc", "Ec", "X", "X￣" };
-
-        //  string[] _lblBend_Result = { "-", "-", "α", "r", "f" };
-
+        }
 
         //保存修改结果
         private void gBtnSaveResult_Click(object sender, EventArgs e)
         {
             switch (this._TestType)
             {
-                case "GBT228-2010":
-                    // "Fm bit," + //最大力
-                    //"Rm bit," + //最大应力
-                    //"ReH bit," + //上屈服强度
-                    //"ReL bit," + //下屈服强度
-                    //"Rp bit," + //规定塑性延伸强度
-                    //"Rt bit," + //规定总延伸强度
-                    //"Rr bit," + //规定残余延伸强度
-                    //"εp bit," +//ε
-                    //"εt bit," +//
-                    //"εr bit," +//
-                    //"E bit," + //弹性模量
-                    //"m bit," + //应力-延伸率曲线在给定试验时刻的斜率
-                    //"mE bit," + //应力-延伸率曲线在弹性部分的斜率
-                    //"A bit," + //断后伸长率               
-                    //"Aee bit," + //屈服点延伸率
-                    //"Agg bit," + //最大力Fm塑性延伸率
-                    //"Att bit," + //断裂总延伸率 
-                    //"Aggtt bit," + //最大力Fm总延伸率
-                    //"Awnwn bit," + //无缩颈塑性伸长率
-                    //"Lm bit," +
-                    //"Lf bit," +
-                    //"Z bit," + //断面收缩率 
-                    //"Avera bit," + //平均值
-                    //"SS bit," + //标准偏差
-                    //"Avera1 bit" + //去掉最大最小值的平均值
-                    BLL.TestSample bllTs = new HR_Test.BLL.TestSample();
-                    Model.TestSample modelTs = bllTs.GetModel(this.tslblSampleNo.Text);
+                case "GBT3354-2014":
+                    BLL.GBT3354_Samples bllTs = new HR_Test.BLL.GBT3354_Samples();
+                    Model.GBT3354_Samples modelTs = bllTs.GetModel(this.tslblSampleNo.Text);
                     foreach (UC.Result ucR in this.flowLayoutPanel1.Controls)
                     {
                         switch (ucR.Name)
                         {
-                            case "Fm":
-                                modelTs.Fm = double.Parse(ucR.Tag.ToString())*1000.0;
+                            case "Pmax":
+                                modelTs.Pmax = double.Parse(ucR.Tag.ToString()) * 1000.0;
                                 break;
-                            case "Rm":
-                                modelTs.Rm = double.Parse(ucR.Tag.ToString());
+                            case "σt":
+                                modelTs.σt = double.Parse(ucR.Tag.ToString());
                                 break;
-                            case "ReH":
-                                modelTs.ReH = double.Parse(ucR.Tag.ToString());
+                            case "ε1t":
+                                modelTs.ε1t = double.Parse(ucR.Tag.ToString());
                                 break;
-                            case "ReL":
-                                modelTs.ReL = double.Parse(ucR.Tag.ToString());
-                                break;
-                            case "Rp":
-                                modelTs.Rp = double.Parse(ucR.Tag.ToString());
-                                break; 
-                            case "A":
-                                modelTs.A = double.Parse(ucR.Tag.ToString());
-                                break; 
-                            case "Z":
-                                modelTs.Z = double.Parse(ucR.Tag.ToString());
-                                break; 
-                            case "E":
-                                modelTs.E = double.Parse(ucR.Tag.ToString());
+                            case "μ12":
+                                modelTs.μ12 = double.Parse(ucR.Tag.ToString());
                                 break;
                         }
                     }
@@ -554,140 +297,6 @@ namespace HR_Test.AnalysiseCurve
                     {
                         MessageBox.Show(this, "更新成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    break;
-                case "compress":
-                    BLL.Compress bllCs = new HR_Test.BLL.Compress();
-                    Model.Compress modelCs = bllCs.GetModel(this.tslblSampleNo.Text);
-                    foreach (UC.Result ucR in this.flowLayoutPanel1.Controls)
-                    {
-                        switch (ucR.Name)
-                        {
-                            case "0":
-                                modelCs.deltaL = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "1":
-                                modelCs.εpc = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "2":
-                                modelCs.εtc = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "3":
-                                modelCs.n = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "4":
-                                modelCs.F0 = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "5":
-                                modelCs.Ff = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "6":
-                                modelCs.Fpc = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "7":
-                                modelCs.Ftc = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "8":
-                                modelCs.FeHc = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "9":
-                                modelCs.FeLc = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "10":
-                                modelCs.Fmc = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "11":
-                                modelCs.Rpc = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "12":
-                                modelCs.Rtc = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "13":
-                                modelCs.ReHc = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "14":
-                                modelCs.ReLc = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "15":
-                                modelCs.Rmc = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "16":
-                                modelCs.Ec = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "17":
-                                modelCs.Avera = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                            case "18":
-                                modelCs.Avera1 = double.Parse(ucR.txtFiledContent.Text);
-                                break;
-                        }
-                    }
-                    if (bllCs.Update(modelCs))
-                    {
-                        MessageBox.Show(this, "更新成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    //"deltaL bit," + //原始标距段受力后的变形
-                    //      "εpc bit," + //规定非比例压缩应变
-                    //      "εtc bit," + //规定总压缩应变
-                    //      "n bit," + //变形放大倍数
-                    //      "F0 bit," + //试样上端所受得力
-                    //      "Ff bit," + //摩擦力                
-                    //      "Fpc bit," + //规定非比例压缩变形的实际压缩力
-                    //      "Ftc bit," + //规定总压缩变形的实际压缩力
-                    //      "FeHc bit," + //屈服时的实际上屈服压缩力
-                    //      "FeLc bit," + //屈服时的实际下屈服压缩力
-                    //      "Fmc bit," + //试样破坏过程中最大的压缩力
-                    //      "Rpc bit," + //规定非比例压缩强度
-                    //      "Rtc bit," +//规定总压缩强度
-                    //      "ReHc bit," +//上屈服压缩强度
-                    //      "ReLc bit," +//下屈服压缩强度
-                    //      "Rmc bit," + //抗压强度
-                    //      "Ec bit," + //压缩弹性模量
-                    //      "Avera bit," + //平均值
-                    //      "Avera1 bit" + //去掉最大最小值的平均值 
-                    break;
-                case "bend":
-                   
-                    //BLL.Bend bllBs = new HR_Test.BLL.Bend();
-                    //Model.Bend modelBs = bllBs.GetModel(this.tslblSampleNo.Text);
-                    //foreach (Control c in this.flowLayoutPanel1.Controls)
-                    //{
-                    //    switch (c.Name)
-                    //    {
-                    //        case "0":
-                    //            UC.Result ucR = (UC.Result)c;
-                    //            modelBs.α = double.Parse((ucR.txtFiledContent).Text);
-                    //            break;
-                    //        case "1":
-                    //            UC.Result ucR1 = (UC.Result)c;
-                    //            modelBs.r = double.Parse(ucR1.txtFiledContent.Text);
-                    //            break;
-                    //        case "2":
-                    //            UC.Result ucR2 = (UC.Result)c;
-                    //            modelBs.f = double.Parse(ucR2.txtFiledContent.Text);
-                    //            break;
-                    //        case "cmbSf":
-                    //            ComboBox cb = (ComboBox)c;
-                    //            switch (cb.SelectedIndex)
-                    //            {
-                    //                case 0:
-                    //                    modelBs.isConformity = false;
-                    //                    break;
-                    //                case 1:
-                    //                    modelBs.isConformity = true;
-                    //                    break;
-                    //                case 2:
-                    //                    modelBs.isConformity = false;
-                    //                    break;
-                    //            }
-                    //            break;
-                    //    }
-                    //}
-
-                    //if (bllBs.Update(modelBs))
-                    //{
-                    //    MessageBox.Show(this, "更新成功!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    //}
-
                     break;
             }
         }
@@ -699,7 +308,7 @@ namespace HR_Test.AnalysiseCurve
             //switch (this._TestType)
             //{
             //    case "tensile":
-            InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, "GBT228-2010", _lineColor);
+            InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, "GBT3354-2014", _lineColor);
             //        break;
             //    case "compress":
             //        InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, "Compress", _lineColor);
@@ -773,9 +382,9 @@ namespace HR_Test.AnalysiseCurve
             initResultCurve(this.zedGraphControl);
             //switch (this._TestType)
             //{
-                //case "tensile":
-            InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, "GBT228-2010", _lineColor);
-                    //break;
+            //case "tensile":
+            InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, "GBT3354-2014", _lineColor);
+            //break;
             //    case "compress":
             //        InitCurve(this.zedGraphControl, this.tslblSampleNo.Text, "Compress", _lineColor);
             //        break;
@@ -995,8 +604,9 @@ namespace HR_Test.AnalysiseCurve
                     if (testSampleInfo2[0] == "tensile")
                     {
                         m_S0 = double.Parse(testSampleInfo2[2]);
-                        m_L0 = double.Parse(testSampleInfo2[3]);
-                        m_Ep = double.Parse(testSampleInfo2[6]);
+                        m_Ll = double.Parse(testSampleInfo2[3]);
+                        m_Ez1 = double.Parse(testSampleInfo2[5]);
+                        m_Ez2 = double.Parse(testSampleInfo2[6]);
                     }
                     if (srLine.ReadLine() != null)
                     { string[] testSampleInfo3 = srLine.ReadLine().Split(','); }
@@ -1036,189 +646,6 @@ namespace HR_Test.AnalysiseCurve
             }
         }
 
-        private void CalcData(List<gdata> listGData, bool isSelReH, bool isSelReL)
-        {
-            m_Fn = float.MinValue;
-            m_F = float.MinValue;
-            m_Fm = float.MinValue;
-            for (Int32 i = 1; i < listGData.Count; i++)
-            {
-                
-                //采集数据
-                //时间
-                double time = listGData[i].Ts;
-                //力
-                double F1value = listGData[i].F1;
-                //记录前第五点的值
-                //if (i > 6)
-                //    m_pre5dotvalue = listGData[i - 5].F1;
-
-                //应力
-                double R1value = listGData[i].YL1;
-                //位移
-                double D1value = listGData[i].D1;
-                //变形
-                double BX1value = listGData[i].BX1;
-                //应变
-                double YB1value = listGData[i].YB1;
-                //存储前一点的值
-                m_Fn = m_F;
-                //实时得值
-                m_F = F1value;
-
-                //存储最大值
-                //if (!isSelReH && !isSelReL)
-                //{//如果实时力值大于前一点力值
-                    if (m_F > m_Fm)
-                    {
-                        m_Fm = m_F;
-                        m_FmIndex = i - 1;
-                        //最大值的延伸，此处用位移表示
-                        m_Lm = D1value;
-                    }
-                //}
-
-               
-                //-----------------上升阶段------------------
-                if (isSelReH || isSelReL)
-                {
-                    #region 计算上下屈服
-                    if (F1value > 2 * m_checkstopvalue) //2 * m_checkstopvalue负荷超过量程的 1/100 才计算上下屈服
-                    {
-                        if (m_F > m_Fn + 10 * m_SR)//m_Fn
-                        {
-                            m_RLCounter = 0;
-                            //如果阶段1已经发生
-                            if (m_FlagStage1Start == true)
-                            {
-                                //如果阶段1还没结束
-                                if (m_FlagStage1Stop == false)
-                                {
-                                    //上升时立马给阶段1停止标志
-                                    m_FlagStage1Stop = true;
-                                    //表示求出下屈服
-                                    m_FlagFRL = true;
-                                    //开始存储最大值                                    
-                                    //m_Fm = m_F;
-                                    //下屈服的值为刚好上升的前一点值 ，此处貌似为初始效应值
-                                    m_FRLFirst = m_Fn;
-                                    m_FRL = m_Fn;
-                                    m_FRLIndex = i - 1;
-                                }
-                                //如果阶段1已经结束
-                                else
-                                {
-                                    //如果第二阶段已经开始
-                                    if (m_FlagStage2Start == true)
-                                    {
-                                        //如果阶段2已经开始还没结束就是第二次下降的最低值
-                                        if (m_FlagStage2Stop == false)
-                                        {
-                                            m_FlagStage2Stop = true;
-                                            //存储第二次下降最低的值，此值是去掉初始效应的第二次下降最低值
-                                            m_FRL = m_Fn;
-                                            m_FlagFRL = true;
-                                            m_FRLIndex = i - 1;
-                                        }
-                                        else
-                                        {
-                                            //如果第三阶段已经开始
-                                            if (m_FlagStage3Start == true)
-                                            {   
-                                                //追踪最大值
-                                                if (m_F > m_Fm)
-                                                {
-                                                    m_Fm = m_F;
-                                                    m_FmIndex = i;
-                                                }
-
-                                                if (m_FlagStage3Stop == false)
-                                                {
-                                                    //第三阶段结束标志
-                                                    m_FlagStage3Stop = true;
-                                                    m_FlagStage3Start = false;
-                                                    if (m_Fn < m_FRL)
-                                                    {
-                                                        m_FRL = m_Fn;
-                                                        m_FRLIndex = i - 1;
-                                                    }                                         
-                                                } 
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-                        else if (m_F == m_Fn)//平移阶段
-                        {
-                            //如果上下屈服都未求出
-                            if (m_FlagFRH == false && m_FlagFRL == false)
-                            {
-                                m_RLCounter++;
-                                //如果值保持相等大于3个点
-                                if (m_RLCounter > 3)
-                                {
-                                    //表示上下屈服已求出
-                                    m_FlagFRH = true;
-                                    m_FlagFRL = true;
-                                    m_FRL = m_F;
-                                    m_FRLIndex = i - 1;
-                                    m_FRH = 0;
-                                    m_FRHIndex = 0;
-                                }
-                            }
-                        }
-                        else if (m_F < m_Fn - 10 * m_SR) //m_pre5dotvaluem_Fn下降阶段
-                        {
-                            m_RLCounter = 0;
-                            //如果阶段1还未发生,首次下降,
-                            if (m_FlagStage1Start == false)
-                            {
-                                //存储上屈服
-                                m_FRH = m_Fn;
-                                //置求出上屈服标志为1
-                                m_FlagFRH = true;
-                                //阶段1开始标志,开始进入下降阶段
-                                m_FlagStage1Start = true;
-                                m_FRHIndex = i - 1;
-                            }
-                            else//如果阶段1已经发生
-                            {
-                                //第二次下降
-                                if (m_FlagStage2Start == false)
-                                {
-                                    //追踪下屈服
-                                    m_FRLFirst = m_F;
-                                    if (m_FlagStage1Stop)
-                                        m_FlagStage2Start = true;
-                                }
-                                //如果阶段1已经结束
-                                else
-                                {
-                                    //第三次下降,以后就循环第三次的标志直到试验结束
-                                    if (m_FlagStage3Start == false)
-                                    {
-                                        m_FlagStage3Start = true;
-                                        m_FlagStage3Stop = false;
-                                    }
-                                }
-
-                                //阶段1以后的初始下降点就是最大值的判定
-                                if (m_Fn > m_Fm)
-                                {
-                                    m_Fm = m_Fn;
-                                    m_FmIndex = i - 1;
-                                    m_Lm = D1value;
-                                }
-                            }
-                        }
-                    }
-                    #endregion
-                }
-
-            }
-        }
 
         //显示一条曲线
         private void showCurve(List<gdata> listGData, ZedGraph.ZedGraphControl zgControl)
@@ -1233,7 +660,7 @@ namespace HR_Test.AnalysiseCurve
             if (LineItemListEdit_0 == null)
                 return;
 
-            for (Int32 i = 1; i < listGData.Count-2; i++)
+            for (Int32 i = 1; i < listGData.Count - 2; i++)
             {
                 //采集数据
                 //时间
@@ -1390,49 +817,12 @@ namespace HR_Test.AnalysiseCurve
 
         private void tsbtnSelRect_Click(object sender, EventArgs e)
         {
-            //this.zedGraphControl.Invalidated -= new InvalidateEventHandler(zedGraphControl_Invalidated);
-            m_firstPIndex = m_secondPIndex = 0;
-            //this.cmbYr.SelectedIndex = 1;
-            //this.cmbXr.SelectedIndex = 2;  
-
-            //if (!this.zedGraphControl.Controls.Contains(_palZoom))
-            //{
-
-            //    _palZoom = new  PictureBox();                
-            //    _palZoom.Name = "pzoom";
-            //    _palZoom.Tag = "pzoom"; 
-            //    _palZoom.BackColor = Color.Transparent;
-            //    _palZoom.BorderStyle = BorderStyle.FixedSingle;
-            //    _palZoom.Width = this.zedGraphControl.Width / 5;
-            //    _palZoom.Height = this.zedGraphControl.Height * 2 / 5;
-            //    _palZoom.Left = this.zedGraphControl.Width / 5;
-            //    _palZoom.Top = this.zedGraphControl.Height / 5;              
-            //    this.zedGraphControl.Controls.Add(_palZoom);                 
-            //    pb = new PickBox();
-            //    pb.WireControl(_palZoom);
-            //} 
-            //移除已经求出的划线
-            /* List<CurveItem> results = this.zedGraphControl.GraphPane.CurveList.FindAll(FindAllCurve);
-             if (results.Count != 0)
-             {
-                 foreach (CurveItem ci in results)
-                 {
-                     this.zedGraphControl.GraphPane.CurveList.Remove(ci);
-                 }
-             }
-             */
-            //this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllCurveFp02);
-            //this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFp02);
-
             RestoreZScale();
-            //RestoreZScale();
         }
 
         private void RestoreZScale()
         {
             this.zedGraphControl.RestoreScale(this.zedGraphControl.GraphPane);
-            m_FlagFp02L = false;
-            m_FlagFp02E = false;
             int xmax = (int)this.zedGraphControl.GraphPane.XAxis.Scale.Max;
             int cxmax = (xmax / 5) * 5;
             if (xmax > cxmax)
@@ -1496,110 +886,10 @@ namespace HR_Test.AnalysiseCurve
             }
         }
 
-        private void AutoCalcTest()
-        {
-            int tempIndex = 0;
-            //FrIndex初始值
-            m_FrIndex = m_FmIndex;
-            int count = 0;
-            double a = 0;
-            double k = 0;
-            int fr05index = 0;
-            int fr01index = 0;
-            double ep02L0 = 0;
 
-            //逐次逼近法 求取Fp02
-
-            do
-            {
-                tempIndex = m_FrIndex;
-                if (GetFp02IndexTest(_List_Data, tempIndex, out m_FrIndex, out a, out k, out fr05index, out fr01index, out ep02L0))
-                {
-                    count++;
-                    //MessageBox.Show(count.ToString() + ":" + m_FrIndex.ToString() + "," + tempIndex.ToString());
-                }
-
-                if (count > 500)
-                {
-                    MessageBox.Show(this, "计算失败!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-            }
-            while (m_FrIndex > tempIndex + 2 || m_FrIndex < tempIndex - 2);
-        }
-
-        private bool GetFp02IndexTest(List<gdata> List_Data, int _FRInIndex, out int _FROutIndex, out double _a, out double _k, out int Fr05Index, out int Fr01Index, out double ep02L0)
-        {
-            double Fr = List_Data[_FRInIndex].F1;
-            int lCount = List_Data.Count;
-            //查找Fr 0.5的点
-            //求出Fr05和 Fr01点
-            _FROutIndex = 0;
-            _a = 0;
-            _k = 0;
-            Fr05Index = 0;
-            Fr01Index = 0;
-            ep02L0 = m_L0 * 10 * m_Ep;
-            for (int m = 0; m < _FRInIndex; m++)
-            {
-                if (List_Data[m].F1 >= Fr * 0.6)
-                {
-                    m_FR05 = List_Data[m].F1;
-                    m_LR05 = List_Data[m].D1;
-                    Fr05Index = m;
-                    break;
-                }
-            }
-
-            for (int n = 0; n < _FRInIndex; n++)
-            {
-                if (_List_Data[n].F1 >= Fr * 0.3)
-                {
-                    m_FR01 = List_Data[n].F1;
-                    m_LR01 = List_Data[n].D1;
-                    Fr01Index = n;
-                    break;
-                }
-            }
-
-            //计算斜率,在 0.5 和 0.1之间取10点
-
-            int[] kdot = Get0501k(Fr01Index, Fr05Index);
-            double sumk = 0;
-
-            for (int i = 0; i < kdot.Length - 1; i++)
-            {
-                double kone = (List_Data[kdot[i + 1]].F1 - List_Data[kdot[i]].F1) / (List_Data[kdot[i + 1]].D1 - List_Data[kdot[i]].D1);
-                sumk += kone;
-            }
-            _k = sumk / (kdot.Length - 1);
-
-            //计算偏移量
-            _a = m_LR05 - (m_FR05 / _k);
-
-            //计算出的Li值，注：100为 L0的 0。2%,此处假设为 50mm * 1000 * 0.2%
-            //double Li = a + Fr / k + 100;
-
-            for (int i = 0; i < lCount; i++)
-            {
-                double Lii = _a + ep02L0 + List_Data[i].F1 / _k;
-                if (Lii <= List_Data[i].D1)
-                {
-                    _FROutIndex = i;
-                    break;
-                }
-            }
-
-            if (_FRInIndex != 0 && _a != 0 && _k != 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
+        int m_firstPIndex;
+        int m_secondPIndex;
+        bool m_FlagFp02L;
         //力-位移 曲线求Fp0.2
         /// <summary>
         /// 自动求 Fp02 已经注释
@@ -1645,133 +935,12 @@ namespace HR_Test.AnalysiseCurve
                 this.zedGraphControl.GraphPane.ReverseTransform(pLeftBottom, out x3, out y3);
                 this.zedGraphControl.GraphPane.ReverseTransform(pRightBottom, out x4, out y4);
 
-                //放大框选部分
-                //this.zedGraphControl.GraphPane.XAxis.Scale.Min = x1;
-                //this.zedGraphControl.GraphPane.XAxis.Scale.Max = x2;
-
-                //this.zedGraphControl.GraphPane.YAxis.Scale.Min = y3;
-                //this.zedGraphControl.GraphPane.YAxis.Scale.Max = y1;
-
-                //this.zedGraphControl.GraphPane.XAxis.Scale.Mag = 0;
-                //this.zedGraphControl.GraphPane.YAxis.Scale.Mag = 0;
-                //this.zedGraphControl.GraphPane.XAxis.Scale.MajorStep = (x2 - x1) / 5;
-                //this.zedGraphControl.GraphPane.YAxis.Scale.MajorStep = (y1 - y3) / 5;
-
-                //this.zedGraphControl.Refresh();
-
                 //第一点index
                 m_firstPIndex = GetIndex(_List_Data, y3);
                 //第二点index
-                m_secondPIndex = GetIndex(_List_Data, y1);
+                m_secondPIndex = GetIndex(_List_Data, y1); 
 
-                //如果选择框的点不符合标准
-                if (m_firstPIndex == 0 || m_secondPIndex == 0)
-                {
-                    MessageBox.Show(this, "请重新选择!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                //MessageBox.Show(m_firstPIndex + "," + m_secondPIndex);
-
-                this._palZoom.Dispose();
-
-                //确定选框的坐标 
-                pb.Remove();
-
-                //力-位移求Fp02
-                if (m_FlagFp02L)
-                {
-
-                    //获取计算斜率点
-                    int[] kindex = Get0501(m_firstPIndex, m_secondPIndex);
-
-                    //计算斜率
-                    double sumk = 0;
-                    double k = 0;
-                    for (int i = 0; i < kindex.Length - 1; i++)
-                    {
-                        double kone = (_List_Data[kindex[i + 1]].F1 - _List_Data[kindex[i]].F1) / (_List_Data[kindex[i + 1]].D1 - _List_Data[kindex[i]].D1);
-                        sumk += kone;
-                    }
-
-                    k = sumk / (kindex.Length - 1);
-
-                    //取中间点index
-                    m_midPIndex = m_firstPIndex + (m_secondPIndex - m_firstPIndex) / 2;
-                    //以中间点为准，画一条斜率k的直线，相交于 坐标轴x ，与 圆点的距离 就是偏离值 a;
-
-                    //力 - 位移 曲线 点斜式方程： y=k(x-x1)+y1 
-                    //this.zedGraphControl.RestoreScale(this.zedGraphControl.GraphPane);
-                    //偏离值
-                    double a = _List_Data[m_midPIndex].D1 - (_List_Data[m_midPIndex].F1 / k);
-                    //x = (zedmax - y1 + kx1) / k; 
-                    double[] _line_x = { _List_Data[m_midPIndex].D1 - (_List_Data[m_midPIndex].F1 / k), _List_Data[m_midPIndex].D1, ((_List_Data[m_FmIndex].F1 + 200) - _List_Data[m_midPIndex].F1 + k * _List_Data[m_midPIndex].D1) / k };
-                    double[] _line_y = { 0, _List_Data[m_midPIndex].F1, (_List_Data[m_FmIndex].F1 + 200) };
-                    LineItem li = this.zedGraphControl.GraphPane.AddCurve("cline_0501_1", _line_x, _line_y, Color.DarkGreen, SymbolType.None);
-                    //li.Symbol = m_zedGraphSyb;
-                    li.Line.IsAntiAlias = true;
-                    li.Line.Width = 1f;
-                    li.Tag = "Fp02";
-
-                    //读取数据库的 Ep0.2
-                    double ep02L0 = m_L0 * m_Ep * 10;
-                    if (ep02L0 == 0)
-                        ep02L0 = m_L0 * 0.2 * 10;
-
-                    //L = a + ep02L0 + _List_Data[i].F1 / k;
-                    for (int i = m_firstPIndex; i < _List_Data.Count; i++)
-                    {
-                        double Lii = a + ep02L0 + _List_Data[i].F1 / k;
-                        if (Lii <= _List_Data[i].D1)
-                        {
-                            m_FrIndex = i;
-                            break;
-                        }
-                    }
-                    //fp02的线
-                    double[] _lineFp02_x = { a + ep02L0, _List_Data[m_FrIndex].D1, ((_List_Data[m_FmIndex].F1 + 200) - _List_Data[m_midPIndex].F1 + k * _List_Data[m_midPIndex].D1) / k + ep02L0 };
-                    double[] _lineFp02_y = { 0, _List_Data[m_FrIndex].F1, (_List_Data[m_FmIndex].F1 + 200) };
-                    LineItem liFp02 = this.zedGraphControl.GraphPane.AddCurve("cline_0501_2", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.None);
-                    //liFp02.Symbol = m_zedGraphSyb;
-                    liFp02.Line.IsAntiAlias = true;
-                    liFp02.Line.Width = 1f;
-                    liFp02.Tag = "Fp02";
-
-                    string txtprint = "Fp02 = " + (_List_Data[m_FrIndex].F1 / 1000.0).ToString("f2") + " kN\r\n" + "Rp02 =" + (_List_Data[m_FrIndex].YL1).ToString("G5") + " MPa";
-                  
-                    Control[] c = this.flowLayoutPanel1.Controls.Find("E",false);
-                    if (c.Length > 0)
-                    {
-                        if (c[0].Visible)
-                        {
-                            double yl = _List_Data[m_secondPIndex].YL1 - _List_Data[m_firstPIndex].YL1;
-                            double yb = (_List_Data[m_secondPIndex].YB1 - _List_Data[m_firstPIndex].YB1)/100.0;
-                            double _e = Math.Round((yl / yb) / 1000.0,2);
-                            m_E = _e;
-                            txtprint = "Fp02 = " + (_List_Data[m_FrIndex].F1 / 1000.0).ToString("f2") + " kN\r\nRp02 =" + (_List_Data[m_FrIndex].YL1).ToString("G5") + " MPa\r\nE = " + m_E.ToString()+" GPa";
-                        }
-                    }
-
-
-                    //添加 值 的标注
-                    ZedGraph.TextObj t = new TextObj(txtprint, _List_Data[m_FrIndex].D1, _List_Data[m_FrIndex].F1);
-                    t.FontSpec.FontColor = Color.Navy;
-                    t.Location.AlignH = AlignH.Left;
-                    t.Location.AlignV = AlignV.Top;
-                    t.FontSpec.IsBold = true;
-                    t.FontSpec.Border.IsVisible = false;
-                    //t.ZOrder = ZOrder.E_BehindCurves;
-                    t.Tag = "Fp02";
-                    this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-
-                    //标注Fp02的点
-                    double[] _Fp02x = { _List_Data[m_FrIndex].D1 };
-                    double[] _Fp02y = { _List_Data[m_FrIndex].F1 };
-                    LineItem pointFp02 = this.zedGraphControl.GraphPane.AddCurve("cline_fp02", _Fp02x, _Fp02y, Color.Blue, SymbolType.UserDefined);
-                    pointFp02.Symbol = m_zedGraphSyb;
-                    pointFp02.Line.IsAntiAlias = true;
-                    pointFp02.Line.Width = 2f;
-                    pointFp02.Tag = "Fp02";
+                 
 
                     ////标注第一个点 
                     //double[] _line_first_x = { _List_Data[m_firstPIndex].D1 };
@@ -1791,154 +960,11 @@ namespace HR_Test.AnalysiseCurve
                     //li_second.Line.Width = 2f;
                     //li_second.Tag = "Fp02";
 
-                    //标注中间的点
-                    double[] _line_mid_x = { _List_Data[m_midPIndex].D1 };
-                    double[] _line_mid_y = { _List_Data[m_midPIndex].F1 };
-                    LineItem line_mid = this.zedGraphControl.GraphPane.AddCurve("cline_mid", _line_mid_x, _line_mid_y, Color.Navy, SymbolType.UserDefined);
-                    line_mid.Symbol = m_zedGraphSyb;
-                    line_mid.Line.IsAntiAlias = true;
-                    line_mid.Line.Width = 2f;
-                    line_mid.Tag = "Fp02";
 
                     //将新值从Label上表现出来
                     //显示Fp02 控件名称 4
                     //UC.Result lblFp02 = (UC.Result)this.flowLayoutPanel1.Controls.Find("Rp", false)[0];
                     //lblFp02.Text = (_List_Data[m_FrIndex].F1 / m_S0).ToString("G5"); 
-                }
-
-                //力 - 变形 求Fp02
-                if (m_FlagFp02E)
-                {
-                    //获取计算斜率点
-                    int[] kindex = Get0501(m_firstPIndex, m_secondPIndex);
-
-                    //计算斜率
-                    double sumk = 0;
-                    double k = 0;
-                    for (int i = 0; i < kindex.Length - 1; i++)
-                    {
-                        double kone = (_List_Data[kindex[i + 1]].F1 - _List_Data[kindex[i]].F1) / (_List_Data[kindex[i + 1]].BX1 - _List_Data[kindex[i]].BX1);
-                        sumk += kone;
-                    }
-
-                    k = sumk / (kindex.Length - 1);
-
-                    //取中间点index
-                    m_midPIndex = m_firstPIndex + (m_secondPIndex - m_firstPIndex) / 2;
-
-                    //以中间点为准，画一条斜率k的直线，相交于 坐标轴x ，与 圆点的距离 就是偏离值 a;
-                    //力 - 位移 曲线 点斜式方程： y=k(x-x1)+y1 
-
-                    //this.zedGraphControl.RestoreScale(this.zedGraphControl.GraphPane);
-
-                    //偏离值
-                    double a = _List_Data[m_midPIndex].BX1 - (_List_Data[m_midPIndex].F1 / k);
-                    //x = (zedmax - y1 + kx1) / k; 
-
-
-                    //根据chart上curvelist count判断是否添加曲线
-                    double[] _line_x = { _List_Data[m_midPIndex].BX1 - (_List_Data[m_midPIndex].F1 / k), _List_Data[m_midPIndex].BX1, ((_List_Data[m_FmIndex].F1 + 200) - _List_Data[m_midPIndex].F1 + k * _List_Data[m_midPIndex].BX1) / k };
-                    double[] _line_y = { 0, _List_Data[m_midPIndex].F1, (_List_Data[m_FmIndex].F1 + 200) };
-                    LineItem li = this.zedGraphControl.GraphPane.AddCurve("cline_0501_1", _line_x, _line_y, Color.DarkGreen, SymbolType.None);
-                    //li.Symbol = m_zedGraphSyb;
-                    li.Line.IsAntiAlias = true;
-                    li.Line.Width = 1f;
-                    li.Tag = "Fp02";
-
-
-                    //读取数据库的 Ep0.2
-                    double ep02L0 = m_L0 * m_Ep * 10;
-                    if (ep02L0 == 0)
-                    {
-                        ep02L0 = m_L0 * 2;
-                    }
-                    //L = a + ep02L0 + _List_Data[i].F1 / k;
-                    for (int i = m_firstPIndex; i < _List_Data.Count; i++)
-                    {
-                        double Lii = a + ep02L0 + _List_Data[i].F1 / k;
-                        if (Lii <= _List_Data[i].BX1)
-                        {
-                            m_FrIndex = i;
-                            break;
-                        }
-                    }
-
-                    //fp02的线
-                    double[] _lineFp02_x = { a + ep02L0, _List_Data[m_FrIndex].BX1, ((_List_Data[m_FmIndex].F1 + 200) - _List_Data[m_midPIndex].F1 + k * _List_Data[m_midPIndex].BX1) / k + ep02L0 };
-                    double[] _lineFp02_y = { 0, _List_Data[m_FrIndex].F1, (_List_Data[m_FmIndex].F1 + 200) };
-                    LineItem liFp02 = this.zedGraphControl.GraphPane.AddCurve("cline_0501_2", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.None);
-                    //liFp02.Symbol = m_zedGraphSyb;
-                    liFp02.Line.IsAntiAlias = true;
-                    liFp02.Line.Width = 1f;
-                    liFp02.Tag = "Fp02";
-
-                    //标注Fp02的点
-                    double[] _Fp02x = { _List_Data[m_FrIndex].BX1 };
-                    double[] _Fp02y = { _List_Data[m_FrIndex].F1 };
-                    LineItem pointFp02 = this.zedGraphControl.GraphPane.AddCurve("cline_fp02", _Fp02x, _Fp02y, Color.Blue, SymbolType.UserDefined);
-                    pointFp02.Symbol = m_zedGraphSyb;
-                    pointFp02.Line.IsAntiAlias = true;
-                    pointFp02.Line.Width = 2f;
-                    pointFp02.Tag = "Fp02";
-
-                    string txtprint = "Fp02 = " + (_List_Data[m_FrIndex].F1 / 1000.0).ToString("f2") + " kN\r\nRp02 =" + (_List_Data[m_FrIndex].YL1).ToString("G5") + " MPa";
-
-                    Control[] c = this.flowLayoutPanel1.Controls.Find("E", false);
-                    if (c.Length > 0)
-                    {
-                        if (c[0].Visible)
-                        {
-                            double yl = _List_Data[m_secondPIndex].YL1 - _List_Data[m_firstPIndex].YL1;
-                            double yb = (_List_Data[m_secondPIndex].YB1 - _List_Data[m_firstPIndex].YB1) / 100.0;
-                            double _e = Math.Round((yl / yb) / 1000.0, 2);
-                            m_E = _e;
-                            txtprint = "Fp02 = " + (_List_Data[m_FrIndex].F1/1000.0).ToString("f2") + " kN\r\nRp02 =" + (_List_Data[m_FrIndex].YL1).ToString("G5") + " MPa\r\nE = " + m_E.ToString() + " GPa";
-                        }
-                    }
-
-                    //添加 值 的标注
-                    ZedGraph.TextObj t = new TextObj(txtprint, _List_Data[m_FrIndex].BX1, _List_Data[m_FrIndex].F1);
-                    t.FontSpec.FontColor = Color.Navy;
-                    t.Location.AlignH = AlignH.Left;
-                    t.Location.AlignV = AlignV.Top;
-                    t.FontSpec.Border.IsVisible = false;
-                    t.ZOrder = ZOrder.E_BehindCurves;
-                    t.FontSpec.IsBold = true;
-                    t.Tag = "Fp02";
-                    this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-
-                    ////标注第一个点 
-                    //double[] _line_first_x = { _List_Data[m_firstPIndex].BX1 };
-                    //double[] _line_first_y = { _List_Data[m_firstPIndex].F1 };
-                    //LineItem li_first = this.zedGraphControl.GraphPane.AddCurve("cline_first", _line_first_x, _line_first_y, Color.Navy, SymbolType.UserDefined);
-                    //li_first.Symbol = m_zedGraphSyb;
-                    //li_first.Line.IsAntiAlias = true;
-                    //li_first.Line.Width = 2f;
-                    //li_first.Tag = "Fp02";
-
-                    ////标注第二个点
-                    //double[] _line_second_x = { _List_Data[m_secondPIndex].BX1 };
-                    //double[] _line_second_y = { _List_Data[m_secondPIndex].F1 };
-                    //LineItem li_second = this.zedGraphControl.GraphPane.AddCurve("cline_second", _line_second_x, _line_second_y, Color.Navy, SymbolType.UserDefined);
-                    //li_second.Symbol = m_zedGraphSyb;
-                    //li_second.Line.IsAntiAlias = true;
-                    //li_second.Line.Width = 2f;
-                    //li_second.Tag = "Fp02";
-
-                    //标注中间的点
-                    double[] _line_mid_x = { _List_Data[m_midPIndex].BX1 };
-                    double[] _line_mid_y = { _List_Data[m_midPIndex].F1 };
-                    LineItem line_mid = this.zedGraphControl.GraphPane.AddCurve("cline_mid", _line_mid_x, _line_mid_y, Color.Navy, SymbolType.UserDefined);
-                    line_mid.Symbol = m_zedGraphSyb;
-                    line_mid.Line.IsAntiAlias = true;
-                    line_mid.Line.Width = 2f;
-                    line_mid.Tag = "Fp02";
-
-                    ////显示Fp02 控件名称 4
-                    //UC.Result lblFp02 = (UC.Result)this.flowLayoutPanel1.Controls.Find("Rp", false)[0];
-                    //lblFp02.Text = (_List_Data[m_FrIndex].F1 / m_S0).ToString("G5"); 
-
-                }
                 this.zedGraphControl.Invalidate();
                 this.zedGraphControl.Refresh();
             }
@@ -1947,20 +973,15 @@ namespace HR_Test.AnalysiseCurve
         private void tsBtnFp02_Click(object sender, EventArgs e)
         {
 
-            if (this.cmbYr.SelectedIndex != 1 | this.cmbXr.SelectedIndex != 2)
+            if (this.cmbYr.SelectedIndex != 2 | this.cmbXr.SelectedIndex != 3)
             {
-                MessageBox.Show(this, "请选择 负荷 - 位移 曲线分析!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(this, "请选择 X:应力 - Y:应变 曲线分析!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            m_FlagFp02L = true;
-            m_FlagFp02E = false;
+            //m_FlagFp02L = true;
+            //m_FlagFp02E = false;
 
-            //if (m_firstPIndex == 0 | m_secondPIndex == 0)
-            //{
-            //    MessageBox.Show("请放大方框选择的曲线区域");
-            //    return;
-            //}
 
             if (!this.zedGraphControl.Controls.Contains(_palZoom))
             {
@@ -1976,307 +997,22 @@ namespace HR_Test.AnalysiseCurve
                 _palZoom.Capture = false;
                 this.zedGraphControl.Controls.Add(_palZoom);
 
-
-                //if (this.zedGraphControl.Controls.Contains(rect))
-                //    this.zedGraphControl.Controls.Remove(rect);
-                //rect = new RectTracker((Control)_palZoom);
-                //this.zedGraphControl.Controls.Add(rect);
-                //rect.Draw();
-
                 pb = new PickBox();
                 pb.WireControl(_palZoom);
                 pb.Focus(_palZoom, e);
                 _palZoom.MouseClick += new MouseEventHandler(_palZoom_MouseClick);
             }
 
-            //ZedGraph.BoxObj b = new BoxObj(_palZoom.Left, _palZoom.Top, _palZoom.Width, _palZoom.Height, Color.Blue, Color.Transparent);
-            //b.IsVisible = true;
-            //b.Border.Width = 2f;
-            //b.ZOrder = ZOrder.A_InFront;
-            //b.Tag = "box"; 
-            //zedGraphControl.GraphPane.GraphObjList.Add(b);
-            //zedGraphControl.Refresh();
 
 
             this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllCurveFp02);
             this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFp02);
             this.zedGraphControl.Refresh();
 
-            ////////获取计算斜率点
-            //////int[] kindex = Get0501(m_firstPIndex, m_secondPIndex);
 
-            ////////计算斜率
-            //////double sumk = 0;
-            //////double k = 0;
-            //////for (int i = 0; i < kindex.Length - 1; i++)
-            //////{
-            //////    double kone = (_List_Data[kindex[i + 1]].F1 - _List_Data[kindex[i]].F1) / (_List_Data[kindex[i + 1]].D1 - _List_Data[kindex[i]].D1);
-            //////    sumk += kone;
-            //////}
-
-            //////k = sumk / (kindex.Length - 1);
-
-            ////////取中间点index
-            //////int midIndex = m_firstPIndex + (m_secondPIndex - m_firstPIndex) / 2;
-
-            ////////以中间点为准，画一条斜率k的直线，相交于 坐标轴x ，与 圆点的距离 就是偏离值 a;
-            ////////力 - 位移 曲线 点斜式方程： y=k(x-x1)+y1 
-
-            //////this.zedGraphControl.RestoreScale(this.zedGraphControl.GraphPane);
-
-            ////////根据chart上curvelist count判断是否添加曲线        
-            ////////偏离值
-            //////double a = _List_Data[midIndex].D1 - (_List_Data[midIndex].F1 / k);
-            ////////x = (zedmax - y1 + kx1) / k; 
-            //////double[] _line_x = {  _List_Data[midIndex].D1 -(_List_Data[midIndex].F1 / k) ,_List_Data[midIndex].D1,(this.zedGraphControl.GraphPane.YAxis.Scale.Max - _List_Data[midIndex].F1 + k*_List_Data[midIndex].D1 ) /k};
-            //////double[] _line_y = {0  ,_List_Data[midIndex].F1,this.zedGraphControl.GraphPane.YAxis.Scale.Max };
-            //////LineItem li = this.zedGraphControl.GraphPane.AddCurve("cline_0501_1", _line_x, _line_y, Color.DarkGreen, SymbolType.UserDefined);
-            //////li.Symbol = m_zedGraphSyb;
-            //////li.Line.IsAntiAlias = true;
-            //////li.Line.Width = 1f;
-            //////li.Tag = "Fp02";
-            ////////读取数据库的 Ep0.2
-            //////double ep02L0 =  m_L0 * m_Ep * 10;
-            ////////L = a + ep02L0 + _List_Data[i].F1 / k;
-            //////for (int i = m_firstPIndex; i < _List_Data.Count; i++)
-            //////{
-            //////    double Lii = a + ep02L0 + _List_Data[i].F1 / k;
-            //////    if (Lii <= _List_Data[i].D1)
-            //////    {
-            //////        m_FrIndex = i;
-            //////        break;
-            //////    }
-            //////} 
-            ////////fp02的线
-            //////double[] _lineFp02_x = { a + ep02L0, _List_Data[m_FrIndex].D1, (this.zedGraphControl.GraphPane.YAxis.Scale.Max - _List_Data[midIndex].F1 + k * _List_Data[midIndex].D1) / k + ep02L0 };
-            //////double[] _lineFp02_y = { 0 ,_List_Data[m_FrIndex].F1, this.zedGraphControl.GraphPane.YAxis.Scale.Max};
-            //////LineItem liFp02 = this.zedGraphControl.GraphPane.AddCurve("cline_0501_2", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
-            //////liFp02.Symbol = m_zedGraphSyb;
-            //////liFp02.Line.IsAntiAlias = true;
-            //////liFp02.Line.Width = 1f;
-            //////liFp02.Tag = "Fp02";
-
-            ////////添加 值 的标注
-            //////ZedGraph.TextObj t = new TextObj("Fp02 = " + (_List_Data[m_FrIndex].F1 / 1000).ToString("G5") + " kN", _List_Data[m_FrIndex].D1, _List_Data[m_FrIndex].F1);
-            //////t.FontSpec.FontColor = Color.Navy;
-            //////t.Location.AlignH = AlignH.Left;
-            //////t.Location.AlignV = AlignV.Top;
-            //////t.FontSpec.IsBold = true;
-            //////t.FontSpec.Border.IsVisible = false; 
-            ////////t.ZOrder = ZOrder.E_BehindCurves;
-            //////t.Tag = "Fp02";
-            //////this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-            //////this.zedGraphControl.Refresh();  
-
-            /*
-            this.cmbYr.SelectedIndex = 1;
-            this.cmbXr.SelectedIndex = 2;
-            int tempIndex = 0;
-            //FrIndex初始值
-            m_FrIndex = m_FmIndex; 
-            int count = 0;
-            double a=0;
-            double k=0;
-            int fr05index = 0;
-            int fr01index = 0;
-            double ep02L0 = 0;
-
-            //逐次逼近法 求取Fp02
-            do 
-            { 
-                tempIndex = m_FrIndex;
-                if (GetFp02Index(_List_Data, tempIndex, out m_FrIndex, out a, out k, out fr05index, out fr01index, out ep02L0))
-                {
-                    count++;
-                }
-
-                if (count > 500)
-                {
-                    MessageBox.Show("计算失败!");
-                    return;
-                }
-            }
-            while (m_FrIndex > tempIndex + 2 || m_FrIndex < tempIndex - 2); 
-
-            //在曲线上划线 斜率为k 偏离圆心为 a 的直线 y=k(a-x) x=a+y/k 
-            //求出的 0.1 0.5 连线 
-            Symbol syb = new Symbol();
-            syb.IsAntiAlias = true;
-            syb.Type = SymbolType.Circle; 
-            syb.Size = 3;
-            syb.Fill.Color = Color.Navy;
-            syb.IsVisible = true;
-
-            if (this.zedGraphControl.GraphPane.CurveList["0501"] == null)
-            {
-                double[] line1x = {a, _List_Data[fr01index].D1, a + (_List_Data[fr05index].F1 / k) };
-                double[] line1y = {0, _List_Data[fr01index].F1, _List_Data[fr05index].F1 };
-                LineItem li = this.zedGraphControl.GraphPane.AddCurve("0501", line1x, line1y, Color.DarkGreen,SymbolType.UserDefined);
-                li.Symbol = syb;
-                li.Line.IsAntiAlias = true;
-                li.Line.Width = 1.5f;
-            }
-
-            //在曲线上划线 斜率为k 偏离圆心为 a + ep02L0 的直线 y=k(a+ep02L0-x) x=a+ep02L0+y/k  
-            if (this.zedGraphControl.GraphPane.CurveList["Fp02"] == null)
-            {
-                double[] line2x = { a + ep02L0, _List_Data[m_FrIndex].D1 };//a + ep02L0 + (_List_Data[m_FrIndex].F1 / k)
-                double[] line2y = { 0, _List_Data[m_FrIndex].F1 };
-                //Fp02 连线
-                LineItem lifp02 = this.zedGraphControl.GraphPane.AddCurve("Fp02", line2x, line2y, Color.DarkBlue,SymbolType.UserDefined);
-                lifp02.Symbol = syb;
-                lifp02.Line.IsAntiAlias = true;
-                lifp02.Line.Width = 1.5f;
-            }
-            this.zedGraphControl.Refresh();
-
-            //显示Fp02 控件名称 4
-            UC.Result lblFp02 = (UC.Result)this.flowLayoutPanel1.Controls.Find("4", false)[0];
-            lblFp02.Text = (_List_Data[m_FrIndex].F1 / m_S0).ToString("G5");
-             * */
         }
 
 
-
-        private bool GetFp02Index(List<gdata> List_Data, int _FRInIndex, out int _FROutIndex, out double _a, out double _k, out int Fr05Index, out int Fr01Index, out double ep02L0)
-        {
-            double Fr = List_Data[_FRInIndex].F1;
-            //查找Fr 0.5的点
-            //求出Fr05和 Fr01点
-            _FROutIndex = 0;
-            _a = 0;
-            _k = 0;
-            Fr05Index = 0;
-            Fr01Index = 0;
-            ep02L0 = m_L0 * m_Ep * 10;
-            for (int m = 0; m < _FRInIndex; m++)
-            {
-                if (List_Data[m].F1 >= Fr * 0.6)
-                {
-                    m_FR05 = List_Data[m].F1;
-                    m_LR05 = List_Data[m].D1;
-                    Fr05Index = m;
-                    break;
-                }
-            }
-
-            for (int n = 0; n < _FRInIndex; n++)
-            {
-                if (_List_Data[n].F1 >= Fr * 0.3)
-                {
-                    m_FR01 = List_Data[n].F1;
-                    m_LR01 = List_Data[n].D1;
-                    Fr01Index = n;
-                    break;
-                }
-            }
-
-            //计算斜率,在 0.5 和 0.1之间取10点
-
-            int[] kdot = Get0501k(Fr01Index, Fr05Index);
-            double sumk = 0;
-
-            for (int i = 0; i < kdot.Length - 1; i++)
-            {
-                double kone = (List_Data[kdot[i + 1]].F1 - List_Data[kdot[i]].F1) / (List_Data[kdot[i + 1]].D1 - List_Data[kdot[i]].D1);
-                sumk += kone;
-            }
-            _k = sumk / (kdot.Length - 1);
-
-            //计算偏移量
-            _a = m_LR05 - (m_FR05 / _k);
-
-            //计算出的Li值，注：100为 L0的 0。2%,此处假设为 50mm * 1000 * 0.2%
-            //double Li = a + Fr / k + 100; 
-            for (int i = 0; i < List_Data.Count; i++)
-            {
-                double Lii = _a + ep02L0 + List_Data[i].F1 / _k;
-                if (Lii <= List_Data[i].D1)
-                {
-                    _FROutIndex = i;
-                    break;
-                }
-            }
-
-            if (_FRInIndex != 0 && _a != 0 && _k != 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        private bool GetFp02IndexOnE(List<gdata> List_Data, int _FRInIndex, out int _FROutIndex, out double _a, out double _k, out int Fr05Index, out int Fr01Index, out double ep02L0)
-        {
-            double Fr = List_Data[_FRInIndex].F1;
-            //查找Fr 0.5的点
-            //求出Fr05和 Fr01点
-            _FROutIndex = 0;
-            _a = 0;
-            _k = 0;
-            Fr05Index = 0;
-            Fr01Index = 0;
-            ep02L0 = m_L0 * 10 * m_Ep;
-            for (int m = 0; m < _FRInIndex; m++)
-            {
-                if (List_Data[m].F1 >= Fr * 0.6)
-                {
-                    m_FR05 = List_Data[m].F1;
-                    m_LR05 = List_Data[m].BX1;
-                    Fr05Index = m;
-                    break;
-                }
-            }
-
-            for (int n = 0; n < _FRInIndex; n++)
-            {
-                if (_List_Data[n].F1 >= Fr * 0.3)
-                {
-                    m_FR01 = List_Data[n].F1;
-                    m_LR01 = List_Data[n].BX1;
-                    Fr01Index = n;
-                    break;
-                }
-            }
-
-            //计算斜率,在 0.5 和 0.1之间取10点
-
-            int[] kdot = Get0501k(Fr01Index, Fr05Index);
-            double sumk = 0;
-
-            for (int i = 0; i < kdot.Length - 1; i++)
-            {
-                double kone = (List_Data[kdot[i + 1]].F1 - List_Data[kdot[i]].F1) / (List_Data[kdot[i + 1]].BX1 - List_Data[kdot[i]].BX1);
-                sumk += kone;
-            }
-            _k = sumk / (kdot.Length - 1);
-
-            //计算偏移量
-            _a = m_LR05 - (m_FR05 / _k);
-
-            //计算出的Li值，注：100为 L0的 0。2%,此处假设为 50mm * 1000 * 0.2%
-            //double Li = a + Fr / k + 100; 
-            for (int i = 0; i < List_Data.Count; i++)
-            {
-                double Lii = _a + ep02L0 + List_Data[i].F1 / _k;
-                if (Lii <= List_Data[i].BX1)
-                {
-                    _FROutIndex = i;
-                    break;
-                }
-            }
-
-            if (_FRInIndex != 0 && _a != 0 && _k != 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
 
 
         //计算斜率的点
@@ -2313,7 +1049,7 @@ namespace HR_Test.AnalysiseCurve
         }
 
 
-
+        bool m_FlagHandU12;
         private void tsbtnEFp02_Click(object sender, EventArgs e)
         {
             if (this.cmbYr.SelectedIndex != 1 || this.cmbXr.SelectedIndex != 4)
@@ -2322,8 +1058,7 @@ namespace HR_Test.AnalysiseCurve
                 return;
             }
 
-            m_FlagFp02L = false;
-            m_FlagFp02E = true;
+            m_FlagHandU12 = true;
 
             if (!this.zedGraphControl.Controls.Contains(_palZoom))
             {
@@ -2347,148 +1082,6 @@ namespace HR_Test.AnalysiseCurve
             this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllCurveFp02);
             this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFp02);
             this.zedGraphControl.Refresh();
-
-            //if (m_firstPIndex == 0 || m_secondPIndex == 0)
-            //{
-            //    MessageBox.Show("请用方框选择曲线区域");
-            //    return;
-            //}
-
-
-
-            ////////获取计算斜率点
-            //////int[] kindex = Get0501(m_firstPIndex, m_secondPIndex);
-
-            ////////计算斜率
-            //////double sumk = 0;
-            //////double k = 0;
-            //////for (int i = 0; i < kindex.Length - 1; i++)
-            //////{
-            //////    double kone = (_List_Data[kindex[i + 1]].F1 - _List_Data[kindex[i]].F1) / (_List_Data[kindex[i + 1]].BX1 - _List_Data[kindex[i]].BX1);
-            //////    sumk += kone;
-            //////}
-
-            //////k = sumk / (kindex.Length - 1);
-
-            ////////取中间点index
-            //////int midIndex = m_firstPIndex + (m_secondPIndex - m_firstPIndex) / 2;
-
-            ////////以中间点为准，画一条斜率k的直线，相交于 坐标轴x ，与 圆点的距离 就是偏离值 a;
-            ////////力 - 位移 曲线 点斜式方程： y=k(x-x1)+y1 
-
-            //////this.zedGraphControl.RestoreScale(this.zedGraphControl.GraphPane);
-
-            ////////根据chart上curvelist count判断是否添加曲线
-            ////////偏离值
-            //////double a = _List_Data[midIndex].BX1 - (_List_Data[midIndex].F1 / k);
-            ////////x = (zedmax - y1 + kx1) / k; 
-            //////double[] _line_x = { _List_Data[midIndex].BX1 - (_List_Data[midIndex].F1 / k), _List_Data[midIndex].BX1, (this.zedGraphControl.GraphPane.YAxis.Scale.Max - _List_Data[midIndex].F1 + k * _List_Data[midIndex].BX1) / k };
-            //////double[] _line_y = { 0, _List_Data[midIndex].F1, this.zedGraphControl.GraphPane.YAxis.Scale.Max };
-            //////LineItem li = this.zedGraphControl.GraphPane.AddCurve("cline_0501_1", _line_x, _line_y, Color.DarkGreen, SymbolType.UserDefined);
-            //////li.Symbol = m_zedGraphSyb;
-            //////li.Line.IsAntiAlias = true;
-            //////li.Line.Width = 1f;
-            //////li.Tag = "Fp02";
-            ////////读取数据库的 Ep0.2
-            //////double ep02L0 = m_L0 * m_Ep * 10;
-            ////////L = a + ep02L0 + _List_Data[i].F1 / k;
-            //////for (int i = m_firstPIndex; i < _List_Data.Count; i++)
-            //////{
-            //////    double Lii = a + ep02L0 + _List_Data[i].F1 / k;
-            //////    if (Lii <= _List_Data[i].BX1)
-            //////    {
-            //////        m_FrIndex = i;
-            //////        break;
-            //////    }
-            //////}
-            ////////fp02的线
-            //////double[] _lineFp02_x = { a + ep02L0, _List_Data[m_FrIndex].BX1, (this.zedGraphControl.GraphPane.YAxis.Scale.Max - _List_Data[midIndex].F1 + k * _List_Data[midIndex].BX1) / k + ep02L0 };
-            //////double[] _lineFp02_y = { 0, _List_Data[m_FrIndex].F1, this.zedGraphControl.GraphPane.YAxis.Scale.Max };
-            //////LineItem liFp02 = this.zedGraphControl.GraphPane.AddCurve("cline_0501_2", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
-            //////liFp02.Symbol = m_zedGraphSyb;
-            //////liFp02.Line.IsAntiAlias = true;
-            //////liFp02.Line.Width = 1f;
-            //////liFp02.Tag = "Fp02";
-
-            ////////添加 值 的标注
-            //////ZedGraph.TextObj t = new TextObj("Fp02 = " + (_List_Data[m_FrIndex].F1 / 1000).ToString("G5") + " kN", _List_Data[m_FrIndex].BX1, _List_Data[m_FrIndex].F1);
-            //////t.FontSpec.FontColor = Color.Navy;
-            //////t.Location.AlignH = AlignH.Left;
-            //////t.Location.AlignV = AlignV.Top;
-            //////t.FontSpec.Border.IsVisible = false;
-            //////t.ZOrder = ZOrder.E_BehindCurves;
-            //////t.FontSpec.IsBold = true;
-            //////t.Tag = "Fp02";
-            //////this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-            //////this.zedGraphControl.Refresh();  
-
-            /*
-            this.cmbYr.SelectedIndex = 1;
-            this.cmbXr.SelectedIndex = 4;
-            int tempIndex = 0;
-            //FrIndex初始值
-            m_FrIndex = m_FmIndex;
-            int count = 0;
-            double a = 0;
-            double k = 0;
-            int fr05index = 0;
-            int fr01index = 0;
-            double ep02L0 = 0;
-
-            //逐次逼近法 求取Fp02
-            do
-            {
-                tempIndex = m_FrIndex;
-                if (GetFp02IndexOnE(_List_Data, tempIndex, out m_FrIndex, out a, out k, out fr05index, out fr01index, out ep02L0))
-                {
-                    count++;
-                }
-
-                if (count > 500)
-                {
-                    MessageBox.Show("计算失败!");
-                    return;
-                }
-            }
-            while (m_FrIndex > tempIndex + 2 || m_FrIndex < tempIndex - 2);
-
-            //在曲线上划线 斜率为k 偏离圆心为 a 的直线 y=k(a-x) x=a+y/k 
-            //求出的 0.1 0.5 连线 
-            Symbol syb = new Symbol();
-            syb.IsAntiAlias = true;
-            syb.Type = SymbolType.Circle;
-            syb.Size = 3;
-            syb.Fill.Color = Color.Navy;
-            syb.IsVisible = true;
-
-            if (this.zedGraphControl.GraphPane.CurveList["0501"] == null)
-            {
-                double[] line1x = { a, _List_Data[fr01index].D1, a + (_List_Data[fr05index].F1 / k) };
-                double[] line1y = { 0, _List_Data[fr01index].F1, _List_Data[fr05index].F1 };
-                LineItem li = this.zedGraphControl.GraphPane.AddCurve("0501", line1x, line1y, Color.DarkGreen, SymbolType.UserDefined);
-                li.Symbol = syb;
-                li.Line.IsAntiAlias = true;
-                li.Line.Width = 1.5f;
-            }
-
-            //在曲线上划线 斜率为k 偏离圆心为 a + ep02L0 的直线 y=k(a+ep02L0-x) x=a+ep02L0+y/k  
-            if (this.zedGraphControl.GraphPane.CurveList["Fp02"] == null)
-            {
-                double[] line2x = { a + ep02L0, _List_Data[m_FrIndex].D1 };//a + ep02L0 + (_List_Data[m_FrIndex].F1 / k)
-                double[] line2y = { 0, _List_Data[m_FrIndex].F1 };
-                //Fp02 连线
-                LineItem lifp02 = this.zedGraphControl.GraphPane.AddCurve("Fp02", line2x, line2y, Color.DarkBlue, SymbolType.UserDefined);
-                lifp02.Symbol = syb;
-                lifp02.Line.IsAntiAlias = true;
-                lifp02.Line.Width = 1.5f;
-            }
-            this.zedGraphControl.Refresh();
-
-            //显示Fp02 控件名称 4
-            UC.Result lblFp02 = (UC.Result)this.flowLayoutPanel1.Controls.Find("4", false)[0];
-            lblFp02.Text = (_List_Data[m_FrIndex].F1 / m_S0).ToString("G5");
-             * 
-             * */
         }
 
         private static bool FindAllFeH(ZedGraph.GraphObj gObj)
@@ -2540,88 +1133,8 @@ namespace HR_Test.AnalysiseCurve
                 return false;
             }
         }
-
-        private void tsbtnReH_Click(object sender, EventArgs e)
-        {
-            m_FlagHandFRH = true;
-            m_FlagHandFRL = false;
-            //if (this.cmbYr.SelectedIndex == 1 & this.cmbXr.SelectedIndex == 2)//负荷-位移
-            //{
-            //    if (m_FRHIndex != 0)
-            //    {
-            //        this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeH);
-            //        this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeH);
-            //        //画点标注
-            //        double[] _lineFp02_x = { _List_Data[m_FRHIndex].D1 };
-            //        double[] _lineFp02_y = { _List_Data[m_FRHIndex].F1 };
-
-            //        LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_3", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
-            //        liFrH.Symbol = m_zedGraphSyb;
-            //        liFrH.Tag = "FeH";
-
-            //确认点的位置
-
-
-            /*
-            ZedGraph.EllipseObj eo = new EllipseObj(_List_Data[m_FRHIndex].D1, _List_Data[m_FRHIndex].F1, 1d, 1d, Color.DarkRed, Color.Blue);
-            eo.Tag = "FeH";
-            eo.ZOrder = ZOrder.E_BehindCurves;
-            this.zedGraphControl.GraphPane.GraphObjList.Add(eo);
-             * */
-
-            /*
-            ZedGraph.LineObj l = new LineObj(_List_Data[m_FRHIndex].D1, _List_Data[m_FRHIndex].F1, _List_Data[m_FRHIndex].D1, _List_Data[m_FRHIndex].F1-1); 
-            l.Line.Style = System.Drawing.Drawing2D.DashStyle.Solid;
-            l.Line.Width = 4;
-            l.Line.Color = Color.Navy;
-            l.Tag = "FeH";
-            this.zedGraphControl.GraphPane.GraphObjList.Add(l);
-            */
-
-            //添加 值 的标注
-            //ZedGraph.TextObj t = new TextObj("FeH = " + (_List_Data[m_FRHIndex].F1 / 1000.0).ToString("G5") + " kN \r\nReH=" + (_List_Data[m_FRHIndex].F1 / m_S0).ToString("G5") + " MPa", _List_Data[m_FRHIndex].D1, _List_Data[m_FRHIndex].F1);
-            //t.FontSpec.FontColor = Color.Navy;
-            //t.Location.AlignH = AlignH.Right;
-            //t.Location.AlignV = AlignV.Bottom;
-            //t.FontSpec.IsBold = true;
-            //t.FontSpec.StringAlignment = StringAlignment.Near;
-            //t.FontSpec.Border.IsVisible = false;
-            //t.ZOrder = ZOrder.E_BehindCurves;
-            //t.Tag = "FeH";
-            //this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-            //this.zedGraphControl.Refresh();
-            //    }
-            //}
-
-            //if (this.cmbYr.SelectedIndex == 1 & this.cmbXr.SelectedIndex == 4)//负荷-变形
-            //{
-            //    if (m_FRHIndex != 0)
-            //    {
-            //        this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeH);
-            //        this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeH);
-            //        //画点标注
-            //        double[] _lineFp02_x = { _List_Data[m_FRHIndex].BX1 };
-            //        double[] _lineFp02_y = { _List_Data[m_FRHIndex].F1 };
-            //        LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_3", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
-            //        liFrH.Tag = "FeH";
-            //        liFrH.Symbol = m_zedGraphSyb;
-
-            //        //添加 值 的标注
-            //        ZedGraph.TextObj t = new TextObj("FeH = " + (_List_Data[m_FRHIndex].F1 / 1000).ToString("G5") + " kN \r\nReH=" + (_List_Data[m_FRHIndex].F1 / 1000 * m_S0).ToString("G5") + " MPa", _List_Data[m_FRHIndex].BX1, _List_Data[m_FRHIndex].F1);
-            //        t.FontSpec.FontColor = Color.Navy;
-            //        t.Location.AlignH = AlignH.Left;
-            //        t.Location.AlignV = AlignV.Top;
-            //        t.FontSpec.IsBold = true;
-            //        t.FontSpec.StringAlignment = StringAlignment.Near;
-            //        t.FontSpec.Border.IsVisible = false;
-            //        t.ZOrder = ZOrder.E_BehindCurves;
-            //        t.Tag = "FeH";
-            //        this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-            //        this.zedGraphControl.Refresh();
-            //    }
-            //}
-
-        }
+       
+       
 
 
         private static bool FindAllFeL(ZedGraph.GraphObj gObj)
@@ -2648,93 +1161,9 @@ namespace HR_Test.AnalysiseCurve
                 return false;
             }
         }
-
-
-
-        private void tsbtnReL_Click(object sender, EventArgs e)
-        {
-            m_FlagHandFRH = false;
-            m_FlagHandFRL = true;
-            //if (this.cmbYr.SelectedIndex == 1 & this.cmbXr.SelectedIndex == 2)//负荷-位移
-            //{
-            //    if (m_FRLIndex != 0)
-            //    {
-            //        zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeL);
-            //        zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeL);
-            //        //画点标注
-            //        double[] _lineFp02_x = { _List_Data[m_FRLIndex].D1 };
-            //        double[] _lineFp02_y = { _List_Data[m_FRLIndex].F1 };
-            //        LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_4", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
-            //        liFrH.Symbol = m_zedGraphSyb;
-            //        liFrH.Tag = "FeL";
-
-            //        //添加 值 的标注
-            //        ZedGraph.TextObj t = new TextObj("FeL = " + (_List_Data[m_FRLIndex].F1 / 1000.0).ToString("G5") + " kN \r\nReL=" + (_List_Data[m_FRLIndex].F1 / m_S0).ToString("G5") + " MPa", _List_Data[m_FRLIndex].D1, _List_Data[m_FRLIndex].F1);
-
-            //        t.FontSpec.FontColor = Color.Navy;
-            //        t.Location.AlignH = AlignH.Left;
-            //        t.Location.AlignV = AlignV.Top;
-            //        t.FontSpec.IsBold = true;
-            //        t.FontSpec.StringAlignment = StringAlignment.Near;
-            //        t.FontSpec.Border.IsVisible = false;
-            //        t.FontSpec.IsBold = true;
-            //        //t.ZOrder = ZOrder.E_BehindCurves;
-            //        t.Tag = "FeL";
-            //        this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-            //        this.zedGraphControl.Refresh();
-            //    }
-            //}
-
-            //if (this.cmbYr.SelectedIndex == 1 & this.cmbXr.SelectedIndex == 4)//负荷-变形
-            //{
-            //    if (m_FRLIndex != 0)
-            //    {
-            //        zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeL);
-            //        zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeL);
-            //        //画点标注
-            //        double[] _lineFp02_x = { _List_Data[m_FRLIndex].BX1 };
-            //        double[] _lineFp02_y = { _List_Data[m_FRLIndex].F1 };
-            //        LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_3", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
-            //        liFrH.Symbol = m_zedGraphSyb;
-            //        liFrH.Tag = "FeL";
-
-            //        //添加 值 的标注
-            //        ZedGraph.TextObj t = new TextObj("FeL = " + (_List_Data[m_FRLIndex].F1 / 1000).ToString("G5") + " kN \r\nReL=" + (_List_Data[m_FRLIndex].F1 / 1000 * m_S0).ToString("G5") + " MPa", _List_Data[m_FRLIndex].BX1, _List_Data[m_FRLIndex].F1);
-
-            //        t.FontSpec.FontColor = Color.Navy;
-            //        t.Location.AlignH = AlignH.Left;
-            //        t.Location.AlignV = AlignV.Top;
-            //        t.FontSpec.IsBold = true;
-            //        t.FontSpec.StringAlignment = StringAlignment.Near;
-            //        t.FontSpec.Border.IsVisible = false;
-            //        t.ZOrder = ZOrder.E_BehindCurves;
-            //        t.Tag = "FeL";
-            //        t.FontSpec.Size = 16f;
-            //        this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-            //        this.zedGraphControl.Refresh();
-            //    }
-            //}
-        }
-
         private void tsbtnZoom_Click(object sender, EventArgs e)
         {
 
-            //if (!this.zedGraphControl.Controls.Contains(_palZoom))
-            //{
-
-            //    _palZoom_User = new PictureBox();
-            //    _palZoom_User.Name = "pzoom_user";
-            //    _palZoom_User.Tag = "pzoom_user";
-            //    _palZoom_User.BackColor = Color.Transparent;
-            //    _palZoom_User.BorderStyle = BorderStyle.Fixed3D;
-            //    _palZoom_User.Width = this.zedGraphControl.Width / 5;
-            //    _palZoom_User.Height = this.zedGraphControl.Height * 2 / 5;
-            //    _palZoom_User.Left = this.zedGraphControl.Width / 5;
-            //    _palZoom_User.Top = this.zedGraphControl.Height / 5;
-            //    this.zedGraphControl.Controls.Add(_palZoom_User);
-            //    pb = new PickBox();
-            //    pb.WireControl(_palZoom_User);                 
-            //}
 
             //放大框选部分,若无框则不动作,
             if (!this.zedGraphControl.Controls.Contains(_palZoom))
@@ -2814,13 +1243,7 @@ namespace HR_Test.AnalysiseCurve
             pb.Remove();
             this._palZoom.Dispose();
             this.zedGraphControl.Refresh();
-            ////第一点index
-            //m_firstPIndex = GetIndex(_List_Data, y3);
-            ////第二点index
-            //m_secondPIndex = GetIndex(_List_Data, y1);
-            ////MessageBox.Show(m_firstPIndex + "," + m_secondPIndex);
-            //确定选框的坐标 
-           
+
         }
 
         private int GetIndex(List<gdata> ldata, double yValue)
@@ -2843,291 +1266,257 @@ namespace HR_Test.AnalysiseCurve
 
         private void gBtnSave_Click(object sender, EventArgs e)
         {
-            //显示Fp02 控件名称 4
+            ////显示Fp02 控件名称 4
 
-            if (m_FrIndex > 0 && this.flowLayoutPanel1.Controls.Find("Rp", false).Length > 0)
-            {
-                UC.Result lblFp02 = (UC.Result)this.flowLayoutPanel1.Controls.Find("Rp", false)[0];
-                lblFp02.Text = (_List_Data[m_FrIndex].YL1).ToString("G5")+" MPa";
-                lblFp02.Tag = (_List_Data[m_FrIndex].YL1).ToString("G5");
-            }
+            //if (m_FrIndex > 0 && this.flowLayoutPanel1.Controls.Find("Rp", false).Length > 0)
+            //{
+            //    UC.Result lblFp02 = (UC.Result)this.flowLayoutPanel1.Controls.Find("Rp", false)[0];
+            //    lblFp02.Text = (_List_Data[m_FrIndex].YL1).ToString("G5") + " MPa";
+            //    lblFp02.Tag = (_List_Data[m_FrIndex].YL1).ToString("G5");
+            //}
 
-            if (m_HandFeH > 0 && this.flowLayoutPanel1.Controls.Find("FeH", false).Length > 0)
-            {
-                UC.Result lblFeH = (UC.Result)this.flowLayoutPanel1.Controls.Find("FeH", false)[0];
-                lblFeH.Text = m_HandFeH.ToString()+" MPa";
-                lblFeH.Tag = m_HandFeH.ToString();
-            }
+            //if (m_HandFeH > 0 && this.flowLayoutPanel1.Controls.Find("FeH", false).Length > 0)
+            //{
+            //    UC.Result lblFeH = (UC.Result)this.flowLayoutPanel1.Controls.Find("FeH", false)[0];
+            //    lblFeH.Text = m_HandFeH.ToString() + " MPa";
+            //    lblFeH.Tag = m_HandFeH.ToString();
+            //}
 
-            if (m_HandReH > 0 && this.flowLayoutPanel1.Controls.Find("ReH", false).Length > 0)
-            {
-                UC.Result lblReH = (UC.Result)this.flowLayoutPanel1.Controls.Find("ReH", false)[0];
-                lblReH.Text = m_HandReH.ToString()+" MPa";
-                lblReH.Tag = m_HandFeH.ToString();
-            }
+            //if (m_HandReH > 0 && this.flowLayoutPanel1.Controls.Find("ReH", false).Length > 0)
+            //{
+            //    UC.Result lblReH = (UC.Result)this.flowLayoutPanel1.Controls.Find("ReH", false)[0];
+            //    lblReH.Text = m_HandReH.ToString() + " MPa";
+            //    lblReH.Tag = m_HandFeH.ToString();
+            //}
 
-            if (m_HandFeL > 0 && this.flowLayoutPanel1.Controls.Find("FeL", false).Length > 0)
-            {
-                UC.Result lblFeL = (UC.Result)this.flowLayoutPanel1.Controls.Find("FeL", false)[0];
-                lblFeL.Text = m_HandFeL.ToString()+" kN";
-                lblFeL.Tag = m_HandFeL.ToString();
-            }
+            //if (m_HandFeL > 0 && this.flowLayoutPanel1.Controls.Find("FeL", false).Length > 0)
+            //{
+            //    UC.Result lblFeL = (UC.Result)this.flowLayoutPanel1.Controls.Find("FeL", false)[0];
+            //    lblFeL.Text = m_HandFeL.ToString() + " kN";
+            //    lblFeL.Tag = m_HandFeL.ToString();
+            //}
 
-            if (m_HandReL > 0 && this.flowLayoutPanel1.Controls.Find("ReL", false).Length > 0)
-            {
-                UC.Result lblReL = (UC.Result)this.flowLayoutPanel1.Controls.Find("ReL", false)[0];
-                lblReL.Text = m_HandReL.ToString()+" MPa";
-                lblReL.Tag = m_HandReL.ToString();
-            }
+            //if (m_HandReL > 0 && this.flowLayoutPanel1.Controls.Find("ReL", false).Length > 0)
+            //{
+            //    UC.Result lblReL = (UC.Result)this.flowLayoutPanel1.Controls.Find("ReL", false)[0];
+            //    lblReL.Text = m_HandReL.ToString() + " MPa";
+            //    lblReL.Tag = m_HandReL.ToString();
+            //}
 
-            if (m_FrIndex > 0 && this.flowLayoutPanel1.Controls.Find("E", false).Length > 0)
-            {
-                UC.Result lblE = (UC.Result)this.flowLayoutPanel1.Controls.Find("E", false)[0];
-                lblE.Text = m_E.ToString("G5")+" GPa";
-                lblE.Tag = m_E.ToString("G5");
-            }
+            //if (m_FrIndex > 0 && this.flowLayoutPanel1.Controls.Find("E", false).Length > 0)
+            //{
+            //    UC.Result lblE = (UC.Result)this.flowLayoutPanel1.Controls.Find("E", false)[0];
+            //    lblE.Text = m_E.ToString("G5") + " GPa";
+            //    lblE.Tag = m_E.ToString("G5");
+            //}
 
         }
 
         private void zedGraphControl_MouseClick(object sender, MouseEventArgs e)
         {
-            //double x1, y1;
-            //this.zedGraphControl.GraphPane.ReverseTransform(e.Location, out x1, out y1);
-            //MessageBox.Show(x1.ToString() + "," + y1.ToString());
-            //PointF p = new PointF((float)x1,(float) y1);
-            int nearP = 0;
-            ZedGraph.CurveItem ci = null;
-            PointF p = (PointF)e.Location;
+            //int nearP = 0;
+            //ZedGraph.CurveItem ci = null;
+            //PointF p = (PointF)e.Location;
 
-            if (this.zedGraphControl.GraphPane.FindNearestPoint(p, this.zedGraphControl.GraphPane.CurveList, out ci, out nearP) && m_FlagHandFRH)
-            {
-                this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeH);
-                this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeH);
-                //画点标注
-                double[] _lineFp02_x = { ci.Points[nearP].X };
-                double[] _lineFp02_y = { ci.Points[nearP].Y };
+            //if (this.zedGraphControl.GraphPane.FindNearestPoint(p, this.zedGraphControl.GraphPane.CurveList, out ci, out nearP) && m_FlagHandFRH)
+            //{
+            //    this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeH);
+            //    this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeH);
+            //    //画点标注
+            //    double[] _lineFp02_x = { ci.Points[nearP].X };
+            //    double[] _lineFp02_y = { ci.Points[nearP].Y };
 
-                LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_3", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
-                liFrH.Symbol = m_zedGraphSyb;
-                liFrH.Tag = "FeH";
+            //    LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_3", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
+            //    liFrH.Symbol = m_zedGraphSyb;
+            //    liFrH.Tag = "FeH";
 
-                m_HandFeH = Convert.ToDouble((_List_Data[nearP+1].F1).ToString("f2"));
-                m_HandReH = Convert.ToDouble((m_HandFeH / m_S0).ToString("f2"));
+            //    m_HandFeH = Convert.ToDouble((_List_Data[nearP + 1].F1).ToString("f2"));
+            //    m_HandReH = Convert.ToDouble((m_HandFeH / m_S0).ToString("f2"));
 
-                ZedGraph.TextObj t = new TextObj("FeH = " + m_HandFeH / 1000.0 + " kN\r\nReH=" + m_HandReH + " MPa", ci.Points[nearP+1].X, ci.Points[nearP+1].Y);
+            //    ZedGraph.TextObj t = new TextObj("FeH = " + m_HandFeH / 1000.0 + " kN\r\nReH=" + m_HandReH + " MPa", ci.Points[nearP + 1].X, ci.Points[nearP + 1].Y);
 
-                t.FontSpec.FontColor = Color.Navy;
-                t.Location.AlignH = AlignH.Right;
-                t.Location.AlignV = AlignV.Bottom;
-                t.FontSpec.IsBold = true;
-                t.FontSpec.StringAlignment = StringAlignment.Near;
-                t.FontSpec.Border.IsVisible = false;
-                t.ZOrder = ZOrder.E_BehindCurves;
-                t.Tag = "FeH";
-                this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-                this.zedGraphControl.Refresh();
-                m_FlagHandFRH = false;
-                m_FlagHandFRL = false;
-            }
+            //    t.FontSpec.FontColor = Color.Navy;
+            //    t.Location.AlignH = AlignH.Right;
+            //    t.Location.AlignV = AlignV.Bottom;
+            //    t.FontSpec.IsBold = true;
+            //    t.FontSpec.StringAlignment = StringAlignment.Near;
+            //    t.FontSpec.Border.IsVisible = false;
+            //    t.ZOrder = ZOrder.E_BehindCurves;
+            //    t.Tag = "FeH";
+            //    this.zedGraphControl.GraphPane.GraphObjList.Add(t);
+            //    this.zedGraphControl.Refresh();
+            //    m_FlagHandFRH = false;
+            //    m_FlagHandFRL = false;
+            //}
 
-            if (this.zedGraphControl.GraphPane.FindNearestPoint(p, this.zedGraphControl.GraphPane.CurveList, out ci, out nearP) && m_FlagHandFRL)
-            {
-                this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeL);
-                this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeL);
-                //画点标注
-                double[] _lineFp02_x = { ci.Points[nearP].X };
-                double[] _lineFp02_y = { ci.Points[nearP].Y };
-                LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_4", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
-                liFrH.Symbol = m_zedGraphSyb;
-                liFrH.Tag = "FeL";
+            //if (this.zedGraphControl.GraphPane.FindNearestPoint(p, this.zedGraphControl.GraphPane.CurveList, out ci, out nearP) && m_FlagHandFRL)
+            //{
+            //    this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeL);
+            //    this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeL);
+            //    //画点标注
+            //    double[] _lineFp02_x = { ci.Points[nearP].X };
+            //    double[] _lineFp02_y = { ci.Points[nearP].Y };
+            //    LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_4", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
+            //    liFrH.Symbol = m_zedGraphSyb;
+            //    liFrH.Tag = "FeL";
 
-                m_HandFeL = Convert.ToDouble((_List_Data[nearP+1].F1).ToString("f2"));
-                m_HandReL = Convert.ToDouble((m_HandFeL / m_S0).ToString("f2"));
+            //    m_HandFeL = Convert.ToDouble((_List_Data[nearP + 1].F1).ToString("f2"));
+            //    m_HandReL = Convert.ToDouble((m_HandFeL / m_S0).ToString("f2"));
 
-                ZedGraph.TextObj t = new TextObj("FeL = " + m_HandFeL / 1000.0 + " kN \r\nReL=" + m_HandReL + " MPa", ci.Points[nearP+1].X, ci.Points[nearP+1].Y);
-                t.FontSpec.FontColor = Color.Navy;
-                t.Location.AlignH = AlignH.Left;
-                t.Location.AlignV = AlignV.Bottom;
-                t.FontSpec.IsBold = true;
-                t.FontSpec.StringAlignment = StringAlignment.Far;
-                t.FontSpec.Border.IsVisible = false;
-                t.ZOrder = ZOrder.E_BehindCurves;
-                t.Tag = "FeL";
-                this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-                this.zedGraphControl.Refresh();
-                m_FlagHandFRH = false;
-                m_FlagHandFRL = false;
-            }
+            //    ZedGraph.TextObj t = new TextObj("FeL = " + m_HandFeL / 1000.0 + " kN \r\nReL=" + m_HandReL + " MPa", ci.Points[nearP + 1].X, ci.Points[nearP + 1].Y);
+            //    t.FontSpec.FontColor = Color.Navy;
+            //    t.Location.AlignH = AlignH.Left;
+            //    t.Location.AlignV = AlignV.Bottom;
+            //    t.FontSpec.IsBold = true;
+            //    t.FontSpec.StringAlignment = StringAlignment.Far;
+            //    t.FontSpec.Border.IsVisible = false;
+            //    t.ZOrder = ZOrder.E_BehindCurves;
+            //    t.Tag = "FeL";
+            //    this.zedGraphControl.GraphPane.GraphObjList.Add(t);
+            //    this.zedGraphControl.Refresh();
+            //    m_FlagHandFRH = false;
+            //    m_FlagHandFRL = false;
+            //}
 
         }
 
-        private void tsbtnAZ_Click(object sender, EventArgs e)
-        {
-            frmAZ az = new frmAZ();
-            az._L0 = (double)m_m.L0;
-            az._S0 = (double)m_m.S0;
-            if (DialogResult.OK == az.ShowDialog())
-            {
-                m_m.Lu = az._Lu;
-                if (this.flowLayoutPanel1.Controls.Find("A", false).Length > 0)
-                {
-                    UC.Result lblA = (UC.Result)this.flowLayoutPanel1.Controls.Find("A", false)[0];
-                    lblA.Text = az._A.ToString()+" %";
-                    lblA.Tag = az._A.ToString();
-                }
-                if (this.flowLayoutPanel1.Controls.Find("Z", false).Length > 0)
-                {
-                    UC.Result lblZ = (UC.Result)this.flowLayoutPanel1.Controls.Find("Z", false)[0];
-                    lblZ.Text = az._Z.ToString()+" %";
-                    lblZ.Tag = az._Z.ToString();
-                }
-                m_t.Update(m_m);
-            }
+        //private void tsbtnAutoFeH_Click(object sender, EventArgs e)
+        //{
+        //    if (this.cmbYr.SelectedIndex == 1 & this.cmbXr.SelectedIndex == 2)//负荷-位移
+        //    {
+        //        if (m_FRHIndex != 0)
+        //        {
+        //            this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeH);
+        //            this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeH);
+        //            //画点标注
+        //            double[] _lineFp02_x = { _List_Data[m_FRHIndex].D1 };
+        //            double[] _lineFp02_y = { _List_Data[m_FRHIndex].F1 };
 
-        }
+        //            LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_3", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
+        //            liFrH.Symbol = m_zedGraphSyb;
+        //            liFrH.Tag = "FeH";
 
-        private void cmbXr_Click(object sender, EventArgs e)
-        {
+        //            //确认点的位置
 
-        }
+        //            //ZedGraph.EllipseObj eo = new EllipseObj(_List_Data[m_FRHIndex].D1, _List_Data[m_FRHIndex].F1,4d, 4d,Color.Transparent, Color.Blue);
+        //            //eo.Tag = "FeH"; 
+        //            //eo.ZOrder = ZOrder.E_BehindCurves;
+        //            //eo.Location.AlignH = AlignH.Center; 
+        //            //eo.Location.AlignV = AlignV.Top;
+        //            //this.zedGraphControl.GraphPane.GraphObjList.Add(eo);
 
-        private void tsbtnAutoFeH_Click(object sender, EventArgs e)
-        {
-            if (this.cmbYr.SelectedIndex == 1 & this.cmbXr.SelectedIndex == 2)//负荷-位移
-            {
-                if (m_FRHIndex != 0)
-                {
-                    this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeH);
-                    this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeH);
-                    //画点标注
-                    double[] _lineFp02_x = { _List_Data[m_FRHIndex].D1 };
-                    double[] _lineFp02_y = { _List_Data[m_FRHIndex].F1 };
+        //            //ZedGraph.LineObj l = new LineObj(_List_Data[m_FRHIndex].D1, _List_Data[m_FRHIndex].F1, _List_Data[m_FRHIndex].D1-1, _List_Data[m_FRHIndex].F1 + 1);
+        //            //l.Line.Style = System.Drawing.Drawing2D.DashStyle.Solid;
+        //            //l.Line.Width = 4;
+        //            //l.Line.Color = Color.Navy;
+        //            //l.Tag = "FeH";
+        //            //this.zedGraphControl.GraphPane.GraphObjList.Add(l);
 
-                    LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_3", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
-                    liFrH.Symbol = m_zedGraphSyb;
-                    liFrH.Tag = "FeH";
+        //            //添加 值 的标注
+        //            ZedGraph.TextObj t = new TextObj("FeH = " + (_List_Data[m_FRHIndex].F1 / 1000.0).ToString("f4") + " kN \r\nReH=" + (_List_Data[m_FRHIndex].F1 / m_S0).ToString("f2") + " MPa", _List_Data[m_FRHIndex].D1, _List_Data[m_FRHIndex].F1);
+        //            t.FontSpec.FontColor = Color.Navy;
+        //            t.Location.AlignH = AlignH.Right;
+        //            t.Location.AlignV = AlignV.Bottom;
+        //            t.FontSpec.IsBold = true;
+        //            t.FontSpec.StringAlignment = StringAlignment.Near;
+        //            t.FontSpec.Border.IsVisible = false;
+        //            t.ZOrder = ZOrder.E_BehindCurves;
+        //            t.Tag = "FeH";
+        //            this.zedGraphControl.GraphPane.GraphObjList.Add(t);
+        //            this.zedGraphControl.Refresh();
+        //        }
+        //    }
 
-                    //确认点的位置
+        //    if (this.cmbYr.SelectedIndex == 1 & this.cmbXr.SelectedIndex == 4)//负荷-变形
+        //    {
+        //        if (m_FRHIndex != 0)
+        //        {
+        //            this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeH);
+        //            this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeH);
+        //            //画点标注
+        //            double[] _lineFp02_x = { _List_Data[m_FRHIndex].BX1 };
+        //            double[] _lineFp02_y = { _List_Data[m_FRHIndex].F1 };
+        //            LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_3", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
+        //            liFrH.Tag = "FeH";
+        //            liFrH.Symbol = m_zedGraphSyb;
 
-                    //ZedGraph.EllipseObj eo = new EllipseObj(_List_Data[m_FRHIndex].D1, _List_Data[m_FRHIndex].F1,4d, 4d,Color.Transparent, Color.Blue);
-                    //eo.Tag = "FeH"; 
-                    //eo.ZOrder = ZOrder.E_BehindCurves;
-                    //eo.Location.AlignH = AlignH.Center; 
-                    //eo.Location.AlignV = AlignV.Top;
-                    //this.zedGraphControl.GraphPane.GraphObjList.Add(eo);
-
-                    //ZedGraph.LineObj l = new LineObj(_List_Data[m_FRHIndex].D1, _List_Data[m_FRHIndex].F1, _List_Data[m_FRHIndex].D1-1, _List_Data[m_FRHIndex].F1 + 1);
-                    //l.Line.Style = System.Drawing.Drawing2D.DashStyle.Solid;
-                    //l.Line.Width = 4;
-                    //l.Line.Color = Color.Navy;
-                    //l.Tag = "FeH";
-                    //this.zedGraphControl.GraphPane.GraphObjList.Add(l);
-
-                    //添加 值 的标注
-                    ZedGraph.TextObj t = new TextObj("FeH = " + (_List_Data[m_FRHIndex].F1 / 1000.0).ToString("f4") + " kN \r\nReH=" + (_List_Data[m_FRHIndex].F1 / m_S0).ToString("f2") + " MPa", _List_Data[m_FRHIndex].D1, _List_Data[m_FRHIndex].F1);
-                    t.FontSpec.FontColor = Color.Navy;
-                    t.Location.AlignH = AlignH.Right;
-                    t.Location.AlignV = AlignV.Bottom;
-                    t.FontSpec.IsBold = true;
-                    t.FontSpec.StringAlignment = StringAlignment.Near;
-                    t.FontSpec.Border.IsVisible = false;
-                    t.ZOrder = ZOrder.E_BehindCurves;
-                    t.Tag = "FeH";
-                    this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-                    this.zedGraphControl.Refresh();
-                }
-            }
-
-            if (this.cmbYr.SelectedIndex == 1 & this.cmbXr.SelectedIndex == 4)//负荷-变形
-            {
-                if (m_FRHIndex != 0)
-                {
-                    this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeH);
-                    this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeH);
-                    //画点标注
-                    double[] _lineFp02_x = { _List_Data[m_FRHIndex].BX1 };
-                    double[] _lineFp02_y = { _List_Data[m_FRHIndex].F1 };
-                    LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_3", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
-                    liFrH.Tag = "FeH";
-                    liFrH.Symbol = m_zedGraphSyb;
-
-                    //添加 值 的标注
-                    ZedGraph.TextObj t = new TextObj("FeH = " + (_List_Data[m_FRHIndex].F1 / 1000.0).ToString("f4") + " kN \r\nReH=" + (_List_Data[m_FRHIndex].F1 / m_S0).ToString("f2") + " MPa", _List_Data[m_FRHIndex].BX1, _List_Data[m_FRHIndex].F1);
-                    t.FontSpec.FontColor = Color.Navy;
-                    t.Location.AlignH = AlignH.Left;
-                    t.Location.AlignV = AlignV.Top;
-                    t.FontSpec.IsBold = true;
-                    t.FontSpec.StringAlignment = StringAlignment.Near;
-                    t.FontSpec.Border.IsVisible = false;
-                    t.ZOrder = ZOrder.E_BehindCurves;
-                    t.Tag = "FeH";
-                    this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-                    this.zedGraphControl.Refresh();
-                }
-            }
-        }
+        //            //添加 值 的标注
+        //            ZedGraph.TextObj t = new TextObj("FeH = " + (_List_Data[m_FRHIndex].F1 / 1000.0).ToString("f4") + " kN \r\nReH=" + (_List_Data[m_FRHIndex].F1 / m_S0).ToString("f2") + " MPa", _List_Data[m_FRHIndex].BX1, _List_Data[m_FRHIndex].F1);
+        //            t.FontSpec.FontColor = Color.Navy;
+        //            t.Location.AlignH = AlignH.Left;
+        //            t.Location.AlignV = AlignV.Top;
+        //            t.FontSpec.IsBold = true;
+        //            t.FontSpec.StringAlignment = StringAlignment.Near;
+        //            t.FontSpec.Border.IsVisible = false;
+        //            t.ZOrder = ZOrder.E_BehindCurves;
+        //            t.Tag = "FeH";
+        //            this.zedGraphControl.GraphPane.GraphObjList.Add(t);
+        //            this.zedGraphControl.Refresh();
+        //        }
+        //    }
+        //}
 
         private void tsbtnAutoFeL_Click(object sender, EventArgs e)
         {
-            if (this.cmbYr.SelectedIndex == 1 & this.cmbXr.SelectedIndex == 2)//负荷-位移
-            {
-                if (m_FRLIndex != 0)
-                {
-                    zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeL);
-                    zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeL);
-                    //画点标注
-                    double[] _lineFp02_x = { _List_Data[m_FRLIndex].D1 };
-                    double[] _lineFp02_y = { _List_Data[m_FRLIndex].F1 };
-                    LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_4", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
-                    liFrH.Symbol = m_zedGraphSyb;
-                    liFrH.Tag = "FeL";
+            //if (this.cmbYr.SelectedIndex == 1 & this.cmbXr.SelectedIndex == 2)//负荷-位移
+            //{
+            //    if (m_FRLIndex != 0)
+            //    {
+            //        zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeL);
+            //        zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeL);
+            //        //画点标注
+            //        double[] _lineFp02_x = { _List_Data[m_FRLIndex].D1 };
+            //        double[] _lineFp02_y = { _List_Data[m_FRLIndex].F1 };
+            //        LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_4", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
+            //        liFrH.Symbol = m_zedGraphSyb;
+            //        liFrH.Tag = "FeL";
 
-                    //添加 值 的标注
-                    ZedGraph.TextObj t = new TextObj("FeL = " + (_List_Data[m_FRLIndex].F1 / 1000.0 ).ToString("f4") + " kN \r\nReL=" + (_List_Data[m_FRLIndex].F1 / m_S0).ToString("f2") + " MPa", _List_Data[m_FRLIndex].D1, _List_Data[m_FRLIndex].F1);
+            //        //添加 值 的标注
+            //        ZedGraph.TextObj t = new TextObj("FeL = " + (_List_Data[m_FRLIndex].F1 / 1000.0).ToString("f4") + " kN \r\nReL=" + (_List_Data[m_FRLIndex].F1 / m_S0).ToString("f2") + " MPa", _List_Data[m_FRLIndex].D1, _List_Data[m_FRLIndex].F1);
 
-                    t.FontSpec.FontColor = Color.Navy;
-                    t.Location.AlignH = AlignH.Left;
-                    t.Location.AlignV = AlignV.Top;
-                    t.FontSpec.IsBold = true;
-                    t.FontSpec.StringAlignment = StringAlignment.Near;
-                    t.FontSpec.Border.IsVisible = false;
-                    t.FontSpec.IsBold = true;
-                    //t.ZOrder = ZOrder.E_BehindCurves;
-                    t.Tag = "FeL";
-                    this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-                    this.zedGraphControl.Refresh();
-                }
-            }
+            //        t.FontSpec.FontColor = Color.Navy;
+            //        t.Location.AlignH = AlignH.Left;
+            //        t.Location.AlignV = AlignV.Top;
+            //        t.FontSpec.IsBold = true;
+            //        t.FontSpec.StringAlignment = StringAlignment.Near;
+            //        t.FontSpec.Border.IsVisible = false;
+            //        t.FontSpec.IsBold = true;
+            //        //t.ZOrder = ZOrder.E_BehindCurves;
+            //        t.Tag = "FeL";
+            //        this.zedGraphControl.GraphPane.GraphObjList.Add(t);
+            //        this.zedGraphControl.Refresh();
+            //    }
+            //}
 
-            if (this.cmbYr.SelectedIndex == 1 & this.cmbXr.SelectedIndex == 4)//负荷-变形
-            {
-                if (m_FRLIndex != 0)
-                {
-                    zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeL);
-                    zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeL);
-                    //画点标注
-                    double[] _lineFp02_x = { _List_Data[m_FRLIndex].BX1 };
-                    double[] _lineFp02_y = { _List_Data[m_FRLIndex].F1 };
-                    LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_3", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
-                    liFrH.Symbol = m_zedGraphSyb;
-                    liFrH.Tag = "FeL";
+            //if (this.cmbYr.SelectedIndex == 1 & this.cmbXr.SelectedIndex == 4)//负荷-变形
+            //{
+            //    if (m_FRLIndex != 0)
+            //    {
+            //        zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllFeL);
+            //        zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllFeL);
+            //        //画点标注
+            //        double[] _lineFp02_x = { _List_Data[m_FRLIndex].BX1 };
+            //        double[] _lineFp02_y = { _List_Data[m_FRLIndex].F1 };
+            //        LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("cline_0501_3", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
+            //        liFrH.Symbol = m_zedGraphSyb;
+            //        liFrH.Tag = "FeL";
 
-                    //添加 值 的标注
-                    ZedGraph.TextObj t = new TextObj("FeL = " + (_List_Data[m_FRLIndex].F1 / 1000.0).ToString("f4") + " kN \r\nReL=" + (_List_Data[m_FRLIndex].F1 / m_S0).ToString("f2") + " MPa", _List_Data[m_FRLIndex].BX1, _List_Data[m_FRLIndex].F1);
+            //        //添加 值 的标注
+            //        ZedGraph.TextObj t = new TextObj("FeL = " + (_List_Data[m_FRLIndex].F1 / 1000.0).ToString("f4") + " kN \r\nReL=" + (_List_Data[m_FRLIndex].F1 / m_S0).ToString("f2") + " MPa", _List_Data[m_FRLIndex].BX1, _List_Data[m_FRLIndex].F1);
 
-                    t.FontSpec.FontColor = Color.Navy;
-                    t.Location.AlignH = AlignH.Left;
-                    t.Location.AlignV = AlignV.Top;
-                    t.FontSpec.IsBold = true;
-                    t.FontSpec.StringAlignment = StringAlignment.Near;
-                    t.FontSpec.Border.IsVisible = false;
-                    t.ZOrder = ZOrder.E_BehindCurves;
-                    t.Tag = "FeL";
-                    t.FontSpec.Size = 16f;
-                    this.zedGraphControl.GraphPane.GraphObjList.Add(t);
-                    this.zedGraphControl.Refresh();
-                }
-            }
+            //        t.FontSpec.FontColor = Color.Navy;
+            //        t.Location.AlignH = AlignH.Left;
+            //        t.Location.AlignV = AlignV.Top;
+            //        t.FontSpec.IsBold = true;
+            //        t.FontSpec.StringAlignment = StringAlignment.Near;
+            //        t.FontSpec.Border.IsVisible = false;
+            //        t.ZOrder = ZOrder.E_BehindCurves;
+            //        t.Tag = "FeL";
+            //        t.FontSpec.Size = 16f;
+            //        this.zedGraphControl.GraphPane.GraphObjList.Add(t);
+            //        this.zedGraphControl.Refresh();
+            //    }
+            //}
         }
 
         private void tsbtnMax_Click(object sender, EventArgs e)
@@ -3161,7 +1550,7 @@ namespace HR_Test.AnalysiseCurve
                     this.zedGraphControl.GraphPane.GraphObjList.Add(l);
 
                     //添加 值 的标注
-                    ZedGraph.TextObj t = new TextObj("Fm = " + (_List_Data[m_FmIndex].F1/1000.0).ToString("f4") + " kN \r\nRm=" + (_List_Data[m_FmIndex].F1 / m_S0).ToString("G5") + " MPa", _List_Data[m_FmIndex].D1, _List_Data[m_FmIndex].F1);
+                    ZedGraph.TextObj t = new TextObj("Fm = " + (_List_Data[m_FmIndex].F1 / 1000.0).ToString("f4") + " kN \r\nRm=" + (_List_Data[m_FmIndex].F1 / m_S0).ToString("G5") + " MPa", _List_Data[m_FmIndex].D1, _List_Data[m_FmIndex].F1);
                     t.FontSpec.FontColor = Color.Navy;
                     t.Location.AlignH = AlignH.Right;
                     t.Location.AlignV = AlignV.Bottom;
@@ -3181,10 +1570,15 @@ namespace HR_Test.AnalysiseCurve
 
         }
 
-        //private string zedGraphControl_PointValueEvent(ZedGraphControl sender, GraphPane pane, CurveItem curve, int iPt)
-        //{
-        //    return default(string);
-        //}
-
+        bool m_handU12;
+        private void tsbtnReH_Click(object sender, EventArgs e)
+        {
+            if (this.cmbYr.SelectedIndex != 2 | this.cmbXr.SelectedIndex != 3)
+            {
+                MessageBox.Show(this, "请选择 X:应力 - Y:应变 曲线分析!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            m_handU12 = true;
+        }
     }
 }
