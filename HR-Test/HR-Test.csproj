@@ -721,6 +721,8 @@
     <Content Include="Resources\fbb.ico" />
     <None Include="Resources\ysj.png" />
     <None Include="Resources\mode.jpg" />
+    <None Include="Resources\Pmax.ico" />
+    <None Include="Resources\U12.ico" />
     <Content Include="UC\GlassButton.bmp" />
     <Content Include="UC\GlassButton.csproj" />
   </ItemGroup>

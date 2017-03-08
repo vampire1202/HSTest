@@ -36,27 +36,27 @@
             this.gBtnSaveResult = new Glass.GlassButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.tsbtnSelRect = new System.Windows.Forms.ToolStripButton();
-            this.tsbtnZoom = new System.Windows.Forms.ToolStripButton();
-            this.tsbtnLFp02 = new System.Windows.Forms.ToolStripButton();
-            this.tsbtnReH = new System.Windows.Forms.ToolStripButton();
             this.gBtnSave = new Glass.GlassButton();
             this.gbtnReturn = new Glass.GlassButton();
             this.zedGraphControl = new ZedGraph.ZedGraphControl();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
-            this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
-            this.tsbtnExit = new System.Windows.Forms.ToolStripButton();
-            this.tsbtnMinimize = new System.Windows.Forms.ToolStripButton();
-            this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.tslblSampleNo = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel11 = new System.Windows.Forms.ToolStripLabel();
             this.cmbYr = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
             this.cmbXr = new System.Windows.Forms.ToolStripComboBox();
+            this.tsbtnSelRect = new System.Windows.Forms.ToolStripButton();
+            this.tsbtnZoom = new System.Windows.Forms.ToolStripButton();
+            this.tsbtnLFp02 = new System.Windows.Forms.ToolStripButton();
+            this.tsbtnReH = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
+            this.tsbtnExit = new System.Windows.Forms.ToolStripButton();
+            this.tsbtnMinimize = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
             this.panel1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel6.SuspendLayout();
@@ -152,54 +152,6 @@
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // tsbtnSelRect
-            // 
-            this.tsbtnSelRect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbtnSelRect.Image = global::HR_Test.Properties.Resources.zoomone;
-            this.tsbtnSelRect.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.tsbtnSelRect.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtnSelRect.Margin = new System.Windows.Forms.Padding(5);
-            this.tsbtnSelRect.Name = "tsbtnSelRect";
-            this.tsbtnSelRect.Size = new System.Drawing.Size(52, 52);
-            this.tsbtnSelRect.Text = "显示整个曲线";
-            this.tsbtnSelRect.Click += new System.EventHandler(this.tsbtnSelRect_Click);
-            // 
-            // tsbtnZoom
-            // 
-            this.tsbtnZoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbtnZoom.Image = global::HR_Test.Properties.Resources.zoomin;
-            this.tsbtnZoom.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.tsbtnZoom.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtnZoom.Margin = new System.Windows.Forms.Padding(5);
-            this.tsbtnZoom.Name = "tsbtnZoom";
-            this.tsbtnZoom.Size = new System.Drawing.Size(52, 52);
-            this.tsbtnZoom.Text = "放大框选部分";
-            this.tsbtnZoom.Click += new System.EventHandler(this.tsbtnZoom_Click);
-            // 
-            // tsbtnLFp02
-            // 
-            this.tsbtnLFp02.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbtnLFp02.Image = global::HR_Test.Properties.Resources.a1;
-            this.tsbtnLFp02.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.tsbtnLFp02.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtnLFp02.Margin = new System.Windows.Forms.Padding(5);
-            this.tsbtnLFp02.Name = "tsbtnLFp02";
-            this.tsbtnLFp02.Size = new System.Drawing.Size(52, 52);
-            this.tsbtnLFp02.Text = "用“负荷-位移”求Fp0.2";
-            this.tsbtnLFp02.Click += new System.EventHandler(this.tsBtnFp02_Click);
-            // 
-            // tsbtnReH
-            // 
-            this.tsbtnReH.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbtnReH.Image = global::HR_Test.Properties.Resources.reh;
-            this.tsbtnReH.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.tsbtnReH.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtnReH.Margin = new System.Windows.Forms.Padding(5);
-            this.tsbtnReH.Name = "tsbtnReH";
-            this.tsbtnReH.Size = new System.Drawing.Size(52, 52);
-            this.tsbtnReH.Text = "手动指定“泊松比”";
-            this.tsbtnReH.Click += new System.EventHandler(this.tsbtnReH_Click);
-            // 
             // gBtnSave
             // 
             this.gBtnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -229,8 +181,7 @@
             this.gbtnReturn.Name = "gbtnReturn";
             this.gbtnReturn.Size = new System.Drawing.Size(44, 34);
             this.gbtnReturn.TabIndex = 7;
-            this.gbtnReturn.Text = "返回";
-            this.gbtnReturn.Click += new System.EventHandler(this.gbtnReturn_Click);
+            this.gbtnReturn.Text = "返回"; 
             // 
             // zedGraphControl
             // 
@@ -295,59 +246,6 @@
             this.toolStrip2.TabIndex = 2;
             this.toolStrip2.Text = "toolStrip2";
             // 
-            // toolStripLabel3
-            // 
-            this.toolStripLabel3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripLabel3.Image = global::HR_Test.Properties.Resources.analize;
-            this.toolStripLabel3.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripLabel3.Name = "toolStripLabel3";
-            this.toolStripLabel3.Size = new System.Drawing.Size(48, 72);
-            // 
-            // toolStripLabel4
-            // 
-            this.toolStripLabel4.Image = global::HR_Test.Properties.Resources.analyseCurve;
-            this.toolStripLabel4.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripLabel4.Name = "toolStripLabel4";
-            this.toolStripLabel4.Size = new System.Drawing.Size(117, 72);
-            this.toolStripLabel4.ToolTipText = "仪器设置";
-            // 
-            // tsbtnExit
-            // 
-            this.tsbtnExit.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.tsbtnExit.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.tsbtnExit.Image = global::HR_Test.Properties.Resources._return;
-            this.tsbtnExit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.tsbtnExit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtnExit.Margin = new System.Windows.Forms.Padding(0, 1, 10, 2);
-            this.tsbtnExit.Name = "tsbtnExit";
-            this.tsbtnExit.Size = new System.Drawing.Size(52, 72);
-            this.tsbtnExit.Text = "返回";
-            this.tsbtnExit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tsbtnExit.Click += new System.EventHandler(this.tsbtnExit_Click);
-            // 
-            // tsbtnMinimize
-            // 
-            this.tsbtnMinimize.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.tsbtnMinimize.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.tsbtnMinimize.Image = global::HR_Test.Properties.Resources.minimize;
-            this.tsbtnMinimize.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.tsbtnMinimize.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtnMinimize.Margin = new System.Windows.Forms.Padding(0, 1, 10, 2);
-            this.tsbtnMinimize.Name = "tsbtnMinimize";
-            this.tsbtnMinimize.Size = new System.Drawing.Size(53, 72);
-            this.tsbtnMinimize.Text = "最小化";
-            this.tsbtnMinimize.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tsbtnMinimize.Click += new System.EventHandler(this.tsbtnMinimize_Click);
-            // 
-            // toolStripLabel5
-            // 
-            this.toolStripLabel5.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripLabel5.AutoSize = false;
-            this.toolStripLabel5.Image = global::HR_Test.Properties.Resources.logo1;
-            this.toolStripLabel5.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripLabel5.Name = "toolStripLabel5";
-            this.toolStripLabel5.Size = new System.Drawing.Size(260, 66);
-            // 
             // toolStripLabel1
             // 
             this.toolStripLabel1.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -406,6 +304,107 @@
             this.cmbXr.Name = "cmbXr";
             this.cmbXr.Size = new System.Drawing.Size(121, 75);
             this.cmbXr.SelectedIndexChanged += new System.EventHandler(this.cmbXr_SelectedIndexChanged);
+            // 
+            // tsbtnSelRect
+            // 
+            this.tsbtnSelRect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtnSelRect.Image = global::HR_Test.Properties.Resources.zoomone;
+            this.tsbtnSelRect.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbtnSelRect.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnSelRect.Margin = new System.Windows.Forms.Padding(5);
+            this.tsbtnSelRect.Name = "tsbtnSelRect";
+            this.tsbtnSelRect.Size = new System.Drawing.Size(52, 52);
+            this.tsbtnSelRect.Text = "显示整个曲线";
+            this.tsbtnSelRect.Click += new System.EventHandler(this.tsbtnSelRect_Click);
+            // 
+            // tsbtnZoom
+            // 
+            this.tsbtnZoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtnZoom.Image = global::HR_Test.Properties.Resources.zoomin;
+            this.tsbtnZoom.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbtnZoom.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnZoom.Margin = new System.Windows.Forms.Padding(5);
+            this.tsbtnZoom.Name = "tsbtnZoom";
+            this.tsbtnZoom.Size = new System.Drawing.Size(52, 52);
+            this.tsbtnZoom.Text = "放大框选部分";
+            this.tsbtnZoom.Click += new System.EventHandler(this.tsbtnZoom_Click);
+            // 
+            // tsbtnLFp02
+            // 
+            this.tsbtnLFp02.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtnLFp02.Image = global::HR_Test.Properties.Resources.Pmax;
+            this.tsbtnLFp02.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbtnLFp02.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnLFp02.Margin = new System.Windows.Forms.Padding(5);
+            this.tsbtnLFp02.Name = "tsbtnLFp02";
+            this.tsbtnLFp02.Size = new System.Drawing.Size(52, 52);
+            this.tsbtnLFp02.Text = "手动标记断裂力值";
+            this.tsbtnLFp02.Click += new System.EventHandler(this.tsBtnFp02_Click);
+            // 
+            // tsbtnReH
+            // 
+            this.tsbtnReH.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtnReH.Image = global::HR_Test.Properties.Resources.U12;
+            this.tsbtnReH.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbtnReH.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnReH.Margin = new System.Windows.Forms.Padding(5);
+            this.tsbtnReH.Name = "tsbtnReH";
+            this.tsbtnReH.Size = new System.Drawing.Size(52, 52);
+            this.tsbtnReH.Text = "手动求取“泊松比”";
+            this.tsbtnReH.Click += new System.EventHandler(this.tsbtnReH_Click);
+            // 
+            // toolStripLabel3
+            // 
+            this.toolStripLabel3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripLabel3.Image = global::HR_Test.Properties.Resources.analize;
+            this.toolStripLabel3.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripLabel3.Name = "toolStripLabel3";
+            this.toolStripLabel3.Size = new System.Drawing.Size(48, 72);
+            // 
+            // toolStripLabel4
+            // 
+            this.toolStripLabel4.Image = global::HR_Test.Properties.Resources.analyseCurve;
+            this.toolStripLabel4.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripLabel4.Name = "toolStripLabel4";
+            this.toolStripLabel4.Size = new System.Drawing.Size(117, 72);
+            this.toolStripLabel4.ToolTipText = "仪器设置";
+            // 
+            // tsbtnExit
+            // 
+            this.tsbtnExit.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.tsbtnExit.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.tsbtnExit.Image = global::HR_Test.Properties.Resources._return;
+            this.tsbtnExit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbtnExit.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnExit.Margin = new System.Windows.Forms.Padding(0, 1, 10, 2);
+            this.tsbtnExit.Name = "tsbtnExit";
+            this.tsbtnExit.Size = new System.Drawing.Size(52, 72);
+            this.tsbtnExit.Text = "返回";
+            this.tsbtnExit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tsbtnExit.Click += new System.EventHandler(this.tsbtnExit_Click);
+            // 
+            // tsbtnMinimize
+            // 
+            this.tsbtnMinimize.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.tsbtnMinimize.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.tsbtnMinimize.Image = global::HR_Test.Properties.Resources.minimize;
+            this.tsbtnMinimize.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsbtnMinimize.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnMinimize.Margin = new System.Windows.Forms.Padding(0, 1, 10, 2);
+            this.tsbtnMinimize.Name = "tsbtnMinimize";
+            this.tsbtnMinimize.Size = new System.Drawing.Size(53, 72);
+            this.tsbtnMinimize.Text = "最小化";
+            this.tsbtnMinimize.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tsbtnMinimize.Click += new System.EventHandler(this.tsbtnMinimize_Click);
+            // 
+            // toolStripLabel5
+            // 
+            this.toolStripLabel5.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripLabel5.AutoSize = false;
+            this.toolStripLabel5.Image = global::HR_Test.Properties.Resources.logo1;
+            this.toolStripLabel5.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripLabel5.Name = "toolStripLabel5";
+            this.toolStripLabel5.Size = new System.Drawing.Size(260, 66);
             // 
             // GBT3354
             // 

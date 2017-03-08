@@ -523,6 +523,16 @@ namespace HR_Test.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap Pmax {
+            get {
+                object obj = ResourceManager.GetObject("Pmax", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap print {
             get {
                 object obj = ResourceManager.GetObject("print", resourceCulture);
@@ -846,6 +856,16 @@ namespace HR_Test.Properties {
         internal static System.Drawing.Bitmap title_Setmachine {
             get {
                 object obj = ResourceManager.GetObject("title_Setmachine", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap U12 {
+            get {
+                object obj = ResourceManager.GetObject("U12", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -204,11 +204,11 @@ namespace HR_Test
                         proPrint28289Shear(fre);
                         break;
                 }
-                
+
                 fre.WindowState = FormWindowState.Minimized;
-                
+
                 fre.Show();
-                
+
                 fre.tsbtnPrintP_Click(sender, e);
                 fre.Dispose();
             }
@@ -220,7 +220,7 @@ namespace HR_Test
             initResultCurve(this.zedGraphControl);
             _ShowY = this.cmbYr.SelectedIndex = int.Parse(RWconfig.GetAppSettings("ShowY"));
             _ShowX = this.cmbXr.SelectedIndex = int.Parse(RWconfig.GetAppSettings("ShowX"));
-            this.dataGridView.Tag = "tb_TestSample"; 
+            this.dataGridView.Tag = "tb_TestSample";
             myPanel = this.zedGraphControl.GraphPane;
             TestStandard.SampleControl.ReadTestStandard(this.cmbTestStandard);
             //btnFind_Click(this.btnFind, e);
@@ -354,7 +354,7 @@ namespace HR_Test
             this.zedGraphControl.GraphPane.XAxis.Scale.BaseTic = 0;
             this.zedGraphControl.GraphPane.YAxis.Scale.BaseTic = 0;
             this.zedGraphControl.Refresh();
-        } 
+        }
 
         private void ReadGBT7314(DataGridView dg)
         {
@@ -386,7 +386,7 @@ namespace HR_Test
                 }
             }
 
-            DataSet ds = bllTs.GetFinishList(" isFinish=true  and testDate>=#" + this.dateTimePicker1.Value.Date + "# and testDate<=#" + this.dateTimePicker2.Value.Date + "#" + strWhere,maxValue);
+            DataSet ds = bllTs.GetFinishList(" isFinish=true  and testDate>=#" + this.dateTimePicker1.Value.Date + "# and testDate<=#" + this.dateTimePicker2.Value.Date + "#" + strWhere, maxValue);
             DataTable dt = ds.Tables[0];
             dg.DataSource = dt;
             dg.Refresh();
@@ -599,7 +599,7 @@ namespace HR_Test
         }
 
         private void tsbtnEditReport_Click(object sender, EventArgs e)
-        {               
+        {
             if (_selTestSampleArray != null)
             {
                 frmReportEdit_T fre = new frmReportEdit_T(this);
@@ -607,7 +607,7 @@ namespace HR_Test
                 {
                     case "GBT23615-2009TensileZong":
                         proPrint23615TensileZong(fre);
-                        break; 
+                        break;
                     case "GBT23615-2009TensileHeng":
                         proPrint23615TensileHeng(fre);
                         break;
@@ -619,20 +619,410 @@ namespace HR_Test
                         break;
                     case "tb_Bend":
                         proPrintB(fre);
-                    break;
+                        break;
                     case "GBT28289-2012Tensile":
                         proPrint28289Tensile(fre);
-                    break;
+                        break;
                     case "GBT28289-2012Twist":
                         proPrint28289Twist(fre);
-                    break;
-                    case "GBT28289-2012Shear":  
+                        break;
+                    case "GBT28289-2012Shear":
                         proPrint28289Shear(fre);
-                    break;
+                        break;
+                    case "tb_GBT3354_Samples":
+                        proPrint3354(fre);
+                        break;
                 }
-               
-                fre.WindowState = FormWindowState.Maximized;                
+
+                fre.WindowState = FormWindowState.Maximized;
                 fre.Show();
+            }
+        }
+
+        private void proPrint3354(frmReportEdit_T fre)
+        {
+            fre.FormBorderStyle = FormBorderStyle.None;
+            fre.TopLevel = false;
+            fre.Parent = this;
+            fre.BringToFront();
+            fre.Size = this.Size;
+            fre._TestType = "GBT3354-2014";
+            //曲线图
+            this.zedGraphControl.Dock = DockStyle.None;
+
+            //读取各种报告配置文件
+            XmlDocument xd = new XmlDocument();
+            int picWidth = 700;
+            int picHeight = 430;
+            xd.Load(AppDomain.CurrentDomain.BaseDirectory + "GBT3354-2014.xml");
+            if (xd != null)
+            {
+                //读取
+                XmlNode node = xd.SelectSingleNode("/Report/ZedGraphControl");
+                if (node != null)
+                {
+                    picWidth = int.Parse(node.Attributes["width"].Value);
+                    picHeight = int.Parse(node.Attributes["height"].Value);
+                }
+            }
+            /*
+            //以图片形式打印
+            //this.zedGraphControl.Width = picWidth;
+            //this.zedGraphControl.Height = picHeight;
+            //this.zedGraphControl.GraphPane.XAxis.Scale.FontSpec.Size = 14.0f;
+            //this.zedGraphControl.GraphPane.XAxis.Title.FontSpec.Size = 14.0f;
+            //this.zedGraphControl.GraphPane.YAxis.Scale.FontSpec.Size = 14.0f;
+            //this.zedGraphControl.GraphPane.YAxis.Title.FontSpec.Size = 14.0f;
+            //this.zedGraphControl.GraphPane.Legend.FontSpec.Size = 14.0f;
+
+            //img = this.zedGraphControl.GetImage();
+            //Image newImg;
+            ////缩放图片生成新图
+            ////新建一个bmp图片
+            //System.Drawing.Image newImage = new System.Drawing.Bitmap((int)fre.pictureBox.Width, (int)fre.pictureBox.Height);
+            ////新建一个画板
+            //System.Drawing.Graphics newG = System.Drawing.Graphics.FromImage(newImage);
+            ////设置质量
+            //newG.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            //newG.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+
+            ////置背景色
+            //newG.Clear(Color.White);
+            ////画图
+            //newG.DrawImage(img, new System.Drawing.Rectangle(0, 0, newImage.Width, newImage.Height), new System.Drawing.Rectangle(0, 0, fre.pictureBox.Width, fre.pictureBox.Height), System.Drawing.GraphicsUnit.Pixel);
+            //fre.pictureBox.Image = newImage;
+            //this.zedGraphControl.GraphPane.XAxis.Scale.FontSpec.Size = 16.0f;
+            //this.zedGraphControl.GraphPane.XAxis.Title.FontSpec.Size = 16.0f;
+            //this.zedGraphControl.GraphPane.YAxis.Scale.FontSpec.Size = 16.0f;
+            //this.zedGraphControl.GraphPane.YAxis.Title.FontSpec.Size = 16.0f;
+            //this.zedGraphControl.GraphPane.Legend.FontSpec.Size = 16.0f;
+            //this.zedGraphControl.Dock = DockStyle.Fill;
+             */
+
+            //以控件方式打印
+
+            fre._SelTestSampleArray = this._selTestSampleArray;
+            fre._SelColorArray = this._selColorArray;
+            //fre._TestType = dataGridView.Tag.ToString();
+            int ab = 0;
+            //基本参数,读取试验方法参数 
+            if (_selTestSampleArray != null)
+            //查找第一个选择的试样用的何种试验方法
+            {
+                string testSampleNo = _selTestSampleArray[0];
+                BLL.GBT3354_Samples bllTs = new HR_Test.BLL.GBT3354_Samples();
+                Model.GBT3354_Samples modTs = bllTs.GetModel(testSampleNo);
+                //查找第一根式样是否是矩形
+                if (modTs.w != 0)
+                    ab = 1;
+                if (modTs.d0 != 0)
+                    ab = 2;
+                if (modTs.Do != 0)
+                    ab = 3;
+
+                //读取试验方法
+                string testMethod = modTs.testMethodName;
+                //从试验方法库中查找该方法的基本试验参数
+                BLL.GBT3354_Method tsMethod = new HR_Test.BLL.GBT3354_Method();
+                Model.GBT3354_Method modMethod = tsMethod.GetModel(testMethod);
+
+                if (modMethod == null)
+                {
+                    MessageBox.Show(this, "试验方法 '" + testMethod + "' 不存在,请检查!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                //读取试验方法的选择结果项
+                BLL.GBT3354_Sel bllSel = new HR_Test.BLL.GBT3354_Sel();
+                Model.GBT3354_Sel mSel = bllSel.GetModel(testMethod);
+
+                #region 读取试验方法的基本参数
+                //报告界面中加入基本参数
+                //label width 175*4 = 700;
+                //送检单位
+                //if (!string.IsNullOrEmpty(modMethod.sendCompany) && modMethod.sendCompany != "-")
+                //{
+                System.Windows.Forms.Label lbl1 = new System.Windows.Forms.Label();
+                lbl1.Width = 175;
+                lbl1.Name = "lbl1";
+                lbl1.Text = "送检单位:" + modMethod.sendCompany;
+                lbl1.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl1);
+                //}
+
+                //材料规格
+                //if (!string.IsNullOrEmpty(modMethod.stuffSpec) && modMethod.stuffSpec != "-")
+                //{
+                System.Windows.Forms.Label lbl2 = new System.Windows.Forms.Label();
+                lbl2.Width = 175;
+                lbl2.Name = "lbl2";
+                lbl2.Text = "材料规格:" + modMethod.sampleSpec;
+                lbl2.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl2);
+                //}
+
+                //材料牌号
+                //if (!string.IsNullOrEmpty(modMethod.stuffCardNo) && modMethod.stuffCardNo != "-")
+                //{
+                System.Windows.Forms.Label lbl3 = new System.Windows.Forms.Label();
+                lbl3.Width = 175;
+                lbl3.Name = "lbl3";
+                lbl3.Text = "试样来源:" + modMethod.getSample;
+                lbl3.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl3);
+                //}
+                //材料类型
+                //if (!string.IsNullOrEmpty(modMethod.stuffType) && modMethod.stuffType != "-")
+                //{
+                System.Windows.Forms.Label lbl4 = new System.Windows.Forms.Label();
+                lbl4.Width = 175;
+                lbl4.Name = "lbl4";
+                lbl4.Text = "试样状态:" + modMethod.sampleState;
+                lbl4.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl4);
+                //}
+                //试样标识
+                //if (!string.IsNullOrEmpty(modMethod.sampleCharacter) && modMethod.sampleCharacter != "-")
+                //{
+                System.Windows.Forms.Label lbl5 = new System.Windows.Forms.Label();
+                lbl5.Width = 175;
+                lbl5.Name = "lbl5";
+                lbl5.Text = "试样形状:" + modMethod.sampleShape;
+                lbl5.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl5);
+                //}
+
+                //试验温度
+                //if (modMethod.temperature != 0)
+                //{
+                System.Windows.Forms.Label lbl6 = new System.Windows.Forms.Label();
+                lbl6.Width = 175;
+                lbl6.Name = "lbl6";
+                if (modMethod.temperature != 0)
+                    lbl6.Text = "试验温度:" + modMethod.temperature + "℃";
+                else
+                    lbl6.Text = "试验温度:" + "-";
+                lbl6.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl6);
+                //}
+
+                //试验湿度
+                //if (modMethod.humidity != 0)
+                //{
+                System.Windows.Forms.Label lbl7 = new System.Windows.Forms.Label();
+                lbl7.Width = 175;
+                lbl7.Name = "lbl7";
+                lbl7.Text = "试验湿度:" + modMethod.humidity + "%";
+                lbl7.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl7);
+                //}
+
+                //热处理状态
+                //if (!string.IsNullOrEmpty(modMethod.hotStatus) && modMethod.hotStatus != "-")
+                //{
+                System.Windows.Forms.Label lbl8 = new System.Windows.Forms.Label();
+                lbl8.Width = 175;
+                lbl8.Name = "lbl8";
+                lbl8.Text = "加强片:" + modMethod.strengthPlate;
+                lbl8.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl8);
+                //}
+
+                //试样取样
+                //if (!string.IsNullOrEmpty(modMethod.getSample) && modMethod.getSample != "-")
+                //{
+                System.Windows.Forms.Label lbl9 = new System.Windows.Forms.Label();
+                lbl9.Width = 175;
+                lbl9.Name = "lbl9";
+                lbl9.Text = "胶粘剂:" + modMethod.adhesive;
+                lbl9.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl9);
+                //}
+
+                //原始标距
+                System.Windows.Forms.Label lbl10 = new System.Windows.Forms.Label();
+                lbl10.Width = 175;
+                lbl10.Name = "lbl10";
+                lbl10.Text = "横向标距:" + modMethod.lL + " mm";
+                lbl10.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl10);
+
+                //纵向标距
+                System.Windows.Forms.Label lbl11 = new System.Windows.Forms.Label();
+                lbl11.Width = 175;
+                lbl11.Name = "lbl11";
+                lbl11.Text = "纵向标距:" + modMethod.lT + " mm";
+                lbl11.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl11);
+
+
+                //试验条件
+                //if (!string.IsNullOrEmpty(modMethod.condition) && modMethod.condition != "-")
+                //{
+                System.Windows.Forms.Label lbl15 = new System.Windows.Forms.Label();
+                lbl15.Width = 175;
+                lbl15.Name = "lbl15";
+                lbl15.Text = "试验条件:" + modMethod.testCondition;
+                lbl15.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl15);
+
+                //}
+                //试验设备
+                //if (!string.IsNullOrEmpty(modMethod.mathineType) && modMethod.mathineType != "-")
+                //{
+                System.Windows.Forms.Label lbl17 = new System.Windows.Forms.Label();
+                lbl17.Width = 175;
+                lbl17.Name = "lbl17";
+                lbl17.Text = "试验设备:" + modMethod.mathineType;
+                lbl17.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl17);
+                //}
+                //试验设备
+                //if (!string.IsNullOrEmpty(modMethod.testStandard) && modMethod.testStandard != "-")
+                //{
+                System.Windows.Forms.Label lbl18 = new System.Windows.Forms.Label();
+                lbl18.Width = 175;
+                lbl18.Name = "lbl18";
+                lbl18.Text = "试验标准:" + modMethod.testStandard;
+                lbl18.Font = new Font("宋体", 10);
+                fre.flowLayoutPanel.Controls.Add(lbl18);
+                //}
+
+                fre.flowLayoutPanel.Refresh();
+                #endregion
+
+                //所选择的试验结果列
+                StringBuilder strSelcol = new StringBuilder();
+
+                //平均值
+                StringBuilder strSelcolAver = new StringBuilder();
+                string strSqlSample = string.Empty;
+                foreach (string str in _selTestSampleArray)
+                {
+                    strSqlSample += str + "','";
+                }
+                strSqlSample = strSqlSample.Remove(strSqlSample.Length - 2, 2);
+
+                BLL.GBT3354_Samples bllts = new HR_Test.BLL.GBT3354_Samples();
+                DataSet dsmax = bllts.GetMaxFm(" testSampleNo in ('" + strSqlSample + ") and isFinish=true ");
+                double maxValue = 0;
+                if (dsmax != null)
+                {
+                    maxValue = Convert.ToDouble(dsmax.Tables[0].Rows[0]["Pmax"].ToString());
+                }
+
+                int dotvalue = utils.Dotvalue(maxValue);
+                if (maxValue < 1000.0)
+                {
+                    switch (dotvalue)
+                    {
+                        case 2:
+                            strSelcol.Append(" Format([Pmax],'0.00') as [Pmax(N)],");
+                            strSelcolAver.Append(" Format(Avg([Pmax]),'0.00') as [Pmax(N)],");
+                            break;
+                        case 3:
+                            strSelcol.Append(" Format([Pmax],'0.000') as [Pmax(N)],");
+                            strSelcolAver.Append(" Format(Avg([Pmax]),'0.000') as [Pmax(N)],");
+                            break;
+                        case 4:
+                            strSelcol.Append(" Format([Pmax],'0.0000') as [Pmax(N)],");
+                            strSelcolAver.Append(" Format(Avg([Pmax]),'0.0000') as [Pmax(N)],");
+                            break;
+                        case 5:
+                            strSelcol.Append(" Format([Pmax],'0.00000') as [Pmax(N)],");
+                            strSelcolAver.Append(" Format(Avg([Pmax]),'0.00000') as [Pmax(N)],");
+                            break;
+                        default:
+                            strSelcol.Append(" Format([Pmax],'0.00') as [Pmax(N)],");
+                            strSelcolAver.Append(" Format(Avg([Pmax]),'0.00') as [Pmax(N)],");
+                            break;
+                    }
+
+                }
+                if (maxValue >= 1000.0)
+                {
+                    switch (dotvalue)
+                    {
+                        case 2:
+                            strSelcol.Append(" Format([Pmax]/1000.0,'0.00') as [Pmax(kN)],");
+                            strSelcolAver.Append(" Format(Avg([Pmax])/1000.0,'0.00') as [Pmax(kN)],");
+                            break;
+                        case 3:
+                            strSelcol.Append(" Format([Pmax]/1000.0,'0.000') as [Pmax(kN)],");
+                            strSelcolAver.Append(" Format(Avg([Pmax])/1000.0,'0.000') as [Pmax(kN)],");
+                            break;
+                        case 4:
+                            strSelcol.Append(" Format([Pmax]/1000.0,'0.0000') as [Pmax(kN)],");
+                            strSelcolAver.Append(" Format(Avg([Pmax])/1000.0,'0.0000') as [Pmax(kN)],");
+                            break;
+                        case 5:
+                            strSelcol.Append(" Format([Pmax]/1000.0,'0.00000') as [Pmax(kN)],");
+                            strSelcolAver.Append(" Format(Avg([Pmax])/1000.0,'0.00000') as [Pmax(kN)],");
+                            break;
+                        default:
+                            strSelcol.Append(" Format([Pmax]/1000.0,'0.00') as [Pmax(kN)],");
+                            strSelcolAver.Append(" Format(Avg([Pmax])/1000.0,'0.00') as [Pmax(kN)],");
+                            break;
+                    }
+                }
+                ////生成"平均值"的 查询语句
+                //if (maxValue < 10000.0)
+                //{
+                //    strSelcol.Append(" FORMAT([Fm],'0.00') as [Fm(N)],");
+                //    strSelcolAver.Append(" FORMAT(Avg([Fm]),'0.00') as [Fm(N)],");
+                //}
+                //if (maxValue > 10000.0 && maxValue < 100000.0)
+                //{
+                //    strSelcol.Append(" FORMAT([Fm]/1000.0,'0.0000') as [Fm(kN)],");
+                //    strSelcolAver.Append(" FORMAT(Avg([Fm]/1000.0),'0.0000') as [Fm(kN)],");
+                //}
+                //if (maxValue > 100000.0)
+                //{
+                //    strSelcol.Append(" FORMAT([Fm]/1000.0,'0.000') as [Fm(kN)],");
+                //    strSelcolAver.Append(" FORMAT(Avg([Fm]/1000.0),'0.000') as [Fm(kN)],");
+                //}
+            
+
+                if (mSel != null)
+                {
+                    if (mSel.σt == true)
+                    {
+                        strSelcol.Append(" round([σt],2) as [σt(MPa)],");
+                        strSelcolAver.Append(" round(Avg([σt]),2) as [σt(MPa)],");
+                    }
+                    if (mSel.Et == true)
+                    {
+                        strSelcol.Append(" [Et] as [Et(MPa)],");
+                        strSelcolAver.Append(" round(Avg([Et]),2) as [Et(MPa)],"); //strSelcolSD.Append("0.001,");strSelcolSD.Append(" round((SUM([ReH])-MAX([ReH])-MIN([ReH]))/(COUNT(*)-2),2) as [ReH],");
+                    }
+
+                    if (mSel.μ12 == true)
+                    {
+                        strSelcol.Append(" [μ12] as [μ12],");
+                        strSelcolAver.Append(" round(Avg([μ12]),2) as [μ12],");
+                    }//strSelcolSD.Append("0.001,");strSelcolSD.Append(" round((SUM([ReL])-MAX([ReL])-MIN([ReL]))/(COUNT(*)-2),2) as [ReL],");
+                    if (mSel.ε1t == true)
+                    {
+                        strSelcol.Append(" [ε1t] as [ε1t],");
+                        strSelcolAver.Append(" round(Avg([ε1t]),2) as [ε1t],");
+                    }// strSelcolSD.Append("0.001,");strSelcolSD.Append(" round((SUM([Rp])-MAX([Rp])-MIN([Rp]))/(COUNT(*)-2),2) as [Rp],"); }
+
+                    m_isSelSD = mSel.SD;
+                    m_isSelMid = mSel.Mid;
+                    m_isSelCV = mSel.CV;
+
+                }
+                if (strSelcolAver != null)
+                    strSelcolAver = strSelcolAver.Remove(strSelcolAver.Length - 1, 1);
+
+                #region 读取选择的试样的试验结果
+
+                //生成试验结果列表
+                m_dt = TestStandard.GBT3354_2014.CreateViewReport(strSelcol.ToString(), strSqlSample, ab);
+
+                //生成试验结果平均值表
+                dtaver = TestStandard.GBT3354_2014.CreateAverageViewReport(strSelcolAver, strSelcol, strSqlSample, ab);
+                #endregion
             }
         }
 
@@ -1204,7 +1594,7 @@ namespace HR_Test
             }
         }
 
-        
+
 
         private void proPrint28289Tensile(frmReportEdit_T fre)
         {
@@ -1382,7 +1772,7 @@ namespace HR_Test
 
                 //TestStandard.GBT28289_2012.Shear.readFinishSample(this.dataGridView, this.dgvAvg, testNo, dateTimePicker1, dateTimePicker2, this.zedGraphControl);
                 //生成试验结果列表
-                m_dt = TestStandard.GBT28289_2012.Tensile.CreateFinishViewReport(testMethod," testSampleNo in ('" + strSqlSample + ")" );
+                m_dt = TestStandard.GBT28289_2012.Tensile.CreateFinishViewReport(testMethod, " testSampleNo in ('" + strSqlSample + ")");
                 //生成试验结果平均值表
                 TestStandard.GBT28289_2012.Tensile.CreateAverageViewReport(testMethod, " testSampleNo in ('" + strSqlSample + ")", this.dgvAvg);
                 dtaver = (DataTable)this.dgvAvg.DataSource;
@@ -1446,42 +1836,42 @@ namespace HR_Test
                 Model.GBT282892012_ShearSel mSel = bllSel.GetModel(testMethod);
 
                 #region 读取试验方法的基本参数
-               
+
                 System.Windows.Forms.Label lbl1 = new System.Windows.Forms.Label();
                 lbl1.Width = 175;
                 lbl1.Name = "lbl1";
                 lbl1.Text = "送检单位:" + modMethod.sendCompany;
                 lbl1.Font = new Font("宋体", 10);
                 fre.flowLayoutPanel.Controls.Add(lbl1);
-               
+
                 System.Windows.Forms.Label lbl2 = new System.Windows.Forms.Label();
                 lbl2.Width = 175;
                 lbl2.Name = "lbl2";
                 lbl2.Text = "材料规格:" + modMethod.stuffSpec;
                 lbl2.Font = new Font("宋体", 10);
                 fre.flowLayoutPanel.Controls.Add(lbl2);
-              
+
                 System.Windows.Forms.Label lbl3 = new System.Windows.Forms.Label();
                 lbl3.Width = 175;
                 lbl3.Name = "lbl3";
                 lbl3.Text = "材料牌号:" + modMethod.stuffCardNo;
                 lbl3.Font = new Font("宋体", 10);
                 fre.flowLayoutPanel.Controls.Add(lbl3);
-               
+
                 System.Windows.Forms.Label lbl4 = new System.Windows.Forms.Label();
                 lbl4.Width = 175;
                 lbl4.Name = "lbl4";
                 lbl4.Text = "材料类型:" + modMethod.stuffType;
                 lbl4.Font = new Font("宋体", 10);
                 fre.flowLayoutPanel.Controls.Add(lbl4);
-              
+
                 System.Windows.Forms.Label lbl5 = new System.Windows.Forms.Label();
                 lbl5.Width = 175;
                 lbl5.Name = "lbl5";
                 lbl5.Text = "试样标识:" + modMethod.sampleCharacter;
                 lbl5.Font = new Font("宋体", 10);
                 fre.flowLayoutPanel.Controls.Add(lbl5);
-               
+
                 System.Windows.Forms.Label lbl6 = new System.Windows.Forms.Label();
                 lbl6.Width = 175;
                 lbl6.Name = "lbl6";
@@ -1491,28 +1881,28 @@ namespace HR_Test
                     lbl6.Text = "试验温度:" + "-";
                 lbl6.Font = new Font("宋体", 10);
                 fre.flowLayoutPanel.Controls.Add(lbl6);
-               
+
                 System.Windows.Forms.Label lbl7 = new System.Windows.Forms.Label();
                 lbl7.Width = 175;
                 lbl7.Name = "lbl7";
                 lbl7.Text = "试验湿度:" + modMethod.humidity + "%";
                 lbl7.Font = new Font("宋体", 10);
                 fre.flowLayoutPanel.Controls.Add(lbl7);
-              
+
                 System.Windows.Forms.Label lbl8 = new System.Windows.Forms.Label();
                 lbl8.Width = 175;
                 lbl8.Name = "lbl8";
                 lbl8.Text = "热处理状态:" + modMethod.hotStatus;
                 lbl8.Font = new Font("宋体", 10);
                 fre.flowLayoutPanel.Controls.Add(lbl8);
-               
+
                 System.Windows.Forms.Label lbl9 = new System.Windows.Forms.Label();
                 lbl9.Width = 175;
                 lbl9.Name = "lbl9";
                 lbl9.Text = "试样取样:" + modMethod.getSample;
                 lbl9.Font = new Font("宋体", 10);
                 fre.flowLayoutPanel.Controls.Add(lbl9);
-                
+
                 ////原始标距
                 //System.Windows.Forms.Label lbl10 = new System.Windows.Forms.Label();
                 //lbl10.Width = 175;
@@ -1604,7 +1994,7 @@ namespace HR_Test
                     strSqlSampleAvg += str + ",";
                 }
                 strSqlSample = strSqlSample.Remove(strSqlSample.Length - 2, 2);
-                strSqlSampleAvg = strSqlSampleAvg.Remove(strSqlSampleAvg.Length - 1, 1); 
+                strSqlSampleAvg = strSqlSampleAvg.Remove(strSqlSampleAvg.Length - 1, 1);
 
                 string testNo = modShear.testNo;
                 string strTest = testNo.Substring(0, testNo.Length - 1);
@@ -1943,10 +2333,10 @@ namespace HR_Test
                 double maxValue = 0;
                 if (dsmax != null)
                 {
-                    maxValue = Convert.ToDouble( dsmax.Tables[0].Rows[0]["Fm"].ToString());
+                    maxValue = Convert.ToDouble(dsmax.Tables[0].Rows[0]["Fm"].ToString());
                 }
 
-                int dotvalue = utils.Dotvalue(maxValue); 
+                int dotvalue = utils.Dotvalue(maxValue);
                 if (maxValue < 1000.0)
                 {
                     switch (dotvalue)
@@ -1972,7 +2362,7 @@ namespace HR_Test
                             strSelcolAver.Append(" Format(Avg([Fm]),'0.00') as [Fm(N)],");
                             break;
                     }
-                  
+
                 }
                 if (maxValue >= 1000.0)
                 {
@@ -1999,7 +2389,7 @@ namespace HR_Test
                             strSelcolAver.Append(" Format(Avg([Fm])/1000.0,'0.00') as [Fm(kN)],");
                             break;
                     }
-                } 
+                }
                 ////生成"平均值"的 查询语句
                 //if (maxValue < 10000.0)
                 //{
@@ -2053,9 +2443,9 @@ namespace HR_Test
                     strSelcolAver = strSelcolAver.Remove(strSelcolAver.Length - 1, 1);
 
                 #region 读取选择的试样的试验结果
-            
+
                 //生成试验结果列表
-                m_dt = TestStandard.GBT228_2010.CreateViewReport(strSelcol.ToString(), strSqlSample, ab); 
+                m_dt = TestStandard.GBT228_2010.CreateViewReport(strSelcol.ToString(), strSqlSample, ab);
 
                 //生成试验结果平均值表
                 dtaver = TestStandard.GBT228_2010.CreateAverageViewReport(strSelcolAver, strSelcol, strSqlSample, ab);
@@ -2101,7 +2491,7 @@ namespace HR_Test
                 string testSampleNo = _selTestSampleArray[0];
                 BLL.Bend bllBend = new HR_Test.BLL.Bend();
                 Model.Bend modBend = bllBend.GetModel(testSampleNo);
-            
+
                 //读取试验方法
                 string testMethod = modBend.testMethod;
                 //从试验方法库中查找该方法的基本试验参数
@@ -2116,7 +2506,7 @@ namespace HR_Test
 
                 //读取试验方法的选择结果项
                 BLL.SelTestResult_B bllSel = new HR_Test.BLL.SelTestResult_B();
-                Model.SelTestResult_B mSel = bllSel.GetModel(testMethod); 
+                Model.SelTestResult_B mSel = bllSel.GetModel(testMethod);
 
                 #region 读取试验方法的基本参数
                 //报告界面中加入基本参数
@@ -2256,8 +2646,8 @@ namespace HR_Test
 
                 System.Windows.Forms.Label lbl14 = new System.Windows.Forms.Label();
                 lbl14.Width = 175;
-                lbl14.Name = "lbl14";               
-                lbl14.Text = "弯曲类型:" + modMethod.testType;               
+                lbl14.Name = "lbl14";
+                lbl14.Text = "弯曲类型:" + modMethod.testType;
                 lbl14.Font = new Font("宋体", 10);
                 fre.flowLayoutPanel.Controls.Add(lbl14);
 
@@ -2296,7 +2686,7 @@ namespace HR_Test
                 fre.flowLayoutPanel.Refresh();
                 #endregion
 
-              
+
                 //生成"平均值"的 查询语句
                 m_isSelSD = mSel.SD;
                 m_isSelMid = mSel.Mid;
@@ -2314,24 +2704,24 @@ namespace HR_Test
                 strSqlSample = strSqlSample.Remove(strSqlSample.Length - 2, 2);
 
                 DataSet dsmax = bllBend.GetFbbMax(" testSampleNo in ('" + strSqlSample + ") and isFinish=true ");
-                 double maxvalue =0;
-                if(!string.IsNullOrEmpty( dsmax.Tables[0].Rows[0]["Fbb"].ToString()))
+                double maxvalue = 0;
+                if (!string.IsNullOrEmpty(dsmax.Tables[0].Rows[0]["Fbb"].ToString()))
                     maxvalue = Convert.ToDouble(dsmax.Tables[0].Rows[0]["Fbb"].ToString());
-                  //所选择的试验结果列
+                //所选择的试验结果列
                 // 0 选择结果项 1 计算结果项平均值
 
                 StringBuilder[] strSel = new StringBuilder[2];
-                strSel = TestStandard.YBT5349_2006.strSql_B(mSel.methodName,maxvalue);
+                strSel = TestStandard.YBT5349_2006.strSql_B(mSel.methodName, maxvalue);
                 StringBuilder strSelcol = strSel[0];
                 StringBuilder strSelcolAver = strSel[1];
 
                 //生成试验结果列表
                 m_dt = TestStandard.YBT5349_2006.CreateViewReport(strSelcol.ToString(), strSqlSample);
                 //生成试验结果平均值表
-                dtaver =  TestStandard.YBT5349_2006.CreateAverageViewReport(strSelcol,strSelcolAver, strSqlSample);
+                dtaver = TestStandard.YBT5349_2006.CreateAverageViewReport(strSelcol, strSelcolAver, strSqlSample);
                 #endregion
             }
-        }      
+        }
 
         private void proPrintC(frmReportEdit_T fre)
         {
@@ -2409,7 +2799,7 @@ namespace HR_Test
                 if (modTs.a != 0)
                     ab = 1;
                 if (modTs.d != 0)
-                    ab = 2; 
+                    ab = 2;
 
                 //读取试验方法
                 string testMethod = modTs.testMethodName;
@@ -2544,7 +2934,7 @@ namespace HR_Test
                 lbl11.Name = "lbl11";
                 lbl11.Text = "试样长度:" + modMethod.L + " mm";
                 lbl11.Font = new Font("宋体", 10);
-                fre.flowLayoutPanel.Controls.Add(lbl11); 
+                fre.flowLayoutPanel.Controls.Add(lbl11);
 
                 ////引伸计标距
                 ////if (modMethod.Le > 0)
@@ -2640,25 +3030,25 @@ namespace HR_Test
                     maxValue = Convert.ToDouble(dsMax.Tables[0].Rows[0]["Fmc"].ToString());
                 }
 
-                StringBuilder[] strSql = TestStandard.GBT7314_2005.strSql_T(modMethod.methodName,maxValue);
+                StringBuilder[] strSql = TestStandard.GBT7314_2005.strSql_T(modMethod.methodName, maxValue);
                 strSelcol = strSql[0];
                 strSelcolAver = strSql[1];
                 m_isSelSD = mSel.SD;
                 m_isSelMid = mSel.Mid;
-                m_isSelCV = mSel.CV; 
+                m_isSelCV = mSel.CV;
 
-                #region 读取选择的试样的试验结果             
-               
+                #region 读取选择的试样的试验结果
+
                 //生成试验结果列表
                 m_dt = TestStandard.GBT7314_2005.CreateViewReport(strSelcol.ToString(), strSqlSample, ab);
                 //生成试验结果平均值表
-                dtaver = TestStandard.GBT7314_2005.CreateAverageViewReport(strSelcol,strSelcolAver , strSqlSample, ab);
+                dtaver = TestStandard.GBT7314_2005.CreateAverageViewReport(strSelcol, strSelcolAver, strSqlSample, ab);
                 #endregion
             }
         }
 
 
-      
+
 
         private void dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -2693,7 +3083,7 @@ namespace HR_Test
                         this.dataGridView.Rows[i].Cells[0].Style.BackColor = Color.White;
                     }
                 }
- 
+
                 switch (dataGridView.Tag.ToString())
                 {
                     case "GBT23615-2009TensileZong":
@@ -2719,6 +3109,9 @@ namespace HR_Test
                         break;
                     case "GBT28289-2012Twist":
                         _path = "GBT28289-2012Twist";
+                        break;
+                    case "tb_GBT3354_Samples":
+                        _path = "GBT3354-2014";
                         break;
                     default:
                         _path = "";
@@ -2749,7 +3142,7 @@ namespace HR_Test
                     {
                         CurveItem ci = this.zedGraphControl.GraphPane.CurveList[this.dataGridView.Rows[e.RowIndex].Cells[2].Value.ToString()];
                         this.zedGraphControl.GraphPane.CurveList.Remove(ci);
-                    } 
+                    }
                     this.zedGraphControl.RestoreScale(this.zedGraphControl.GraphPane);
                 }
 
@@ -2878,7 +3271,7 @@ namespace HR_Test
             int step = listGData.Count / 3000;
             if (step == 0) step = 1;
 
-            for (Int32 i = 0; i < listGData.Count-2; i += step)
+            for (Int32 i = 0; i < listGData.Count - 2; i += step)
             {
                 //采集数据
                 //时间
@@ -3013,11 +3406,11 @@ namespace HR_Test
         private void btnFind_Click(object sender, EventArgs e)
         {
             readFinishSample(this.dataGridView, this.dataGridView.Tag.ToString());
-        }    
+        }
 
         private void cmbTestType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(cmbTestType.SelectedItem!=null)
+            if (cmbTestType.SelectedItem != null)
             {
                 DataRowView dr = (DataRowView)cmbTestType.SelectedItem;
                 string testResultTable = dr["resultTableName"].ToString();
@@ -3029,10 +3422,10 @@ namespace HR_Test
                     case "tb_GBT236152009_TensileHeng":
                         this.dataGridView.Tag = "GBT23615-2009TensileHeng";
                         break;
-                    case "tb_GBT282892012_Tensile": 
+                    case "tb_GBT282892012_Tensile":
                         this.dataGridView.Tag = "GBT28289-2012Tensile";
                         break;
-                    case "tb_GBT282892012_Shear":  
+                    case "tb_GBT282892012_Shear":
                         this.dataGridView.Tag = "GBT28289-2012Shear";
                         break;
                     case "tb_GBT282892012_Twist":
@@ -3041,11 +3434,14 @@ namespace HR_Test
                     case "tb_TestSample":
                         this.dataGridView.Tag = "tb_TestSample";
                         break;
-                    case "tb_Compress": 
+                    case "tb_Compress":
                         this.dataGridView.Tag = "tb_Compress";
                         break;
                     case "tb_Bend":
                         this.dataGridView.Tag = "tb_Bend";
+                        break;
+                    case "tb_GBT3354_Samples":
+                        this.dataGridView.Tag = "tb_GBT3354_Samples";
                         break;
                 }
 
@@ -3069,7 +3465,7 @@ namespace HR_Test
                     TestStandard.GBT23615_2009.TensileZong.readFinishSampleReport(this.dataGridView, this.txtTestNo.Text, this.txtTestSampleNo.Text, this.dateTimePicker1, this.dateTimePicker2, this.zedGraphControl);
                     break;
                 case "tb_TestSample":
-                    TestStandard.GBT228_2010.ReadGBT228(this.dataGridView,this.txtTestNo.Text,this.txtTestSampleNo.Text,dateTimePicker1,dateTimePicker2,zedGraphControl);
+                    TestStandard.GBT228_2010.ReadGBT228(this.dataGridView, this.txtTestNo.Text, this.txtTestSampleNo.Text, dateTimePicker1, dateTimePicker2, zedGraphControl);
                     break;
                 case "tb_Bend":
                     ReadYBT5349(this.dataGridView);
@@ -3078,16 +3474,19 @@ namespace HR_Test
                     TestStandard.GBT7314_2005.ReadGBT7314(this.dataGridView, this.txtTestNo.Text, this.txtTestSampleNo.Text, dateTimePicker1, dateTimePicker2, zedGraphControl);
                     break;
                 case "GBT28289-2012Tensile":
-                    TestStandard.GBT28289_2012.Tensile.readFinishSampleReport(this.dataGridView, this.txtTestNo.Text, this.txtTestSampleNo.Text, this.dateTimePicker1,this.dateTimePicker2, this.zedGraphControl);
+                    TestStandard.GBT28289_2012.Tensile.readFinishSampleReport(this.dataGridView, this.txtTestNo.Text, this.txtTestSampleNo.Text, this.dateTimePicker1, this.dateTimePicker2, this.zedGraphControl);
                     break;
                 case "GBT28289-2012Shear":
-                    TestStandard.GBT28289_2012.Shear.readFinishSampleReport(this.dataGridView, this.txtTestNo.Text,this.txtTestSampleNo.Text, this.dateTimePicker1, this.dateTimePicker2, this.zedGraphControl);
+                    TestStandard.GBT28289_2012.Shear.readFinishSampleReport(this.dataGridView, this.txtTestNo.Text, this.txtTestSampleNo.Text, this.dateTimePicker1, this.dateTimePicker2, this.zedGraphControl);
                     break;
                 case "GBT28289-2012Twist":
                     TestStandard.GBT28289_2012.Twist.readFinishSampleReport(this.dataGridView, this.txtTestNo.Text, this.txtTestSampleNo.Text, this.dateTimePicker1, this.dateTimePicker2, this.zedGraphControl);
                     break;
-            } 
-        } 
+                case "tb_GBT3354_Samples":
+                    TestStandard.GBT3354_2014.readFinishSampleReport(this.dataGridView, this.txtTestNo.Text, this.txtTestSampleNo.Text, this.dateTimePicker1, this.dateTimePicker2, this.zedGraphControl);
+                    break;
+            }
+        }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
@@ -3197,7 +3596,7 @@ namespace HR_Test
                         InitCurveCount(this.zedGraphControl, _selTestSampleArray, "YBT5349-2006", _selColorArray);
                         break;
                     case "GBT28289-2012Tensile":
-                        InitCurveCount(this.zedGraphControl, _selTestSampleArray, "GBT28289-2012Tensile", _selColorArray); 
+                        InitCurveCount(this.zedGraphControl, _selTestSampleArray, "GBT28289-2012Tensile", _selColorArray);
                         break;
                     case "GBT28289-2012Twist":
                         InitCurveCount(this.zedGraphControl, _selTestSampleArray, "GBT28289-2012Twist", _selColorArray);
@@ -3270,7 +3669,7 @@ namespace HR_Test
             _fmMain.WindowState = FormWindowState.Minimized;
         }
 
-         private void cmbXr_Click(object sender, EventArgs e)
+        private void cmbXr_Click(object sender, EventArgs e)
         {
 
         }
@@ -3349,12 +3748,15 @@ namespace HR_Test
                         proPrint23615TensileHeng(fre); break;
                     case "GBT23615-2009TensileZong":
                         proPrint23615TensileZong(fre); break;
+                    case "tb_GBT3354_Samples":
+                        proPrint3354(fre);
+                        break;
                 }
-                fre.WindowState = FormWindowState.Minimized;               
+                fre.WindowState = FormWindowState.Minimized;
                 fre.Show();
                 fre.tsbtnPrint_Click(sender, e);
                 fre.Dispose();
-            }          
+            }
         }
     }
 }

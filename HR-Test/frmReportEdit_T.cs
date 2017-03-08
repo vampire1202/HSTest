@@ -620,6 +620,8 @@ namespace HR_Test
                     break; 
                 case "GBT23615-2009TensileHeng": xd.Load(AppDomain.CurrentDomain.BaseDirectory + "GBT23615-2009TensileHeng.xml");
                     break;
+                case "GBT3354-2014": xd.Load(AppDomain.CurrentDomain.BaseDirectory + "GBT3354-2014.xml");
+                    break;
             }
         
             if (xd != null)

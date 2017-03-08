@@ -570,10 +570,9 @@ namespace HR_Test.TestStandard
         }
 
 
-        //查询结果
-        public static void ReadGBT228(DataGridView dg, string testNo, string testSampleNo, DateTimePicker dtpFrom, DateTimePicker dtpTo, ZedGraph.ZedGraphControl zed)
+        public static void readFinishSampleReport(DataGridView dg, string testNo, string testSampleNo, DateTimePicker dtpfrom, DateTimePicker dtpto, ZedGraph.ZedGraphControl zed)
         {
-            BLL.TestSample bllTs = new HR_Test.BLL.TestSample();
+            BLL.GBT3354_Samples bllTs = new HR_Test.BLL.GBT3354_Samples();
             string strWhere = string.Empty;
             if (!string.IsNullOrEmpty(testNo))
             {
@@ -586,17 +585,17 @@ namespace HR_Test.TestStandard
             }
 
             double maxValue = 0;
-            DataSet dsmax = bllTs.GetMaxFm("isFinish=true and isEffective=false and testDate>=#" + dtpFrom.Value.Date + "# and testDate<=#" + dtpTo.Value.Date + "#" + strWhere);
+            DataSet dsmax = bllTs.GetMaxFm("isFinish=true and isEffective=false and testDate>=#" + dtpfrom.Value.Date + "# and testDate<=#" + dtpto.Value.Date + "#" + strWhere);
             if (dsmax != null)
             {
                 if (dsmax.Tables[0].Rows.Count > 0)
                 {
-                    if (!string.IsNullOrEmpty(dsmax.Tables[0].Rows[0]["Fm"].ToString()))
-                        maxValue = Convert.ToDouble(dsmax.Tables[0].Rows[0]["Fm"].ToString());
+                    if (!string.IsNullOrEmpty(dsmax.Tables[0].Rows[0]["Pmax"].ToString()))
+                        maxValue = Convert.ToDouble(dsmax.Tables[0].Rows[0]["Pmax"].ToString());
                 }
             }
 
-            DataSet ds = bllTs.GetFinishList("isFinish=true and isEffective=false and testDate>=#" + dtpFrom.Value.Date + "# and testDate<=#" + dtpTo.Value.Date + "#" + strWhere, maxValue);
+            DataSet ds = bllTs.GetFinishList("isFinish=true and isEffective=false and testDate>=#" + dtpfrom.Value.Date + "# and testDate<=#" + dtpto.Value.Date + "#" + strWhere, maxValue);
             DataTable dt = ds.Tables[0];
             dg.DataSource = dt;
 
@@ -657,5 +656,5 @@ namespace HR_Test.TestStandard
             zed.Refresh();
             ds.Dispose();
         }
-    }
+     }
 }

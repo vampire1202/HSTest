@@ -245,11 +245,11 @@ namespace HR_Test
 
         float m_L0;                     //GBT228 L0原始标距,GBT28289 L试样长度,YBT5349 跨距
         float m_Lc;                     //Lc
-        float m_Le;                     //Le
+        float m_Le;                     //Le 纵向引伸计标距
         float m_Ep;
         float m_Et;
         float m_Er;
-        float m_Lt;//横向引伸计标距
+        float m_Lt;                     //横向引伸计标距
 
         float m_n;                      //挠度计放大倍数
         float m_Y;                      //弯曲计算参数
@@ -8564,7 +8564,8 @@ namespace HR_Test
                             }
                             if (m3354sel.ε1t)
                                 m3354.ε1t = Convert.ToDouble(m_l[m_l.Count - 2].YB1.ToString("f2"));
-
+                            //if(m3354.Et)//计算弹性模量
+                            //    m3354.Et =  
 
                             //如果使用引伸计，用力-变形曲线求Fp02,并且试验结果选取了Rp,并且试验过程中使用引伸计
                             //m_extenType 读取数据库确认参数值, m_isSelRp 确认是否试验结果选择了Rp,_useExten 试验界面是否使用引申计
@@ -9578,66 +9579,42 @@ namespace HR_Test
                         if (_selTestSampleArray[_selTestSampleArray.Count - 1] != null)
                         {
                             AnalysiseCurve.GBT3354 fac = new HR_Test.AnalysiseCurve.GBT3354();
-
                             fac.M_SR = this.m_LoadResolutionValue;
+                            fac.m_checkstopvalue = m_CheckStopValue;
                             fac.WindowState = FormWindowState.Maximized;
                             fac.tslblSampleNo.Text = _selTestSampleArray[_selTestSampleArray.Count - 1]._SelTestSample;
                             fac._TestSampleNo = _selTestSampleArray[_selTestSampleArray.Count - 1]._SelTestSample;
                             fac._CurveName = "E:\\衡新试验数据\\Curve\\" + m_path + "\\" + _selTestSampleArray[_selTestSampleArray.Count - 1] + ".txt";
-                            fac._TestType = "GBT7314-2005";
+                            fac._TestType = "GBT3354-2014";
                             fac._LineColor = "Brown";// this.dataGridView.Rows[dataGridView.SelectedRows.Count
                             //读取试样结果  
-                            BLL.Compress bllts = new HR_Test.BLL.Compress();
-                            Model.Compress modelTs = bllts.GetModel(_selTestSampleArray[_selTestSampleArray.Count - 1]._SelTestSample);
-                            DataSet dsTestSample = bllts.GetResultRow(" testSampleNo='" + _selTestSampleArray[_selTestSampleArray.Count - 1]._SelTestSample + "'");
+                            BLL.GBT3354_Samples bllts = new HR_Test.BLL.GBT3354_Samples();
+                            Model.GBT3354_Samples modelTs = bllts.GetModel(_selTestSampleArray[_selTestSampleArray.Count - 1]._SelTestSample);
+
                             //读取选择试验结果表
-                            BLL.SelTestResult_C bllSt = new HR_Test.BLL.SelTestResult_C();
-                            DataSet dsSt = bllSt.GetList(" methodName='" + modelTs.testMethodName + "'");
-
-                            if (dsSt != null)
+                            BLL.GBT3354_Sel bllSt = new HR_Test.BLL.GBT3354_Sel();
+                            Model.GBT3354_Sel mSelT = bllSt.GetModel(modelTs.testMethodName);
+                            if (mSelT != null)
                             {
-                                if (dsSt.Tables[0].Rows.Count > 0)
-                                {
-                                    //是否选择上或下屈服
-                                    if (Convert.ToBoolean(dsSt.Tables[0].Rows[0]["ReHc"].ToString()) == true) fac._IsSelReH = true;
-                                    if (Convert.ToBoolean(dsSt.Tables[0].Rows[0]["ReLc"].ToString()) == true) fac._IsSelReL = true;
-
-                                    int cCount = dsSt.Tables[0].Columns.Count;
-                                    for (int i = 2; i < cCount - 5; i++)
-                                    {
-
-                                        if (Convert.ToBoolean(dsSt.Tables[0].Rows[0][i].ToString()) == true)
-                                        {
-                                            UC.Result ucResult = new HR_Test.UC.Result();
-                                            ucResult._FieldName = _lblGBT7314_Result[i] + ":";
-                                            ucResult.Name = _lblGBT7314_Result[i].ToString();
-                                            ucResult.txtFiledContent.Text = dsTestSample.Tables[0].Rows[0][i - 1].ToString();
-                                            fac.flowLayoutPanel1.Controls.Add(ucResult);
-                                        }
-                                        else
-                                        {
-                                            UC.Result ucResult = new HR_Test.UC.Result();
-                                            ucResult._FieldName = _lblGBT7314_Result[i] + ":";
-                                            ucResult.txtFiledContent.Enabled = false;
-                                            ucResult.Visible = false;
-                                            ucResult.Name = (i - 2).ToString();
-                                            ucResult.txtFiledContent.Text = dsTestSample.Tables[0].Rows[0][i - 1].ToString();
-                                            fac.flowLayoutPanel1.Controls.Add(ucResult);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    MessageBox.Show(this, "该试样的试验方法已不存在!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                    dsSt.Dispose();
-                                    dsTestSample.Dispose();
-                                    return;
-                                }
+                                if(mSelT.Pmax)
+                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("Pmax", "Pmax", (modelTs.Pmax.Value / 1000.0).ToString("f2") + " kN", (modelTs.Pmax.Value / 1000.0).ToString("f2")));
+                                if (mSelT.σt)
+                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("σt", "σt", modelTs.σt.Value.ToString("f2") + " MPa", modelTs.σt.Value.ToString("f2")));
+                                if (mSelT.ε1t)
+                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("ε1t", "ε1t", modelTs.ε1t.Value.ToString("f2"), modelTs.ε1t.Value.ToString("f2")));
+                                if (mSelT.μ12)
+                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("μ12", "μ12", modelTs.μ12.Value.ToString("f2"), modelTs.μ12.Value.ToString("f2")));
+                                if(mSelT.Et)
+                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("Et", "Et", modelTs.Et.Value.ToString("f2"), modelTs.Et.Value.ToString("f2")));
                             }
-                            dsSt.Dispose();
-                            dsTestSample.Dispose();
+                            else
+                            {
+                                MessageBox.Show(this, "该试样的试验方法已不存在!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+
                             fac.ShowDialog();
-                            TestStandard.GBT7314_2005.readFinishSample(dataGridView, dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
+                            TestStandard.GBT3354_2014.readFinishSample(dataGridView, dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
                             dataGridView_CellClick(sender, new DataGridViewCellEventArgs(0, _selTestSampleArray[_selTestSampleArray.Count - 1]._RowIndex));
                         }
                         break;
