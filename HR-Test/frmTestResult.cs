@@ -706,7 +706,7 @@ namespace HR_Test
         async Task TskSendOrder()
         {
             //Test
-            dt = DateTime.Now;
+            //dt = DateTime.Now;
             while (_showThreadFlag)
             {
                 await Task.Delay(40);
@@ -909,12 +909,12 @@ namespace HR_Test
                 }
 
                 //Test  
-                m_Load += 0.3f;
-                m_Time = (float)(DateTime.Now - dt).TotalSeconds;
-                m_Displacement += 0.128f;
-                m_Elongate = 2 * m_Load;
-                m_YingBian = (float)(m_Elongate / m_Lt) * 100;
-                m_YingLi = (float)Math.Log(m_Load);
+                //m_Load += 0.3f;
+                //m_Time = (float)(DateTime.Now - dt).TotalSeconds;
+                //m_Displacement += 0.128f;
+                //m_Elongate = 2 * m_Load;
+                //m_YingBian = (float)(m_Elongate / m_Lt) * 100;
+                //m_YingLi = (float)Math.Log(m_Load);
 
                 if (isTest)
                 {
@@ -1022,7 +1022,7 @@ namespace HR_Test
                         gdata[] temp = new gdata[500];
                         _List_Testing_Data.CopyTo(temp);
                         _List_Testing_Data.RemoveRange(0, 500);
-                        
+
                         if (_threadSaveData == null)
                         {
                             _threadSaveData = new Thread(new ParameterizedThreadStart(SaveCurveData));
@@ -1062,23 +1062,23 @@ namespace HR_Test
                     //获取自定义试验的最后一条命令
                     //如果是位移控制的停止点
                     //Test屏蔽
-                    //if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x80)
-                    //{
-                    //    if (m_Displacement >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
-                    //    {
-                    //        isTest = false;
-                    //        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
-                    //    }
-                    //}
-                    ////如果是负荷停止点
-                    //if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x81)
-                    //{
-                    //    if (m_Load >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
-                    //    {
-                    //        isTest = false;
-                    //        tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
-                    //    }
-                    //}
+                    if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x80)
+                    {
+                        if (m_Displacement >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
+                        {
+                            isTest = false;
+                            tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
+                        }
+                    }
+                    //如果是负荷停止点
+                    if (m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPointType == 0x81)
+                    {
+                        if (m_Load >= m_CtrlCommandList[m_CtrlCommandList.Count - 1].m_StopPoint)
+                        {
+                            isTest = false;
+                            tsbtn_Stop_Click(tsbtn_Stop, new EventArgs());
+                        }
+                    }
 
                     //应力
                     if (m_S0 != 0)
@@ -1164,7 +1164,7 @@ namespace HR_Test
                                         lbltum.Text = "s";
                                         lbltum.Refresh();
                                     }
-                                       
+
 
                                     //应变
                                     lblYBShow.Text = m_YingBian.ToString("f4");
@@ -1182,11 +1182,6 @@ namespace HR_Test
                                     lblBy.Text = "By:" + m_By.ToString("f2");
                                 }));
             }
-        }
-
-        async Task SaveCurveData()
-        {
-
         }
 
         public void ThreadSendOrder()
@@ -2688,33 +2683,33 @@ namespace HR_Test
                                 {
                                     TestStandard.GBT3354_2014.CreateCurveFile(_testpath, model3354);
                                     //Test
-                                    //if (m_SensorCount > 0)
-                                    //{
-                                    if (ReadMethod("GBT3354-2014", model3354.testMethodName, out m_CtrlCommandArray, out loopCount, out m_methodContent, out m_isProLoad))
+                                    if (m_SensorCount > 0)
                                     {
-                                        //写入命令数组 
-                                        if (loopCount == 0) loopCount = 1;
-                                        if (WriteCommand(m_CtrlCommandArray, 12, loopCount, m_isProLoad, "tensile", RWconfig.GetAppSettings("machineType")))
+                                        if (ReadMethod("GBT3354-2014", model3354.testMethodName, out m_CtrlCommandArray, out loopCount, out m_methodContent, out m_isProLoad))
                                         {
-                                            tsbtn_Start.Enabled = true;
+                                            //写入命令数组 
+                                            if (loopCount == 0) loopCount = 1;
+                                            if (WriteCommand(m_CtrlCommandArray, 12, loopCount, m_isProLoad, "tensile", RWconfig.GetAppSettings("machineType")))
+                                            {
+                                                tsbtn_Start.Enabled = true;
+                                            }
+                                            else
+                                            {
+                                                tsbtn_Start.Enabled = false;
+                                            }
                                         }
                                         else
                                         {
+                                            MessageBox.Show(this, "该试样所指定的试验方法不存在,请重新选择!", "警告", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
                                             tsbtn_Start.Enabled = false;
+                                            return;
                                         }
                                     }
                                     else
                                     {
-                                        MessageBox.Show(this, "该试样所指定的试验方法不存在,请重新选择!", "警告", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                                        MessageBox.Show(this, "请连接设备!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                         tsbtn_Start.Enabled = false;
-                                        return;
                                     }
-                                    //}
-                                    //else
-                                    //{
-                                    //    MessageBox.Show(this, "请连接设备!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                    //    tsbtn_Start.Enabled = false;
-                                    //}
                                 }
                                 catch (Exception ee)
                                 {
@@ -2725,7 +2720,7 @@ namespace HR_Test
                                 {
                                     this.dataGridView.UseWaitCursor = false;
                                     //Test
-                                    tsbtn_Start.Enabled = true;
+                                    //tsbtn_Start.Enabled = true;
                                 }
                             }
                         }
@@ -6843,12 +6838,12 @@ namespace HR_Test
             m_hold_data.F1 = 0;
             m_hold_data.BX1 = 0;
             //Test
-            dt = DateTime.Now;
-            //if (m_LoadSensorCount == 0)
-            //{
-            //    MessageBox.Show(this, "未连接设备!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    return;
-            //}           
+            //dt = DateTime.Now;
+            if (m_LoadSensorCount == 0)
+            {
+                MessageBox.Show(this, "未连接设备!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }           
             ShowCurvePanel();
             if (string.IsNullOrEmpty(m_TestSampleNo))
             {
@@ -7597,7 +7592,6 @@ namespace HR_Test
                             mts.testCondition = "-";// this.lblTestMethod.Text; 
                             //Test
                             mts.isFinish = true;
-
                             frmAZ az = new frmAZ();
                             az.LocationChanged += new EventHandler(az_LocationChanged);
                             az._L0 = (double)mts.L0;
@@ -9596,7 +9590,7 @@ namespace HR_Test
                             Model.GBT3354_Sel mSelT = bllSt.GetModel(modelTs.testMethodName);
                             if (mSelT != null)
                             {
-                                if(mSelT.Pmax)
+                                if (mSelT.Pmax)
                                     fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("Pmax", "Pmax", (modelTs.Pmax.Value / 1000.0).ToString("f2") + " kN", (modelTs.Pmax.Value / 1000.0).ToString("f2")));
                                 if (mSelT.σt)
                                     fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("σt", "σt", modelTs.σt.Value.ToString("f2") + " MPa", modelTs.σt.Value.ToString("f2")));
@@ -9604,7 +9598,7 @@ namespace HR_Test
                                     fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("ε1t", "ε1t", modelTs.ε1t.Value.ToString("f2"), modelTs.ε1t.Value.ToString("f2")));
                                 if (mSelT.μ12)
                                     fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("μ12", "μ12", modelTs.μ12.Value.ToString("f2"), modelTs.μ12.Value.ToString("f2")));
-                                if(mSelT.Et)
+                                if (mSelT.Et)
                                     fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("Et", "Et", modelTs.Et.Value.ToString("f2"), modelTs.Et.Value.ToString("f2")));
                             }
                             else

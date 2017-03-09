@@ -1120,7 +1120,7 @@ namespace HR_Test.AnalysiseCurve
             int index = 0;
             for (int i = 0; i < ldata.Count; i++)
             {
-                if (ldata[i].F1 >= yValue)
+                if (ldata[i].YB1 >= yValue)
                 {
                     index = i;
                     break;

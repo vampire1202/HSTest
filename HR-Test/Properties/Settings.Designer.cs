@@ -36,22 +36,22 @@ namespace HR_Test.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\\Database\\HR-TestData" +
-            ".mdb;Persist Security Info=True")]
-        public string HR_TestDataConnectionString {
+        [global::System.Configuration.DefaultSettingValueAttribute("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\\bin\\Debug\\HR-TestDat" +
+            "a.mdb;Persist Security Info=True;Jet OLEDB:Database Password=Password1")]
+        public string HR_TestDataConnectionString1 {
             get {
-                return ((string)(this["HR_TestDataConnectionString"]));
+                return ((string)(this["HR_TestDataConnectionString1"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\\bin\\Debug\\HR-TestDat" +
-            "a.mdb;Persist Security Info=True;Jet OLEDB:Database Password=Password1")]
-        public string HR_TestDataConnectionString1 {
+        [global::System.Configuration.DefaultSettingValueAttribute("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\\HR-TestData.mdb;Pers" +
+            "ist Security Info=True")]
+        public string HR_TestDataConnectionString {
             get {
-                return ((string)(this["HR_TestDataConnectionString1"]));
+                return ((string)(this["HR_TestDataConnectionString"]));
             }
         }
     }

@@ -244,7 +244,7 @@ namespace HR_Test.DAL
         public DataSet GetListDistinctStandardNo()
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select distinct(standardNo),methodTableName ");
+            strSql.Append("select distinct(standardNo),methodTableName,selTableName,standardName ");
             strSql.Append(" FROM tb_Standard order by standardNo");
             return DbHelperOleDb.Query(strSql.ToString());
         }

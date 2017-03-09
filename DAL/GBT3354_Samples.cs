@@ -41,6 +41,20 @@ namespace HR_Test.DAL
             return DbHelperOleDb.Query(strSql.ToString());
         }
 
+        public DataSet GetResult(string strWhere)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append("select testSampleNo as [试样编号],[lL] as [标距lL(mm)],round([Fmax],4) as [Fmax(kN)], round([T2],2) as [T2(MPa)], round([E],2) as [E(MPa)], round([Z],2) as [A(%)]");
+            strSql.Append("  FROM tb_GBT236152009_TensileZong ");// ,FORMAT(testDate,'YYYY-MM-DD') as [试验日期]
+            if (strWhere.Trim() != "")
+            {
+                strSql.Append(" where " + strWhere);
+            }
+            strSql.Append(" order by testSampleNo ");
+            return DbHelperOleDb.Query(strSql.ToString());
+        }
+
+
         //获得不重复项的列表
         public DataSet GetNotOverlapList1(string strWhere)
         {
