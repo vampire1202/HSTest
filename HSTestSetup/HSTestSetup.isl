@@ -355,6 +355,7 @@
 		<row><td>ISX_DEFAULTCOMPONENT3</td><td>{5B8863E1-D28E-4A51-BF70-D2283C3440A4}</td><td>HSTEST3</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT4</td><td>{0105EA23-1D0D-40E2-A762-9CB9EF205BDD}</td><td>ZH_CN</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT5</td><td>{5A0769F7-35DB-41B6-8D6A-BC44F8E219D6}</td><td>FontsFolder</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ISX_DEFAULTCOMPONENT6</td><td>{1E091497-0FBB-46CF-B853-858EEA26A087}</td><td>DATABASEDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Maticsoft.Common.dll</td><td>{60435E09-1A78-4E07-8450-8DAD74EF877B}</td><td>INSTALLDIR</td><td>2</td><td/><td>maticsoft.common.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>MySql.Data.dll</td><td>{F8A9CA8A-EC38-4282-9C2C-3F43EB0058C7}</td><td>INSTALLDIR</td><td>2</td><td/><td>mysql.data.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>NewComponent1</td><td>{E740BE90-B0B6-420D-A068-A38F18F583F9}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -1975,6 +1976,7 @@
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT3</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT4</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT5</td></row>
+		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT6</td></row>
 		<row><td>AlwaysInstall</td><td>Maticsoft.Common.dll</td></row>
 		<row><td>AlwaysInstall</td><td>MySql.Data.dll</td></row>
 		<row><td>AlwaysInstall</td><td>NewComponent1</td></row>
@@ -2019,6 +2021,7 @@
 		<row><td>hr_test.dal.dll</td><td>HR_Test.DAL.dll</td><td>HR_TES~1.DLL|HR_Test.DAL.dll</td><td>0</td><td/><td/><td/><td>1</td><td>F:\项目\HSTest\HR-Test\bin\Release\HR_Test.DAL.dll</td><td>1</td><td/></row>
 		<row><td>hr_test.dbutility.dll</td><td>HR_Test.DBUtility.dll</td><td>HR-TES~1.DLL|HR-Test.DBUtility.dll</td><td>0</td><td/><td/><td/><td>1</td><td>F:\项目\HSTest\HR-Test\bin\Release\HR-Test.DBUtility.dll</td><td>1</td><td/></row>
 		<row><td>hr_test.model.dll</td><td>HR_Test.Model.dll</td><td>HR_TES~1.DLL|HR_Test.Model.dll</td><td>0</td><td/><td/><td/><td>1</td><td>F:\项目\HSTest\HR-Test\bin\Release\HR_Test.Model.dll</td><td>1</td><td/></row>
+		<row><td>hr_testdata.mdb</td><td>ISX_DEFAULTCOMPONENT6</td><td>HR-TES~1.MDB|HR-TestData.mdb</td><td>0</td><td/><td/><td/><td>1</td><td>F:\项目\HSTest\HR-Test\bin\Release\Database\HR-TestData.mdb</td><td>1</td><td/></row>
 		<row><td>hs_test.application</td><td>ISX_DEFAULTCOMPONENT</td><td>HS-TES~1.APP|HS-Test.application</td><td>0</td><td/><td/><td/><td>1</td><td>F:\项目\HSTest\HR-Test\bin\Release\HS-Test.application</td><td>1</td><td/></row>
 		<row><td>hs_test.exe</td><td>HS_Test.exe</td><td>HS-Test.exe</td><td>0</td><td/><td/><td/><td>1</td><td>F:\项目\HSTest\HR-Test\bin\Release\HS-Test.exe</td><td>1</td><td/></row>
 		<row><td>hs_test.exe.config</td><td>ISX_DEFAULTCOMPONENT</td><td>HS-TES~1.CON|HS-Test.exe.config</td><td>0</td><td/><td/><td/><td>1</td><td>F:\项目\HSTest\HR-Test\bin\Release\HS-Test.exe.config</td><td>1</td><td/></row>
@@ -2196,6 +2199,7 @@
 		<row><td>ISX_DEFAULTCOMPONENT3</td><td/><td/><td>_6DE96CC7_5279_4F3C_ABE8_FCEF0C365278_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT4</td><td/><td/><td>_8B04002B_0887_4E8F_8C80_D84B76848E38_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT5</td><td/><td/><td>_EB6127F6_8BCD_46A5_80FF_FBE29F4E73DB_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ISX_DEFAULTCOMPONENT6</td><td/><td/><td>_DFCA779F_3E54_4640_896D_5B3A4378154C_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Maticsoft.Common.dll</td><td/><td/><td>_E63DBD56_7AB6_474C_8431_9890618D465F_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>MySql.Data.dll</td><td/><td/><td>_5F03BED8_7F4D_4105_93C7_6C26998AE05A_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>NewComponent1</td><td/><td/><td>_F3A08EDB_ADC2_4A57_B18A_C3B044E9FE9F_FILTER</td><td/><td/><td/><td/></row>
