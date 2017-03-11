@@ -52,7 +52,18 @@ namespace HR_Test
             //CreateAccessDb();  
             ftr = new frmTestResult(this);
             fi = new frmInput(this);
-            
+
+            //复制数据库
+            if (!Directory.Exists(@"E:\衡新试验数据\Curve"))
+            {
+                Directory.CreateDirectory(@"E:\衡新试验数据\Curve");
+            }
+
+            if (!File.Exists(@"E:\衡新试验数据\HR-TestData.mdb"))
+            {
+                File.Copy(AppDomain.CurrentDomain.BaseDirectory + "DataBase\\HR-TestData.mdb", @"E:\衡新试验数据\HR-TestData.mdb");
+            }
+
             //创建密匙
             //string sSecretKey;
             this.MaximizedBounds = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
