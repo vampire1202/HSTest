@@ -1184,6 +1184,7 @@
 		<row><td>DIRECTORY21</td><td>DIRPROPERTY17</td><td>衡新</td><td/><td>0</td><td/></row>
 		<row><td>DIRECTORY22</td><td>DIRPROPERTY18</td><td>衡新</td><td/><td>0</td><td/></row>
 		<row><td>DIRECTORY23</td><td>DIRPROPERTY19</td><td>衡新</td><td/><td>0</td><td/></row>
+		<row><td>DIRECTORY24</td><td>DIRPROPERTY20</td><td>衡新</td><td/><td>0</td><td/></row>
 		<row><td>DIRECTORY3</td><td>ProgramFilesFolder</td><td>衡新</td><td/><td>0</td><td/></row>
 		<row><td>DIRECTORY4</td><td>DIRPROPERTY1</td><td>衡新</td><td/><td>0</td><td/></row>
 		<row><td>DIRECTORY5</td><td>DIRPROPERTY2</td><td>衡新</td><td/><td>0</td><td/></row>
@@ -1203,6 +1204,7 @@
 		<row><td>DIRPROPERTY18</td><td>TARGETDIR</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>DIRPROPERTY19</td><td>TARGETDIR</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>DIRPROPERTY2</td><td>TARGETDIR</td><td>.</td><td/><td>0</td><td/></row>
+		<row><td>DIRPROPERTY20</td><td>TARGETDIR</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>DIRPROPERTY3</td><td>TARGETDIR</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>DIRPROPERTY4</td><td>TARGETDIR</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>DIRPROPERTY5</td><td>TARGETDIR</td><td>.</td><td/><td>0</td><td/></row>
@@ -1217,6 +1219,7 @@
 		<row><td>HISENSTEST</td><td>ProgramFilesFolder</td><td>HISENS~1|hisenstest</td><td/><td>0</td><td/></row>
 		<row><td>HSTEST</td><td>DIRECTORY15</td><td>HSTest</td><td/><td>0</td><td/></row>
 		<row><td>HSTEST1</td><td>DIRECTORY16</td><td>HSTest</td><td/><td>0</td><td/></row>
+		<row><td>HSTEST10</td><td>DIRECTORY24</td><td>HSTest</td><td/><td>0</td><td/></row>
 		<row><td>HSTEST2</td><td>DIRECTORY17</td><td>HSTest</td><td/><td>0</td><td/></row>
 		<row><td>HSTEST3</td><td>DIRECTORY14</td><td>HSTest</td><td/><td>0</td><td/></row>
 		<row><td>HSTEST4</td><td>DIRECTORY18</td><td>HSTest</td><td/><td>0</td><td/></row>
@@ -1230,7 +1233,7 @@
 		<row><td>HSTESTCAMERA2</td><td>DIRECTORY11</td><td>HSTEST~1|HSTestCamera</td><td/><td>0</td><td/></row>
 		<row><td>HSTESTCAMERA3</td><td>DIRECTORY12</td><td>HSTEST~1|HSTestCamera</td><td/><td>0</td><td/></row>
 		<row><td>HSTESTCAMERA4</td><td>DIRECTORY13</td><td>HSTEST~1|HSTestCamera</td><td/><td>0</td><td/></row>
-		<row><td>INSTALLDIR</td><td>HSTEST9</td><td>.</td><td/><td>0</td><td/></row>
+		<row><td>INSTALLDIR</td><td>HSTEST10</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>ISCommonFilesFolder</td><td>CommonFilesFolder</td><td>Instal~1|InstallShield</td><td/><td>0</td><td/></row>
 		<row><td>ISMyCompanyDir</td><td>ProgramFilesFolder</td><td>MYCOMP~1|My Company Name</td><td/><td>0</td><td/></row>
 		<row><td>ISMyProductDir</td><td>ISMyCompanyDir</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
@@ -1268,8 +1271,6 @@
 		<row><td>WindowsFolder</td><td>TARGETDIR</td><td>.:Windows</td><td/><td>0</td><td/></row>
 		<row><td>WindowsVolume</td><td>TARGETDIR</td><td>.:WinRoot</td><td/><td>0</td><td/></row>
 		<row><td>ZH_CN</td><td>INSTALLDIR</td><td>zh-cn</td><td/><td>0</td><td/></row>
-		<row><td>hisens_1_hisenstest</td><td>ProgramMenuFolder</td><td>衡新</td><td/><td>1</td><td/></row>
-		<row><td>hstest</td><td>hisens_1_hisenstest</td><td>HSTest</td><td/><td>1</td><td/></row>
 	</table>
 
 	<table name="DrLocator">
@@ -2832,7 +2833,7 @@
 		<col def="I2">Encoded</col>
 		<col def="S0">Comment</col>
 		<col def="I4">TimeStamp</col>
-		<row><td>COMPANY_NAME</td><td>2052</td><td>hisenstest</td><td>0</td><td/><td>1235601204</td></row>
+		<row><td>COMPANY_NAME</td><td>2052</td><td>hisenstest</td><td>0</td><td/><td>-1851419308</td></row>
 		<row><td>DN_AlwaysInstall</td><td>2052</td><td>始终安装</td><td>0</td><td/><td>-568058038</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_COLOR</td><td>2052</td><td>系统颜色设置不足以运行 [ProductName]。</td><td>0</td><td/><td>-568058038</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_DOTNETVERSION45FULL</td><td>2052</td><td>Microsoft .NET Framework 4.5 Full package or greater needs to be installed for this installation to continue.</td><td>0</td><td/><td>-568058038</td></row>
@@ -3650,8 +3651,6 @@
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME10</td><td>2052</td><td>LAUNCH~1.EXE|Launch HS-Test.exe</td><td>0</td><td/><td>1235567732</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME11</td><td>1033</td><td/><td>0</td><td/><td>1235567732</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME11</td><td>2052</td><td>LAUNCH~1.EXE|Launch HS-Test.vshost.exe</td><td>0</td><td/><td>1235567732</td></row>
-		<row><td>IDS_SHORTCUT_DISPLAY_NAME12</td><td>1033</td><td/><td>0</td><td/><td>1235610804</td></row>
-		<row><td>IDS_SHORTCUT_DISPLAY_NAME12</td><td>2052</td><td>HS-Test.exe</td><td>0</td><td/><td>1235590676</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME13</td><td>1033</td><td>Uninstall</td><td>0</td><td/><td>1235598868</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME13</td><td>2052</td><td>Uninstall</td><td>0</td><td/><td>1235598868</td></row>
 		<row><td>IDS_SHORTCUT_DISPLAY_NAME2</td><td>2052</td><td>LAUNCH~1.EXE|Launch HSTestCamera.vshost.exe</td><td>0</td><td/><td>-568058038</td></row>
@@ -3957,14 +3956,22 @@
 		<row><td>IDS__TargetReq_DESC_PROCESSOR</td><td>2052</td><td>对于运行 [ProductName] 处理器不足。</td><td>0</td><td/><td>-568058038</td></row>
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>2052</td><td>对于运行 [ProductName] 内存量不足。</td><td>0</td><td/><td>-568058038</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>2052</td><td>对于运行 [ProductName] 屏幕分辨率不足。</td><td>0</td><td/><td>-568058038</td></row>
-		<row><td>ID_STRING1</td><td>2052</td><td>http://www.hisenstest.com</td><td>0</td><td/><td>1235601204</td></row>
+		<row><td>ID_STRING1</td><td>2052</td><td>http://www.hisenstest.com</td><td>0</td><td/><td>-1851419308</td></row>
 		<row><td>ID_STRING10</td><td>1033</td><td>NEWSHO~1|NewShortcut1</td><td>0</td><td/><td>950371251</td></row>
 		<row><td>ID_STRING10</td><td>2052</td><td>HSTEST~1|HSTestCamera</td><td>0</td><td/><td>950377395</td></row>
 		<row><td>ID_STRING11</td><td>1033</td><td>NEWSHO~1|NewShortcut2</td><td>0</td><td/><td>950381491</td></row>
 		<row><td>ID_STRING11</td><td>2052</td><td>Uninstall</td><td>0</td><td/><td>950381491</td></row>
 		<row><td>ID_STRING12</td><td>1033</td><td>LAUNCH~1.EXE|Launch HS-Test.exe</td><td>0</td><td/><td>1235565780</td></row>
 		<row><td>ID_STRING12</td><td>2052</td><td>LAUNCH~1.EXE|Launch HS-Test.exe</td><td>0</td><td/><td>1235565780</td></row>
-		<row><td>ID_STRING2</td><td>2052</td><td>hisenstest</td><td>0</td><td/><td>1235601204</td></row>
+		<row><td>ID_STRING13</td><td>1033</td><td>NEWSHO~1|NewShortcut4</td><td>0</td><td/><td>-1717232498</td></row>
+		<row><td>ID_STRING13</td><td>2052</td><td>HSTest</td><td>0</td><td/><td>-1717228402</td></row>
+		<row><td>ID_STRING14</td><td>1033</td><td>NEWFOL~1|newfolder2</td><td>0</td><td/><td>-1717195698</td></row>
+		<row><td>ID_STRING14</td><td>2052</td><td>HSTest</td><td>0</td><td/><td>-1717191602</td></row>
+		<row><td>ID_STRING15</td><td>1033</td><td>NEWSHO~1|NewShortcut1</td><td>0</td><td/><td>-1717234578</td></row>
+		<row><td>ID_STRING15</td><td>2052</td><td>HSTest</td><td>0</td><td/><td>-1717230482</td></row>
+		<row><td>ID_STRING16</td><td>1033</td><td>NEWSHO~1|NewShortcut3</td><td>0</td><td/><td>-1717226386</td></row>
+		<row><td>ID_STRING16</td><td>2052</td><td>Uninstall</td><td>0</td><td/><td>-1717226386</td></row>
+		<row><td>ID_STRING2</td><td>2052</td><td>hisenstest</td><td>0</td><td/><td>-1851419308</td></row>
 		<row><td>ID_STRING3</td><td>1033</td><td>HSTestCamera</td><td>0</td><td/><td>-568025270</td></row>
 		<row><td>ID_STRING3</td><td>2052</td><td>HSTestCamera</td><td>0</td><td/><td>-568025270</td></row>
 		<row><td>ID_STRING4</td><td>1033</td><td>HSTestCamera.exe</td><td>0</td><td/><td>-568037301</td></row>
@@ -4090,10 +4097,10 @@
 		<row><td>HSTestCamera.exe1_4955C825812D4F6EA714B00E9FA53DD0.exe</td><td/><td>F:\项目\HSTestCamera\HSTestCamera\bin\Debug\HSTestCamera.exe</td><td>0</td></row>
 		<row><td>HSTestCamera.exe1_D66B532167A74CC7830CA8D439C1F1DC.exe</td><td/><td>F:\项目\HSTestCamera\HSTestCamera\bin\Debug\HSTestCamera.exe</td><td>0</td></row>
 		<row><td>HSTestCamera.exe_6A3888FFD20F47FAB20C5164FB240937.exe</td><td/><td>F:\项目\HSTestCamera\HSTestCamera\bin\Debug\HSTestCamera.exe</td><td>0</td></row>
-		<row><td>HS_Test.exe1_C5696F99C1CE490FA305A6F24D1FA2ED.exe</td><td/><td>F:\项目\HSTest\HR-Test\bin\Release\HS-Test.exe</td><td>0</td></row>
-		<row><td>HS_Test.exe_67282D6B23AD4DA89957C6E8E6E6BDB2.exe</td><td/><td>F:\项目\HSTest\HR-Test\bin\Release\HS-Test.exe</td><td>0</td></row>
 		<row><td>NewShortcut1_2C568B1FD35043B68A1F9DAFE97A7FA9.exe</td><td/><td>F:\项目\HSTestCamera\HSTestCamera\bin\Debug\HSTestCamera.exe</td><td>0</td></row>
-		<row><td>UNINST_Uninstall_H_0447AB49207445E89076EFA1734297ED.exe</td><td/><td>C:\Program Files (x86)\InstallShield\2013LE\Redist\Language Independent\OS Independent\uninstall.ico</td><td>0</td></row>
+		<row><td>NewShortcut1_90179CCE7079428C82AB3F91C8C7AAFC.exe</td><td/><td>F:\项目\HSTest\HR-Test\bin\Release\HS-Test.exe</td><td>0</td></row>
+		<row><td>NewShortcut3_E742E67574C14B538B4DB777E90EA573.exe</td><td/><td>C:\Program Files (x86)\InstallShield\2013LE\Redist\Language Independent\OS Independent\uninstall.ico</td><td>0</td></row>
+		<row><td>NewShortcut4_89A86492D3884A7CAB8CE602132EBF73.exe</td><td/><td>F:\项目\HSTest\HR-Test\bin\Release\HS-Test.exe</td><td>0</td></row>
 	</table>
 
 	<table name="IniFile">
@@ -4539,7 +4546,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ARPURLINFOABOUT</td><td>##ID_STRING1##</td><td/></row>
 		<row><td>AgreeToLicense</td><td>No</td><td/></row>
 		<row><td>ApplicationUsers</td><td>AllUsers</td><td/></row>
-		<row><td>DIRPROPERTY19</td><td>D:\</td><td/></row>
+		<row><td>DIRPROPERTY20</td><td>D:\</td><td/></row>
 		<row><td>DWUSINTERVAL</td><td>30</td><td/></row>
 		<row><td>DWUSLINK</td><td>CE9B3028998C2088AEAC108FCEEC978FEE8B678F59DC87D8CE7CE7FFDEEBA0C8F9ACF0DF8EAC</td><td/></row>
 		<row><td>DefaultUIFont</td><td>ExpressDefault</td><td/></row>
@@ -4601,7 +4608,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKAPPPOOLS</td><td>##IDS_PROGMSG_IIS_ROLLBACKAPPPOOLS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
-		<row><td>ProductCode</td><td>{A460F0C8-3DAA-4E31-AC5A-201C60EE95B0}</td><td/></row>
+		<row><td>ProductCode</td><td>{CF294026-3962-4D23-96E6-F0CE155DC2D7}</td><td/></row>
 		<row><td>ProductName</td><td>HSTest</td><td/></row>
 		<row><td>ProductVersion</td><td>2.00.0000</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
@@ -4618,7 +4625,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>SecureCustomProperties</td><td>ISFOUNDNEWERPRODUCTVERSION;USERNAME;COMPANYNAME;ISX_SERIALNUM;SUPPORTDIR;DOTNETVERSION45FULL</td><td/></row>
 		<row><td>SelectedSetupType</td><td>##IDS__DisplayName_Typical##</td><td/></row>
 		<row><td>SetupType</td><td>Typical</td><td/></row>
-		<row><td>UpgradeCode</td><td>{5A3E5910-DA13-4571-9B0F-E7008CD3CF3A}</td><td/></row>
+		<row><td>UpgradeCode</td><td>{A90B6391-8DCD-4DCA-8B83-ACA5649BA5A2}</td><td/></row>
 		<row><td>_IsMaintenance</td><td>Change</td><td/></row>
 		<row><td>_IsSetupTypeMin</td><td>Typical</td><td/></row>
 	</table>
@@ -4681,9 +4688,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="i2">InstallMode</col>
 		<row><td>FileKey1</td><td>HS_Test.exe</td><td/><td>hisens_1_hisenstest</td><td>2</td></row>
 		<row><td>FileKey2</td><td>HS_Test.exe</td><td/><td>hstest</td><td>2</td></row>
-		<row><td>HS_Test.exe</td><td>HS_Test.exe</td><td/><td>hstest</td><td>2</td></row>
+		<row><td>NewShortcut1</td><td>HS_Test.exe</td><td/><td>HSTEST3</td><td>2</td></row>
 		<row><td>NewShortcut2</td><td>ISX_DEFAULTCOMPONENT</td><td/><td>HSTESTCAMERA5</td><td>2</td></row>
-		<row><td>UNINST_Uninstall_HSTest</td><td>NewComponent4</td><td/><td>hstest</td><td>2</td></row>
+		<row><td>NewShortcut3</td><td>ISX_DEFAULTCOMPONENT</td><td/><td>HSTEST3</td><td>2</td></row>
 	</table>
 
 	<table name="RemoveIniFile">
@@ -4769,9 +4776,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="S255">ISComments</col>
 		<col def="S255">ISShortcutName</col>
 		<col def="I4">ISAttributes</col>
-		<row><td>HS_Test.exe</td><td>hstest</td><td>##IDS_SHORTCUT_DISPLAY_NAME12##</td><td>HS_Test.exe</td><td>AlwaysInstall</td><td/><td/><td/><td>HS_Test.exe_67282D6B23AD4DA89957C6E8E6E6BDB2.exe</td><td>1</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
-		<row><td>HS_Test.exe1</td><td>DesktopFolder</td><td>##IDS_SHORTCUT_DISPLAY_NAME12##</td><td>HS_Test.exe</td><td>AlwaysInstall</td><td/><td/><td/><td>HS_Test.exe1_C5696F99C1CE490FA305A6F24D1FA2ED.exe</td><td>1</td><td>1</td><td>INSTALLDIR</td><td/><td/><td/><td/><td/><td/><td/></row>
-		<row><td>UNINST_Uninstall_HSTest</td><td>hstest</td><td>##IDS_SHORTCUT_DISPLAY_NAME13##</td><td>NewComponent4</td><td>[SystemFolder]msiexec.exe</td><td>/x {A460F0C8-3DAA-4E31-AC5A-201C60EE95B0}</td><td/><td/><td>UNINST_Uninstall_H_0447AB49207445E89076EFA1734297ED.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>NewShortcut1</td><td>HSTEST3</td><td>##ID_STRING15##</td><td>HS_Test.exe</td><td>[INSTALLDIR]HS-Test.exe</td><td/><td/><td/><td>NewShortcut1_90179CCE7079428C82AB3F91C8C7AAFC.exe</td><td>1</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>NewShortcut3</td><td>HSTEST3</td><td>##ID_STRING16##</td><td>ISX_DEFAULTCOMPONENT</td><td>[SystemFolder]MsiExec.exe</td><td>/x [ProductCode]</td><td/><td/><td>NewShortcut3_E742E67574C14B538B4DB777E90EA573.exe</td><td>0</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
+		<row><td>NewShortcut4</td><td>DesktopFolder</td><td>##ID_STRING13##</td><td>HS_Test.exe</td><td>[INSTALLDIR]HS-Test.exe</td><td/><td/><td/><td>NewShortcut4_89A86492D3884A7CAB8CE602132EBF73.exe</td><td>1</td><td>1</td><td/><td/><td/><td/><td/><td/><td/><td/></row>
 	</table>
 
 	<table name="Signature">
