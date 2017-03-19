@@ -262,8 +262,8 @@ namespace HR_Test.TestStandard
                 }
                 if (mSel.Et == true)
                 {
-                    strSelcol.Append(" [Et] as [Et(MPa)],");
-                    strSelcolAver.Append(" round(Avg([Et]),2) as [Et(MPa)],"); //strSelcolSD.Append("0.001,");strSelcolSD.Append(" round((SUM([ReH])-MAX([ReH])-MIN([ReH]))/(COUNT(*)-2),2) as [ReH],");
+                    strSelcol.Append(" [Et] as [Et(GPa)],");
+                    strSelcolAver.Append(" round(Avg([Et]),2) as [Et(GPa)],"); //strSelcolSD.Append("0.001,");strSelcolSD.Append(" round((SUM([ReH])-MAX([ReH])-MIN([ReH]))/(COUNT(*)-2),2) as [ReH],");
                 }
 
                 if (mSel.μ12 == true)
@@ -312,8 +312,9 @@ namespace HR_Test.TestStandard
         private static DataTable CreateAverageView(StringBuilder _selCol, StringBuilder _selSqlAver, string _strTestNo, int ab)
         {
             BLL.GBT3354_Samples bllts = new HR_Test.BLL.GBT3354_Samples();
+            string aver = _selSqlAver.ToString();
             //求平均
-            DataSet dsaver = bllts.GetFinishSumList1(_selSqlAver.ToString(), " testNo = '" + _strTestNo + "' and isFinish=true and isEffective=false ");
+            DataSet dsaver = bllts.GetFinishSumList1(aver, " testNo = '" + _strTestNo + "' and isFinish=true and isEffective=false ");
 
             //获取选择试样的数量和试样编号
 
@@ -656,5 +657,36 @@ namespace HR_Test.TestStandard
             zed.Refresh();
             ds.Dispose();
         }
+
+        public static void CalcResult(List<gdata> lGdata,double z1,double z2, out double m_Fmax, out int FmaxIndex,out int indexYB1,out int indexYB2)
+        {
+            m_Fmax = 0;
+            FmaxIndex = 0;
+            indexYB1 = 0;
+            indexYB2 = 0;
+            if (lGdata != null)
+            {
+                int lCount = lGdata.Count;
+                for (int i = 1; i < lCount; i++)
+                {
+                    float load = (float)lGdata[i].F1;
+
+                    if (z1 > lGdata[i].YB1)
+                        indexYB1 = i;
+                    if (z2 > lGdata[i].YB1)
+                        indexYB2 = i;
+
+                    //求取最大值的点 
+                    //实时得值
+                    if (load > m_Fmax)
+                    {
+                        m_Fmax = load;
+                        FmaxIndex = i;
+                    }
+
+                }
+            }
+        }
+
      }
 }

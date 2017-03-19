@@ -52,6 +52,7 @@
             this.tsbtnZoom = new System.Windows.Forms.ToolStripButton();
             this.tsbtnLFp02 = new System.Windows.Forms.ToolStripButton();
             this.tsbtnReH = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
             this.tsbtnExit = new System.Windows.Forms.ToolStripButton();
@@ -144,7 +145,8 @@
             this.tsbtnSelRect,
             this.tsbtnZoom,
             this.tsbtnLFp02,
-            this.tsbtnReH});
+            this.tsbtnReH,
+            this.toolStripButton1});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.toolStrip1.Location = new System.Drawing.Point(52, 0);
             this.toolStrip1.Name = "toolStrip1";
@@ -181,7 +183,7 @@
             this.gbtnReturn.Name = "gbtnReturn";
             this.gbtnReturn.Size = new System.Drawing.Size(44, 34);
             this.gbtnReturn.TabIndex = 7;
-            this.gbtnReturn.Text = "返回"; 
+            this.gbtnReturn.Text = "返回";
             // 
             // zedGraphControl
             // 
@@ -339,6 +341,7 @@
             this.tsbtnLFp02.Name = "tsbtnLFp02";
             this.tsbtnLFp02.Size = new System.Drawing.Size(52, 52);
             this.tsbtnLFp02.Text = "手动标记断裂力值";
+            this.tsbtnLFp02.Visible = false;
             this.tsbtnLFp02.Click += new System.EventHandler(this.tsBtnFp02_Click);
             // 
             // tsbtnReH
@@ -351,7 +354,20 @@
             this.tsbtnReH.Name = "tsbtnReH";
             this.tsbtnReH.Size = new System.Drawing.Size(52, 52);
             this.tsbtnReH.Text = "手动求取“泊松比”";
+            this.tsbtnReH.Visible = false;
             this.tsbtnReH.Click += new System.EventHandler(this.tsbtnReH_Click);
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = global::HR_Test.Properties.Resources.ε1t;
+            this.toolStripButton1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Margin = new System.Windows.Forms.Padding(5);
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(52, 52);
+            this.toolStripButton1.Text = "手动标记断裂力值";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // toolStripLabel3
             // 
@@ -466,5 +482,6 @@
         private System.Windows.Forms.Panel panel6;
         private Glass.GlassButton gBtnSaveResult;
         private System.Windows.Forms.ToolStripButton tsbtnReH;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
     }
 }

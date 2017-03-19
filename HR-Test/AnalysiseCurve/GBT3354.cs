@@ -85,8 +85,10 @@ namespace HR_Test.AnalysiseCurve
         double m_Ez2;
         double m_Et;//弹性模量
         bool m_flagHandPmax = false;//手动求取Pmax
+        bool m_flage1t = false; //手动求断裂应变
         double m_handPmax = 0;
         double m_handσt = 0;
+        double m_handE1t = 0;
         bool m_flagHandU12=false;//手动求取泊松比
         double m_handU12 = 0;
         Symbol m_zedGraphSyb;
@@ -274,17 +276,20 @@ namespace HR_Test.AnalysiseCurve
                     {
                         switch (ucR.Name)
                         {
-                            case "Pmax":
-                                modelTs.Pmax = double.Parse(ucR.Tag.ToString()) * 1000.0;
-                                break;
-                            case "σt":
-                                modelTs.σt = double.Parse(ucR.Tag.ToString());
-                                break;
+                            //case "Pmax":
+                            //    modelTs.Pmax = double.Parse(ucR.Tag.ToString()) * 1000.0;
+                            //    break;
+                            //case "σt":
+                            //    modelTs.σt = double.Parse(ucR.Tag.ToString());
+                            //    break;
+                            //case "ε1t":
+                            //    modelTs.ε1t = double.Parse(ucR.Tag.ToString());
+                            //    break;
+                            //case "μ12":
+                            //    modelTs.μ12 = double.Parse(ucR.Tag.ToString());
+                            //    break;
                             case "ε1t":
                                 modelTs.ε1t = double.Parse(ucR.Tag.ToString());
-                                break;
-                            case "μ12":
-                                modelTs.μ12 = double.Parse(ucR.Tag.ToString());
                                 break;
                         }
                     }
@@ -1135,25 +1140,32 @@ namespace HR_Test.AnalysiseCurve
 
         private void gBtnSave_Click(object sender, EventArgs e)
         {
-            if (m_handPmax > 0 && this.flowLayoutPanel1.Controls.Find("Rp", false).Length > 0)
-            {
-                UC.Result lblPmax = (UC.Result)this.flowLayoutPanel1.Controls.Find("Pmax", false)[0];
-                lblPmax.Text = m_handPmax.ToString("G5") + " MPa";
-                lblPmax.Tag = m_handPmax.ToString("G5");
-            }
+            //if (m_handPmax > 0 && this.flowLayoutPanel1.Controls.Find("Rp", false).Length > 0)
+            //{
+            //    UC.Result lblPmax = (UC.Result)this.flowLayoutPanel1.Controls.Find("Pmax", false)[0];
+            //    lblPmax.Text = m_handPmax.ToString("G5") + " MPa";
+            //    lblPmax.Tag = m_handPmax.ToString("G5");
+            //}
 
-            if (m_handU12 > 0 && this.flowLayoutPanel1.Controls.Find("U12", false).Length > 0)
-            {
-                UC.Result lblU12 = (UC.Result)this.flowLayoutPanel1.Controls.Find("U12", false)[0];
-                lblU12.Text = m_handU12.ToString() + " MPa";
-                lblU12.Tag = m_handU12.ToString();
-            }
+            //if (m_handU12 > 0 && this.flowLayoutPanel1.Controls.Find("U12", false).Length > 0)
+            //{
+            //    UC.Result lblU12 = (UC.Result)this.flowLayoutPanel1.Controls.Find("U12", false)[0];
+            //    lblU12.Text = m_handU12.ToString() + " MPa";
+            //    lblU12.Tag = m_handU12.ToString();
+            //}
 
-            if (m_handσt > 0 && this.flowLayoutPanel1.Controls.Find("σt", false).Length > 0)
+            //if (m_handσt > 0 && this.flowLayoutPanel1.Controls.Find("σt", false).Length > 0)
+            //{
+            //    UC.Result lblσt = (UC.Result)this.flowLayoutPanel1.Controls.Find("σt", false)[0];
+            //    lblσt.Text = m_handσt.ToString() + " MPa";
+            //    lblσt.Tag = m_handσt.ToString();
+            //}
+
+            if (m_handE1t > 0 && this.flowLayoutPanel1.Controls.Find("ε1t", false).Length > 0)
             {
-                UC.Result lblσt = (UC.Result)this.flowLayoutPanel1.Controls.Find("σt", false)[0];
-                lblσt.Text = m_handσt.ToString() + " MPa";
-                lblσt.Tag = m_handσt.ToString();
+                UC.Result lblε1t = (UC.Result)this.flowLayoutPanel1.Controls.Find("ε1t", false)[0];
+                lblε1t.Text = m_handE1t.ToString();
+                lblε1t.Tag = m_handE1t.ToString();
             }
         }
 
@@ -1192,6 +1204,33 @@ namespace HR_Test.AnalysiseCurve
                 this.zedGraphControl.Refresh();
                 m_flagHandPmax = false; 
             }
+
+            if (this.zedGraphControl.GraphPane.FindNearestPoint(p, this.zedGraphControl.GraphPane.CurveList, out ci, out nearP) && m_flage1t)
+            {
+                this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllPmax);
+                this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllPmax);
+                //画点标注
+                double[] _lineFp02_x = { ci.Points[nearP].X };
+                double[] _lineFp02_y = { ci.Points[nearP].Y };
+
+                LineItem liFrH = this.zedGraphControl.GraphPane.AddCurve("ε1t", _lineFp02_x, _lineFp02_y, Color.Blue, SymbolType.UserDefined);
+                liFrH.Symbol = m_zedGraphSyb;
+                liFrH.Tag = "ε1t";
+                m_handE1t = Math.Round( _List_Data[nearP].YB1,3) ;
+                ZedGraph.TextObj t = new TextObj("ε1t = " + _List_Data[nearP].YB1.ToString("f3"), ci.Points[nearP + 1].X, ci.Points[nearP + 1].Y);
+
+                t.FontSpec.FontColor = Color.Navy;
+                t.Location.AlignH = AlignH.Right;
+                t.Location.AlignV = AlignV.Bottom;
+                t.FontSpec.IsBold = true;
+                t.FontSpec.StringAlignment = StringAlignment.Near;
+                t.FontSpec.Border.IsVisible = false;
+                t.ZOrder = ZOrder.E_BehindCurves;
+                t.Tag = "ε1t";
+                this.zedGraphControl.GraphPane.GraphObjList.Add(t);
+                this.zedGraphControl.Refresh();
+                m_flage1t = false;
+            }
         }  
 
 
@@ -1226,6 +1265,11 @@ namespace HR_Test.AnalysiseCurve
             this.zedGraphControl.GraphPane.CurveList.RemoveAll(FindAllU12);
             this.zedGraphControl.GraphPane.GraphObjList.RemoveAll(FindAllU12);
             this.zedGraphControl.Refresh();
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            m_flage1t = true;
         }
     }
 }

@@ -720,6 +720,7 @@
     <None Include="Resources\mode.jpg" />
     <None Include="Resources\Pmax.ico" />
     <None Include="Resources\U12.ico" />
+    <None Include="Resources\ε1t.ico" />
     <Content Include="UC\GlassButton.bmp" />
     <Content Include="UC\GlassButton.csproj" />
   </ItemGroup>

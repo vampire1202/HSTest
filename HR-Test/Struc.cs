@@ -8,7 +8,7 @@ namespace HR_Test
     public class Struc
     {
         //传感器结构体
-        public class sensor
+        public struct sensor
         {
             public byte sockt;
             public byte type;
@@ -21,13 +21,13 @@ namespace HR_Test
  
 
         //传感器数组结构体
-        public class SensorArray
+        public struct SensorArray
         {
             public byte SensorIndex;
         };
 
         //控制命令结构体
-        public class ctrlcommand
+        public struct ctrlcommand
         {
             public byte m_CtrlType;
             public byte m_CtrlChannel;

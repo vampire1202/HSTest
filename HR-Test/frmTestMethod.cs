@@ -659,7 +659,7 @@ namespace HR_Test
             model.selResultID = 0;
             model.extenValue = 0;
             model.extenChannel = 0;
-        
+            model.sampleSpec = "-";
             model.sign = "-";
 
             //是否预载 

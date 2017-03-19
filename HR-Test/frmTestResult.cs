@@ -199,6 +199,11 @@ namespace HR_Test
         bool m_isSelσbb = false;
         float m_σbb;
 
+        bool m3354selE1t = false;
+        bool m3354selEt = false;
+        bool m3354selU12 = false;
+        BLL.GBT3354_Samples bll3354;
+        Model.GBT3354_Samples model3354;
 
         //当力值超过量程的1/200,启动判断停止的标志
         private float m_CheckStopValue = 0f;
@@ -490,7 +495,7 @@ namespace HR_Test
         {
             InitializeComponent();
             _fmMain = fmain;
-            Task t = tskReadSample();
+            //Task t = tskReadSample();
         }
 
         void zedGraphControl_Invalidated(object sender, InvalidateEventArgs e)
@@ -715,7 +720,8 @@ namespace HR_Test
                 int len = 2;
                 int m_lvalue = 0;
                 int m_dvalue = 0;
-                int m_evalue = 0;
+                int m_evalue1 = 0;
+                int m_evalue2 = 0;
                 int m_tvalue = 0;
                 int m_valueS = 0;
                 int m_index = 0;
@@ -839,48 +845,48 @@ namespace HR_Test
                     if (m_ElongateSensorCount != 0)
                     {
                         m_index = m_ESensorArray[0].SensorIndex * 4 + 3;
-                        m_evalue = buf[m_index];
+                        m_evalue1 = buf[m_index];
 
-                        m_evalue = m_evalue << 8;
+                        m_evalue1 = m_evalue1 << 8;
                         m_index = m_ESensorArray[0].SensorIndex * 4 + 2;
-                        m_evalue |= buf[m_index];
+                        m_evalue1 |= buf[m_index];
 
-                        m_evalue = m_evalue << 8;
+                        m_evalue1 = m_evalue1 << 8;
                         m_index = m_ESensorArray[0].SensorIndex * 4 + 1;
-                        m_evalue |= buf[m_index];
+                        m_evalue1 |= buf[m_index];
 
-                        m_evalue = m_evalue << 8;
+                        m_evalue1 = m_evalue1 << 8;
                         m_index = m_ESensorArray[0].SensorIndex * 4 + 0;
-                        m_evalue |= buf[m_index];
+                        m_evalue1 |= buf[m_index];
 
                         if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
-                            m_evalue = -m_evalue;
+                            m_evalue1 = -m_evalue1;
 
                         //变形
-                        m_Elongate = (float)(m_evalue * m_ElongateResolutionValue);
+                        m_Elongate = (float)(m_evalue1 * m_ElongateResolutionValue);
 
                         if (m_ESensorArray.Length > 1)
                         {
                             //变形2
                             m_index = m_ESensorArray[1].SensorIndex * 4 + 3;
-                            m_evalue = buf[m_index];
+                            m_evalue2 = buf[m_index];
 
-                            m_evalue = m_evalue << 8;
+                            m_evalue2 = m_evalue2 << 8;
                             m_index = m_ESensorArray[1].SensorIndex * 4 + 2;
-                            m_evalue |= buf[m_index];
+                            m_evalue2 |= buf[m_index];
 
-                            m_evalue = m_evalue << 8;
+                            m_evalue2 = m_evalue2 << 8;
                             m_index = m_ESensorArray[1].SensorIndex * 4 + 1;
-                            m_evalue |= buf[m_index];
+                            m_evalue2 |= buf[m_index];
 
-                            m_evalue = m_evalue << 8;
+                            m_evalue2 = m_evalue2 << 8;
                             m_index = m_ESensorArray[1].SensorIndex * 4 + 0;
-                            m_evalue |= buf[m_index];
+                            m_evalue2 |= buf[m_index];
 
                             if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
-                                m_evalue = -m_evalue;
+                                m_evalue2 = -m_evalue2;
                             //变形
-                            m_Elongate1 = (float)(m_evalue * m_ElongateResolutionValue);
+                            m_Elongate1 = (float)(m_evalue2 * m_ElongateResolutionValue);
                         }
 
 
@@ -888,9 +894,9 @@ namespace HR_Test
                         {
                             this.BeginInvoke(new Action(() =>
                             {
-                                this.lblBXShow.Text = FloatDisplay(m_evalue, (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
-                                this.lblBXShow.Invalidate();
-                                this.lblBXShow2.Text = FloatDisplay(m_evalue, (ushort)m_SensorArray[m_ESensorArray[1].SensorIndex].scale, m_Resolution, 0x03);
+                                this.lblBXShow1.Text = FloatDisplay(m_evalue1, (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
+                                this.lblBXShow1.Invalidate();
+                                this.lblBXShow2.Text = FloatDisplay(m_evalue2, (ushort)m_SensorArray[m_ESensorArray[1].SensorIndex].scale, m_Resolution, 0x03);
                                 this.lblBXShow2.Invalidate();
                             }));
                         }
@@ -986,13 +992,15 @@ namespace HR_Test
                     }
                     #endregion
 
-
+                    //取下引伸计后值的改变
                     if (m_ElongateResolutionValue != 0)
                     {
                         this.BeginInvoke(new Action(() =>
                             {
-                                this.lblBXShow.Text = FloatDisplay((int)(m_Elongate / m_ElongateResolutionValue), (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
-                                this.lblBXShow.Refresh();
+                                this.lblBXShow1.Text = FloatDisplay((int)(m_Elongate / m_ElongateResolutionValue), (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
+                                this.lblBXShow1.Refresh();
+                                this.lblBXShow2.Text = FloatDisplay((int)(m_Elongate1 / m_ElongateResolutionValue), (ushort)m_SensorArray[m_ESensorArray[1].SensorIndex].scale, m_Resolution, 0x03);
+                                this.lblBXShow2.Refresh();
                             }));
                     }
 
@@ -1133,7 +1141,7 @@ namespace HR_Test
                                     }
 
                                     //变形1
-                                    if (Math.Abs(m_Elongate) > 1000 && lblBXShow.Visible == true)
+                                    if (Math.Abs(m_Elongate) > 1000 && lblBXShow1.Visible == true)
                                     {
                                         lblmm2.Text = "mm";
                                         lblmm2.Refresh();
@@ -2624,8 +2632,8 @@ namespace HR_Test
                         m_path = "GBT3354-2014";
                         m_testType = "tensile";
                         this.dataGridView.Tag = "GBT3354-2014";
-                        BLL.GBT3354_Samples bll3354 = new HR_Test.BLL.GBT3354_Samples();
-                        Model.GBT3354_Samples model3354 = bll3354.GetModel(m_TestSampleNo);
+                        bll3354 = new HR_Test.BLL.GBT3354_Samples();
+                        model3354 = bll3354.GetModel(m_TestSampleNo);
                         if (model3354 == null)
                             return;
                         //读取参数
@@ -6399,7 +6407,7 @@ namespace HR_Test
         #endregion
 
         //简易日期查询
-        private void dateTimePicker_ValueChanged(object sender, EventArgs e)
+        public void dateTimePicker_ValueChanged(object sender, EventArgs e)
         {
             Task t = tskReadSample();
         }
@@ -6843,7 +6851,7 @@ namespace HR_Test
             {
                 MessageBox.Show(this, "未连接设备!", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
-            }           
+            }
             ShowCurvePanel();
             if (string.IsNullOrEmpty(m_TestSampleNo))
             {
@@ -8519,13 +8527,13 @@ namespace HR_Test
                     {
                         if (!string.IsNullOrEmpty(m_TestSampleNo))
                         {
-                            BLL.GBT3354_Samples bll3354 = new HR_Test.BLL.GBT3354_Samples();
-                            Model.GBT3354_Samples m3354 = bll3354.GetModel(m_TestSampleNo);
+                             bll3354 = new HR_Test.BLL.GBT3354_Samples();
+                             model3354 = bll3354.GetModel(m_TestSampleNo);
 
                             int index = this.tvTestSample.SelectedNode.Parent.Index;
 
                             //保存曲线
-                            string curveName = "E:\\衡新试验数据\\Curve\\" + m_path + "\\" + m3354.testSampleNo + ".txt";
+                            string curveName = "E:\\衡新试验数据\\Curve\\" + m_path + "\\" + model3354.testSampleNo + ".txt";
                             if (File.Exists(curveName))
                             {
                                 FileStream fs = new FileStream(curveName, FileMode.Append, FileAccess.Write);
@@ -8541,35 +8549,65 @@ namespace HR_Test
 
                             //读取试验方法中是否选取了Rp
                             BLL.GBT3354_Sel b3354sel = new HR_Test.BLL.GBT3354_Sel();
-                            Model.GBT3354_Sel m3354sel = b3354sel.GetModel(m3354.testMethodName);
+                            Model.GBT3354_Sel m3354sel = b3354sel.GetModel(model3354.testMethodName);
 
-                            if (m3354sel == null)
-                                return;
+                            if (m3354sel != null)
+                            {
+                                m3354selE1t = m3354sel.ε1t;
+                                m3354selEt = m3354sel.Et;
+                                m3354selU12 = m3354sel.μ12;
+                            } 
 
                             //计算数据 Fm ReL ReH
                             m_l = ReadOneListData(m_path, m_TestSampleNo);
+                            double Fmax=0;
+                            int FmaxIndex = 0; 
+                            int indexYb1=0;
+                            int indexYb2=0;
+                            if (m_l != null)
+                            {
+                                TestStandard.GBT3354_2014.CalcResult(m_l, model3354.εz1.Value, model3354.εz2.Value, out Fmax, out FmaxIndex, out indexYb1, out indexYb2);
+                                m_FmaxIndex = FmaxIndex;
+                                m_Fmax = (float)Math.Round(Fmax, 2); 
+                            }
 
                             //写入最大值 Fm Rm A Z
                             //MessageBox.Show("m_FRH=" + m_FRH.ToString() + ",m_Fm=" + m_Fm.ToString() + ",m_FRLFirst=" + m_FRLFirst.ToString() + ",m_FRL=" + m_FRL.ToString());
-                            if (m_l.Count > m_FmIndex)
+                            if (m_l.Count > m_FmaxIndex)
                             {
-                                m3354.Pmax = Convert.ToDouble((m_l[m_l.Count - 2].F1).ToString("f2"));
-                                m3354.σt = Convert.ToDouble(m_l[m_l.Count - 2].YL1.ToString("f2"));
+                                model3354.Pmax = Convert.ToDouble((m_l[m_FmaxIndex].F1).ToString("f2"));
+                                model3354.σt = Convert.ToDouble(m_l[m_FmaxIndex].YL1.ToString("f2"));
                             }
                             if (m3354sel.ε1t)
-                                m3354.ε1t = Convert.ToDouble(m_l[m_l.Count - 2].YB1.ToString("f2"));
-                            //if(m3354.Et)//计算弹性模量
-                            //    m3354.Et =  
+                                model3354.ε1t = Convert.ToDouble(m_l[m_l.Count - 2].YB1.ToString("f2")); 
+                          
+                            //弹性模量   =    应力增量  /  应变增量
+                            //计算弹性模量,取 05的点的 应力/应变   GPa
+                            //double yl = (m_l[m_fr05index].YL1 - m_l[m_fr01index].YL1);
+                            //double yb = (m_l[m_fr05index].YB1 - m_l[m_fr01index].YB1) / 100.0;
+                            //if (yb > 0)
+                            //    mts.E = Math.Round(yl / (1000.0 * yb), 2);
 
-                            //如果使用引伸计，用力-变形曲线求Fp02,并且试验结果选取了Rp,并且试验过程中使用引伸计
-                            //m_extenType 读取数据库确认参数值, m_isSelRp 确认是否试验结果选择了Rp,_useExten 试验界面是否使用引申计
+                            if(m3354sel.Et)
+                            {
+                                double yl = (m_l[indexYb2].YL1 - m_l[indexYb1].YL1);
+                                double yb = (m_l[indexYb2].YB1 - m_l[indexYb1].YB1) / 100.0;
+                                if (yb > 0)
+                                    model3354.Et = Math.Round(yl / (1000.0 * yb), 2);
+                                else
+                                    model3354.Et = 0;
+                            }
+                               
+                                     
+                            //泊松比
+                            if(m3354sel.μ12)
+                                model3354.μ12 = Math.Round((m_l[indexYb2].YB2 - m_l[indexYb1].YB2) / (m_l[indexYb2].YB1 - m_l[indexYb1].YB1), 3);
 
-
-                            m3354.testCondition = "-";// this.lblTestMethod.Text; 
+                            model3354.testCondition = "-";// this.lblTestMethod.Text; 
                             //Test
-                            m3354.isFinish = true;
+                            model3354.isFinish = true;
 
-                            if (bll3354.Update(m3354))
+                            if (bll3354.Update(model3354))
                             {
                                 isShowResult = true;
                                 TestStandard.GBT3354_2014.readFinishSample(this.dataGridView, this.dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
@@ -8655,6 +8693,7 @@ namespace HR_Test
 
             }
         }
+
 
         void az_LocationChanged(object sender, EventArgs e)
         {
@@ -9405,7 +9444,7 @@ namespace HR_Test
             {
                 this.lblYBShow.Visible = true;
                 lblmm3.Visible = true;
-                this.lblBXShow.Visible = false;
+                this.lblBXShow1.Visible = false;
                 lblmm2.Visible = false;
                 this.lblBx.Text = "应变";
                 this.btnYb.Text = "变形";
@@ -9417,11 +9456,11 @@ namespace HR_Test
             {
                 this.lblYBShow.Visible = false;
                 lblmm3.Visible = false;
-                this.lblBXShow.Visible = true;
+                this.lblBXShow1.Visible = true;
                 lblmm2.Visible = true;
                 this.lblBx.Text = "变形";
                 this.btnYb.Text = "应变";
-                this.lblBXShow.Refresh();
+                this.lblBXShow1.Refresh();
                 this.lblBx.Refresh();
                 this.btnYb.Refresh();
             }
@@ -9582,24 +9621,24 @@ namespace HR_Test
                             fac._TestType = "GBT3354-2014";
                             fac._LineColor = "Brown";// this.dataGridView.Rows[dataGridView.SelectedRows.Count
                             //读取试样结果  
-                            BLL.GBT3354_Samples bllts = new HR_Test.BLL.GBT3354_Samples();
-                            Model.GBT3354_Samples modelTs = bllts.GetModel(_selTestSampleArray[_selTestSampleArray.Count - 1]._SelTestSample);
+                            bll3354 = new HR_Test.BLL.GBT3354_Samples();
+                            model3354 = bll3354.GetModel(_selTestSampleArray[_selTestSampleArray.Count - 1]._SelTestSample);
 
                             //读取选择试验结果表
                             BLL.GBT3354_Sel bllSt = new HR_Test.BLL.GBT3354_Sel();
-                            Model.GBT3354_Sel mSelT = bllSt.GetModel(modelTs.testMethodName);
+                            Model.GBT3354_Sel mSelT = bllSt.GetModel(model3354.testMethodName);
                             if (mSelT != null)
                             {
                                 if (mSelT.Pmax)
-                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("Pmax", "Pmax", (modelTs.Pmax.Value / 1000.0).ToString("f2") + " kN", (modelTs.Pmax.Value / 1000.0).ToString("f2")));
+                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("Pmax", "Pmax", (model3354.Pmax.Value / 1000.0).ToString("f2") + " kN", (model3354.Pmax.Value / 1000.0).ToString("f2")));
                                 if (mSelT.σt)
-                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("σt", "σt", modelTs.σt.Value.ToString("f2") + " MPa", modelTs.σt.Value.ToString("f2")));
+                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("σt", "σt", model3354.σt.Value.ToString("f2") + " MPa", model3354.σt.Value.ToString("f2")));
                                 if (mSelT.ε1t)
-                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("ε1t", "ε1t", modelTs.ε1t.Value.ToString("f2"), modelTs.ε1t.Value.ToString("f2")));
+                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("ε1t", "ε1t", model3354.ε1t.Value.ToString("f3"), model3354.ε1t.Value.ToString("f3")));
                                 if (mSelT.μ12)
-                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("μ12", "μ12", modelTs.μ12.Value.ToString("f2"), modelTs.μ12.Value.ToString("f2")));
+                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("μ12", "μ12", model3354.μ12.Value.ToString("f3"), model3354.μ12.Value.ToString("f3")));
                                 if (mSelT.Et)
-                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("Et", "Et", modelTs.Et.Value.ToString("f2"), modelTs.Et.Value.ToString("f2")));
+                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("Et", "Et", model3354.Et.Value.ToString("f2") + " GPa", model3354.Et.Value.ToString("f2")));
                             }
                             else
                             {
@@ -12927,7 +12966,7 @@ namespace HR_Test
 
                         if (m_isSelEb)
                         {
-                            strResult.Append("Eb:" + m_Eb + " MPa\r\n");
+                            strResult.Append("Eb:" + m_Eb + " GPa\r\n");
                         }
 
                         //规定非比例弯曲力
@@ -12964,6 +13003,24 @@ namespace HR_Test
                             strResult.Append("ReLc:" + Convert.ToDouble((m_FRL / m_S0).ToString("G5")) + " MPa\r\n");
                         if (m_isSelRp)
                             strResult.Append("Rpc:" + m_Rp + " MPa\r\n");
+                        break;
+                    case "GBT3354-2014":
+                        double Pmax = Convert.ToDouble(model3354.Pmax.Value.ToString("f2"));
+                        double σt = Convert.ToDouble(model3354.σt.Value.ToString("f2"));                         
+                        if (Pmax < 1000.0d)
+                            strResult.Append("Pmax:" + Pmax.ToString("f2") + " N\r\n");
+                        if (Pmax >= 1000.0d)
+                            strResult.Append("Pmax:" + (Pmax / 1000.0d).ToString("f3") + " kN\r\n");
+                        strResult.Append("σt:" + σt.ToString("f2") + " MPa\r\n");                        
+                         if (m3354selE1t)
+                             strResult.Append("ε1t:" + model3354.ε1t.Value.ToString("f2") + " \r\n");
+                            //弹性模量   =    应力增量  /  应变增量
+                            if( m3354selEt )
+                                 strResult.Append("Et:" + model3354.Et.Value.ToString("f3") + " GPa\r\n");                                      
+                            //泊松比
+                            if(m3354selU12)
+                                strResult.Append("μ12:" + model3354.μ12.Value.ToString("f3") + " \r\n"); 
+                      
                         break;
                 }
                 Rectangle rec = e.ClipRectangle;
