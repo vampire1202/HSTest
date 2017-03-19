@@ -177,7 +177,7 @@ namespace HR_Test.DAL
                         break;
                 }
             }
-            strSql.Append("[σt] as [σt(MPa)],[Et] as [Et(MPa)],[μ12] as [μ12(MPa)],[ε1t] as [ε1t(mm/mm)],failuremode as [失效模式],testDate as [试验日期]  FROM tb_GBT3354_Samples ");
+            strSql.Append("[σt] as [σt(MPa)],[Et] as [Et(GPa)],[μ12] as [μ12(MPa)],[ε1t] as [ε1t(mm/mm)],failuremode as [失效模式],testDate as [试验日期]  FROM tb_GBT3354_Samples ");
             if (strWhere.Trim() != "")
             {
                 strSql.Append(" where " + strWhere);
