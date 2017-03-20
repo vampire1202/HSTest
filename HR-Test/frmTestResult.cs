@@ -1005,6 +1005,9 @@ namespace HR_Test
                                 }
                             }));
                     }
+                    //应变是否取平均值
+                    if (m_isShowYbAverage)
+                        m_YingBian = (m_YingBian + m_YingBian1) / 2;
 
                     gd.F1 = (float)Math.Round(m_Load, 3);
                     gd.F2 = 0;
@@ -1107,13 +1110,11 @@ namespace HR_Test
                     //By值                   
                     if (m_YingBian != 0 && m_YingBian1 != 0)
                     {
-                        by = Math.Round(100.0f * (m_YingBian - m_YingBian1) / (m_YingBian + m_YingBian1), 2);
+                        by = Math.Round(100.0f * (Math.Abs(m_YingBian - m_YingBian1)) / Math.Abs(m_YingBian + m_YingBian1), 2);
                         if (by > m_By)
                             m_By = by;
                     }
-                    //应变是否取平均值
-                    if (m_isShowYbAverage)
-                        m_YingBian = (m_YingBian + m_YingBian1) / 2;
+                  
                 }
 
                 this.BeginInvoke(
@@ -1189,7 +1190,7 @@ namespace HR_Test
                                     lblTimeShow.Refresh();
 
                                     //弯曲百分比
-                                    lblBy.Text ="Bymax:"+by.ToString("f2")+ " By:" + m_By.ToString("f2");
+                                    lblBy.Text = "Bymax:" + m_By.ToString("f2") + " By:" + by.ToString("f2");
                                 }));
             }
         }
