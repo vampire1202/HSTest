@@ -30,16 +30,16 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTestResult));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tvTestSample = new System.Windows.Forms.TreeView();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
@@ -53,7 +53,6 @@
             this.panel6 = new System.Windows.Forms.Panel();
             this.lblBy = new System.Windows.Forms.Label();
             this.pbChart = new System.Windows.Forms.PictureBox();
-            this.zedGraphControl = new ZedGraph.ZedGraphControl();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridViewSum = new System.Windows.Forms.DataGridView();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -63,8 +62,8 @@
             this.btnBXShow2 = new System.Windows.Forms.Button();
             this.btnZeroBx2 = new System.Windows.Forms.Button();
             this.lbltime = new System.Windows.Forms.Label();
-            this.lblTimeShow = new System.Windows.Forms.Label();
             this.lblBXShow2 = new System.Windows.Forms.Label();
+            this.lblTimeShow = new System.Windows.Forms.Label();
             this.customPanel3 = new System.Windows.Forms.Panel();
             this.lblmm2 = new System.Windows.Forms.Label();
             this.lblmm3 = new System.Windows.Forms.Label();
@@ -108,6 +107,7 @@
             this.toolStripButton1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.btnStop = new System.Windows.Forms.Button();
+            this.zedGraphControl = new ZedGraph.ZedGraphControl();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -268,7 +268,7 @@
             this.lblBy.AutoSize = true;
             this.lblBy.BackColor = System.Drawing.Color.White;
             this.lblBy.Font = new System.Drawing.Font("宋体", 12F);
-            this.lblBy.Location = new System.Drawing.Point(602, 351);
+            this.lblBy.Location = new System.Drawing.Point(589, 337);
             this.lblBy.Name = "lblBy";
             this.lblBy.Size = new System.Drawing.Size(72, 16);
             this.lblBy.TabIndex = 2;
@@ -280,33 +280,12 @@
             this.pbChart.BackColor = System.Drawing.Color.White;
             this.pbChart.Location = new System.Drawing.Point(115, 59);
             this.pbChart.Name = "pbChart";
-            this.pbChart.Size = new System.Drawing.Size(374, 229);
+            this.pbChart.Size = new System.Drawing.Size(559, 312);
             this.pbChart.TabIndex = 1;
             this.pbChart.TabStop = false;
             this.pbChart.Paint += new System.Windows.Forms.PaintEventHandler(this.pbChart_Paint);
             this.pbChart.MouseEnter += new System.EventHandler(this.tsbtnShowResultCurve_MouseEnter);
             this.pbChart.MouseLeave += new System.EventHandler(this.tsbtnShowResultCurve_MouseLeave);
-            // 
-            // zedGraphControl
-            // 
-            this.zedGraphControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.zedGraphControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.zedGraphControl.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.zedGraphControl.IsEnableWheelZoom = false;
-            this.zedGraphControl.IsShowContextMenu = false;
-            this.zedGraphControl.IsShowPointValues = true;
-            this.zedGraphControl.Location = new System.Drawing.Point(0, 0);
-            this.zedGraphControl.Name = "zedGraphControl";
-            this.zedGraphControl.ScrollGrace = 0D;
-            this.zedGraphControl.ScrollMaxX = 0D;
-            this.zedGraphControl.ScrollMaxY = double.NaN;
-            this.zedGraphControl.ScrollMaxY2 = double.NaN;
-            this.zedGraphControl.ScrollMinX = 0D;
-            this.zedGraphControl.ScrollMinY = double.NaN;
-            this.zedGraphControl.ScrollMinY2 = double.NaN;
-            this.zedGraphControl.Size = new System.Drawing.Size(685, 375);
-            this.zedGraphControl.TabIndex = 0;
-            this.zedGraphControl.ZoomButtons = System.Windows.Forms.MouseButtons.None;
             // 
             // dataGridView
             // 
@@ -314,49 +293,49 @@
             this.dataGridView.AllowUserToDeleteRows = false;
             this.dataGridView.AllowUserToResizeColumns = false;
             this.dataGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            this.dataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.dataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle11;
             this.dataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dataGridView.BackgroundColor = System.Drawing.Color.GhostWhite;
             this.dataGridView.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle13.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView.DefaultCellStyle = dataGridViewCellStyle13;
             this.dataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView.GridColor = System.Drawing.SystemColors.ButtonShadow;
             this.dataGridView.Location = new System.Drawing.Point(0, 0);
             this.dataGridView.MultiSelect = false;
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.ReadOnly = true;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            this.dataGridView.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.dataGridView.RowsDefaultCellStyle = dataGridViewCellStyle15;
             this.dataGridView.RowTemplate.Height = 23;
             this.dataGridView.ShowEditingIcon = false;
             this.dataGridView.Size = new System.Drawing.Size(445, 225);
@@ -369,43 +348,43 @@
             this.dataGridViewSum.AllowUserToDeleteRows = false;
             this.dataGridViewSum.AllowUserToResizeColumns = false;
             this.dataGridViewSum.AllowUserToResizeRows = false;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.NullValue = "(空)";
-            this.dataGridViewSum.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle16.NullValue = "(空)";
+            this.dataGridViewSum.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle16;
             this.dataGridViewSum.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
             this.dataGridViewSum.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dataGridViewSum.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewSum.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle17.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle17.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewSum.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle17;
             this.dataGridViewSum.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewSum.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle18.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle18.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle18.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewSum.DefaultCellStyle = dataGridViewCellStyle18;
             this.dataGridViewSum.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.dataGridViewSum.Location = new System.Drawing.Point(0, 225);
             this.dataGridViewSum.Name = "dataGridViewSum";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewSum.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle19.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle19.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle19.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle19.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle19.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle19.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewSum.RowHeadersDefaultCellStyle = dataGridViewCellStyle19;
             this.dataGridViewSum.RowHeadersWidth = 20;
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dataGridViewSum.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.dataGridViewSum.RowsDefaultCellStyle = dataGridViewCellStyle20;
             this.dataGridViewSum.RowTemplate.Height = 23;
             this.dataGridViewSum.Size = new System.Drawing.Size(445, 150);
             this.dataGridViewSum.TabIndex = 2;
@@ -498,26 +477,13 @@
             // lbltime
             // 
             this.lbltime.AutoSize = true;
-            this.lbltime.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbltime.Font = new System.Drawing.Font("方正隶变简体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lbltime.ForeColor = System.Drawing.Color.Black;
             this.lbltime.Location = new System.Drawing.Point(3, 3);
             this.lbltime.Name = "lbltime";
-            this.lbltime.Size = new System.Drawing.Size(60, 24);
+            this.lbltime.Size = new System.Drawing.Size(62, 27);
             this.lbltime.TabIndex = 1;
             this.lbltime.Text = "时间";
-            // 
-            // lblTimeShow
-            // 
-            this.lblTimeShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTimeShow.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblTimeShow.ForeColor = System.Drawing.Color.Black;
-            this.lblTimeShow.Location = new System.Drawing.Point(3, 20);
-            this.lblTimeShow.Margin = new System.Windows.Forms.Padding(0);
-            this.lblTimeShow.Name = "lblTimeShow";
-            this.lblTimeShow.Size = new System.Drawing.Size(251, 51);
-            this.lblTimeShow.TabIndex = 0;
-            this.lblTimeShow.Text = "0.00";
-            this.lblTimeShow.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblBXShow2
             // 
@@ -532,6 +498,19 @@
             this.lblBXShow2.Text = "0";
             this.lblBXShow2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblBXShow2.Visible = false;
+            // 
+            // lblTimeShow
+            // 
+            this.lblTimeShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTimeShow.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblTimeShow.ForeColor = System.Drawing.Color.Black;
+            this.lblTimeShow.Location = new System.Drawing.Point(3, 20);
+            this.lblTimeShow.Margin = new System.Windows.Forms.Padding(0);
+            this.lblTimeShow.Name = "lblTimeShow";
+            this.lblTimeShow.Size = new System.Drawing.Size(251, 51);
+            this.lblTimeShow.TabIndex = 0;
+            this.lblTimeShow.Text = "0.00";
+            this.lblTimeShow.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // customPanel3
             // 
@@ -635,11 +614,11 @@
             // lblBx
             // 
             this.lblBx.AutoSize = true;
-            this.lblBx.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblBx.Font = new System.Drawing.Font("方正隶变简体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblBx.ForeColor = System.Drawing.Color.Black;
             this.lblBx.Location = new System.Drawing.Point(3, 2);
             this.lblBx.Name = "lblBx";
-            this.lblBx.Size = new System.Drawing.Size(60, 24);
+            this.lblBx.Size = new System.Drawing.Size(62, 27);
             this.lblBx.TabIndex = 1;
             this.lblBx.Text = "变形";
             // 
@@ -685,11 +664,11 @@
             // lblwy
             // 
             this.lblwy.AutoSize = true;
-            this.lblwy.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblwy.Font = new System.Drawing.Font("方正隶变简体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblwy.ForeColor = System.Drawing.Color.Black;
             this.lblwy.Location = new System.Drawing.Point(3, 2);
             this.lblwy.Name = "lblwy";
-            this.lblwy.Size = new System.Drawing.Size(60, 24);
+            this.lblwy.Size = new System.Drawing.Size(62, 27);
             this.lblwy.TabIndex = 1;
             this.lblwy.Text = "位移";
             // 
@@ -791,12 +770,12 @@
             // lblFuhe
             // 
             this.lblFuhe.AutoSize = true;
-            this.lblFuhe.Font = new System.Drawing.Font("经典细隶书简", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblFuhe.Font = new System.Drawing.Font("方正隶变简体", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblFuhe.ForeColor = System.Drawing.Color.Black;
             this.lblFuhe.Location = new System.Drawing.Point(3, 2);
             this.lblFuhe.Margin = new System.Windows.Forms.Padding(0);
             this.lblFuhe.Name = "lblFuhe";
-            this.lblFuhe.Size = new System.Drawing.Size(60, 24);
+            this.lblFuhe.Size = new System.Drawing.Size(62, 27);
             this.lblFuhe.TabIndex = 1;
             this.lblFuhe.Text = "负荷";
             // 
@@ -1130,6 +1109,27 @@
             this.btnStop.UseVisualStyleBackColor = true;
             this.btnStop.Visible = false;
             this.btnStop.Click += new System.EventHandler(this.tsbtn_Stop_Click);
+            // 
+            // zedGraphControl
+            // 
+            this.zedGraphControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.zedGraphControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.zedGraphControl.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.zedGraphControl.IsEnableWheelZoom = false;
+            this.zedGraphControl.IsShowContextMenu = false;
+            this.zedGraphControl.IsShowPointValues = true;
+            this.zedGraphControl.Location = new System.Drawing.Point(0, 0);
+            this.zedGraphControl.Name = "zedGraphControl";
+            this.zedGraphControl.ScrollGrace = 0D;
+            this.zedGraphControl.ScrollMaxX = 0D;
+            this.zedGraphControl.ScrollMaxY = double.NaN;
+            this.zedGraphControl.ScrollMaxY2 = double.NaN;
+            this.zedGraphControl.ScrollMinX = 0D;
+            this.zedGraphControl.ScrollMinY = double.NaN;
+            this.zedGraphControl.ScrollMinY2 = double.NaN;
+            this.zedGraphControl.Size = new System.Drawing.Size(685, 375);
+            this.zedGraphControl.TabIndex = 0;
+            this.zedGraphControl.ZoomButtons = System.Windows.Forms.MouseButtons.None;
             // 
             // frmTestResult
             // 

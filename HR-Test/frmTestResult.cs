@@ -1107,7 +1107,9 @@ namespace HR_Test
                     //By值
                     if (m_YingBian != 0 && m_YingBian1 != 0)
                     {
-                        m_By = Math.Round(100.0f * (m_YingBian - m_YingBian1) / (m_YingBian + m_YingBian1), 2);
+                        double by = Math.Round(100.0f * (m_YingBian - m_YingBian1) / (m_YingBian + m_YingBian1), 2);
+                        if(by>m_By)
+                            m_By = by;
                     }
                     //应变是否取平均值
                     if (m_isShowYbAverage)
@@ -6835,6 +6837,7 @@ namespace HR_Test
             m_fr05index = 0;
             m_fr01index = 0;
             m_ep02L0 = 0;
+            m_By = 0;
             //_List_Data.Clear();
             _List_Testing_Data.Clear();
         }
@@ -8593,7 +8596,7 @@ namespace HR_Test
                                 double yl = (m_l[indexYb2].YL1 - m_l[indexYb1].YL1);
                                 double yb = (m_l[indexYb2].YB1 - m_l[indexYb1].YB1) / 100.0;
                                 if (yb > 0)
-                                    model3354.Et = Math.Round(yl / (1000.0 * yb), 2);
+                                    model3354.Et = Math.Round(yl / (1000.0 * yb),4);
                                 else
                                     model3354.Et = 0;
                             }
@@ -8608,7 +8611,7 @@ namespace HR_Test
                             model3354.isFinish = true;
 
                             if (bll3354.Update(model3354))
-                            {
+                            { 
                                 isShowResult = true;
                                 TestStandard.GBT3354_2014.readFinishSample(this.dataGridView, this.dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
                                 //无刷新左侧树形节点，直接修改imageindex;
@@ -9398,6 +9401,7 @@ namespace HR_Test
                 buf[3] = 0;
                 buf[4] = 0;
                 m_hold_data.BX1 = m_Elongate;
+                m_hold_data.BX2 = m_Elongate1;
                 m_hold_data.D1 = m_Displacement;
                 m_hold_data.F1 = m_Load;
                 ret = RwUsb.WriteData1582(1, buf, 5, 1000);	    //发送写命令
@@ -9638,7 +9642,7 @@ namespace HR_Test
                                 if (mSelT.μ12)
                                     fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("μ12", "μ12", model3354.μ12.Value.ToString("f3"), model3354.μ12.Value.ToString("f3")));
                                 if (mSelT.Et)
-                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("Et", "Et", model3354.Et.Value.ToString("f2") + " GPa", model3354.Et.Value.ToString("f2")));
+                                    fac.flowLayoutPanel1.Controls.Add(CreateResultCtrl("Et", "Et", model3354.Et.Value.ToString("f4") + " GPa", model3354.Et.Value.ToString("f4")));
                             }
                             else
                             {
@@ -13016,7 +13020,7 @@ namespace HR_Test
                              strResult.Append("ε1t:" + model3354.ε1t.Value.ToString("f2") + " \r\n");
                             //弹性模量   =    应力增量  /  应变增量
                             if( m3354selEt )
-                                 strResult.Append("Et:" + model3354.Et.Value.ToString("f3") + " GPa\r\n");                                      
+                                 strResult.Append("Et:" + model3354.Et.Value.ToString("f4") + " GPa\r\n");                                      
                             //泊松比
                             if(m3354selU12)
                                 strResult.Append("μ12:" + model3354.μ12.Value.ToString("f3") + " \r\n"); 
@@ -13926,6 +13930,7 @@ namespace HR_Test
             {
                 this.lblBy.Visible = true;
                 this.lblBy.BringToFront();
+                this.lblBy.Refresh();
                 this.lblUseExten2.Text = "使用引伸计";
                 this.lblUseExten2.ForeColor = Color.Green;
                 //this.tsbtnYSJ.Enabled = true;
