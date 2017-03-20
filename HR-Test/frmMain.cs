@@ -162,7 +162,6 @@ namespace HR_Test
             ftr._showThreadFlag = true;
             ftr.ThreadSendOrder();           
             ftr.Parent = this.panelContainer; 
-            ftr.Invalidate(); 
             ftr.BringToFront();
             ftr.Size = this.panelContainer.Size;
             if (m_ElongateSensorCount > 1)

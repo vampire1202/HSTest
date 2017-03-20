@@ -372,9 +372,9 @@ namespace HR_Test.TestStandard
                 {
                     //  求和 (真实值-平均值)^2 
                     if (ab == 1 || ab == 3)
-                        ctrue = Convert.ToDouble(dsfinish.Tables[0].Rows[j][i + 5].ToString());
+                        ctrue = Convert.ToDouble(dsfinish.Tables[0].Rows[j][i + 6].ToString());
                     if (ab == 2)
-                        ctrue = Convert.ToDouble(dsfinish.Tables[0].Rows[j][i + 4].ToString());
+                        ctrue = Convert.ToDouble(dsfinish.Tables[0].Rows[j][i + 5].ToString());
                     caver = Convert.ToDouble(dsaver.Tables[0].Rows[0][i].ToString());
                     double c1 = (ctrue - caver) * (ctrue - caver);
                     sumsd += c1;
@@ -513,12 +513,12 @@ namespace HR_Test.TestStandard
                     //  求和 (真实值-平均值)^2 
                     if (ab == 2)
                     {
-                        ctrue = Convert.ToDouble(dsfinish.Tables[0].Rows[j][i + 4].ToString());
+                        ctrue = Convert.ToDouble(dsfinish.Tables[0].Rows[j][i + 5].ToString());
                         caver = Convert.ToDouble(dsaver.Tables[0].Rows[0][i].ToString());
                     }
                     else
                     {
-                        ctrue = Convert.ToDouble(dsfinish.Tables[0].Rows[j][i + 5].ToString());
+                        ctrue = Convert.ToDouble(dsfinish.Tables[0].Rows[j][i + 6].ToString());
                         caver = Convert.ToDouble(dsaver.Tables[0].Rows[0][i].ToString());
                     }
                     double c1 = (ctrue - caver) * (ctrue - caver);
