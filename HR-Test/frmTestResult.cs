@@ -224,7 +224,7 @@ namespace HR_Test
         //当存储数据超过1k条，开启存储数据线程，而后清空采集的数据
         Thread _threadSaveData;
         //lock标志
-        private static object m_state = new object();
+        //private static object m_state = new object();
 
         public string m_machineType = string.Empty;
         float m_minLoad = 0.1f;
@@ -302,7 +302,7 @@ namespace HR_Test
         private double m_LoadResolutionValue = 0;
         //变形分辨率
         private double m_ElongateResolutionValue = 0;
-
+        private double m_ElongateResolutionValue1 = 0;
         byte[] buf;
         byte[] bufCommand;
 
@@ -725,6 +725,7 @@ namespace HR_Test
                 int m_tvalue = 0;
                 int m_valueS = 0;
                 int m_index = 0;
+                double by=0;
                 if ((m_SensorArrayFlag == 1) && (m_SensorCount != 0))
                 {
                     buf[0] = 0x03;									                //命令字节
@@ -886,7 +887,7 @@ namespace HR_Test
                             if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
                                 m_evalue2 = -m_evalue2;
                             //变形
-                            m_Elongate1 = (float)(m_evalue2 * m_ElongateResolutionValue);
+                            m_Elongate1 = (float)(m_evalue2 * m_ElongateResolutionValue1);
                         }
 
 
@@ -925,7 +926,6 @@ namespace HR_Test
                 if (isTest)
                 {
                     gdata gd = new gdata();
-
                     #region 如果使用引申计
                     if (_useExten)
                     {
@@ -934,34 +934,33 @@ namespace HR_Test
                             case 0://% 应变
                                 if (m_YingBian >= m_extenValue)
                                 {
-                                    //取引伸计暂停时的值
                                     SendPauseTest();
-                                    _useExten = false;
-                                    m_holdPause = true;
-                                    m_holdContinue = false;
+                                    //取引伸计暂停时的值                                    
                                     this.BeginInvoke(new Action(() =>
-                            {
-                                btnZeroS.Enabled = false;
-                                //弹出取引伸计框
-                                m_fh.Show();
-                                m_fh.TopMost = true;
-                            }));
+                                    {  
+                                        //弹出取引伸计框
+                                        m_fh.Visible = true; 
+                                        m_fh.TopMost = true;                                        
+                                        _useExten = false;
+                                        m_holdPause = true;
+                                        m_holdContinue = false;
+                                        btnZeroS.Enabled = false; 
+                                    }));
                                 }
                                 break;
                             case 1://mm 变形
                                 if (m_Elongate >= m_extenValue)
                                 {
                                     SendPauseTest();
-                                    _useExten = false;
-                                    m_holdPause = true;
-                                    m_holdContinue = false;
-
                                     this.BeginInvoke(new Action(() =>
-                            {
-                                btnZeroS.Enabled = false;
-                                m_fh.Show();
-                                m_fh.TopMost = true;
-                            }));
+                                    {
+                                        m_fh.Visible = true;
+                                        m_fh.TopMost = true;                                       
+                                        _useExten = false;
+                                        m_holdPause = true;
+                                        m_holdContinue = false;
+                                        btnZeroS.Enabled = false;
+                                    }));
                                 }
                                 break;
                             default:
@@ -999,8 +998,11 @@ namespace HR_Test
                             {
                                 this.lblBXShow1.Text = FloatDisplay((int)(m_Elongate / m_ElongateResolutionValue), (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
                                 this.lblBXShow1.Refresh();
-                                this.lblBXShow2.Text = FloatDisplay((int)(m_Elongate1 / m_ElongateResolutionValue), (ushort)m_SensorArray[m_ESensorArray[1].SensorIndex].scale, m_Resolution, 0x03);
-                                this.lblBXShow2.Refresh();
+                                if (m_ElongateResolutionValue1 != 0)
+                                {
+                                    this.lblBXShow2.Text = FloatDisplay((int)(m_Elongate1 / m_ElongateResolutionValue1), (ushort)m_SensorArray[m_ESensorArray[1].SensorIndex].scale, m_Resolution, 0x03);
+                                    this.lblBXShow2.Refresh();
+                                }
                             }));
                     }
 
@@ -1020,25 +1022,23 @@ namespace HR_Test
                     gd.YB2 = (float)Math.Round(m_YingBian1, 6);
                     gd.YB3 = 0;
                     gd.Ts = (float)Math.Round(m_Time, 3);
-
                     //_List_Data.Add(gd);
                     _List_Testing_Data.Add(gd);
-
                     //自动存储线程                                    
                     if (_List_Testing_Data.Count >= 500)
                     {
                         gdata[] temp = new gdata[500];
                         _List_Testing_Data.CopyTo(temp);
                         _List_Testing_Data.RemoveRange(0, 500);
-
-                        if (_threadSaveData == null)
-                        {
-                            _threadSaveData = new Thread(new ParameterizedThreadStart(SaveCurveData));
-                            _threadSaveData.IsBackground = true;
-                            _threadSaveData.Start(temp);
-                            _threadSaveData.Join();
-                            _threadSaveData = null;
-                        }
+                        var t = SaveCurveData(temp);
+                        //if (_threadSaveData == null)
+                        //{
+                        //_threadSaveData = new Thread(new ParameterizedThreadStart(SaveCurveData));
+                        //_threadSaveData.IsBackground = true;
+                        //_threadSaveData.Start(temp);
+                        //_threadSaveData.Join();
+                        //_threadSaveData = null;
+                        //}
                     }
 
                     //存储前一点的值
@@ -1104,11 +1104,11 @@ namespace HR_Test
                         m_YingBian1 = m_Elongate1 / (m_Lt * 10.0f);
                     else
                         m_YingBian1 = 0;
-                    //By值
+                    //By值                   
                     if (m_YingBian != 0 && m_YingBian1 != 0)
                     {
-                        double by = Math.Round(100.0f * (m_YingBian - m_YingBian1) / (m_YingBian + m_YingBian1), 2);
-                        if(by>m_By)
+                        by = Math.Round(100.0f * (m_YingBian - m_YingBian1) / (m_YingBian + m_YingBian1), 2);
+                        if (by > m_By)
                             m_By = by;
                     }
                     //应变是否取平均值
@@ -1189,7 +1189,7 @@ namespace HR_Test
                                     lblTimeShow.Refresh();
 
                                     //弯曲百分比
-                                    lblBy.Text = "By:" + m_By.ToString("f2");
+                                    lblBy.Text ="Bymax:"+by.ToString("f2")+ " By:" + m_By.ToString("f2");
                                 }));
             }
         }
@@ -1630,6 +1630,7 @@ namespace HR_Test
             {
                 m_LoadResolutionValue = GetSensorSR((ushort)m_SensorArray[m_LSensorArray[0].SensorIndex].scale);// 3 * ((ushort)m_SensorArray[m_LSensorArray[0].SensorIndex].scale) / m_Resolution;
                 m_ElongateResolutionValue = GetSensorSR((ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale);
+                m_ElongateResolutionValue1 = GetSensorSR((ushort)m_SensorArray[m_ESensorArray[1].SensorIndex].scale);
                 //Test
                 //MessageBox.Show("m_ElongateResolutionValue:"+m_ElongateResolutionValue.ToString()); 
                 m_minLoad = Convert.ToSingle(RWconfig.GetAppSettings("minLoad"));
@@ -1662,10 +1663,11 @@ namespace HR_Test
 
         void m_fh_delbtnOKClick(object sender, EventArgs e)
         {
-            this.SendPauseTest();
             this.m_holdContinue = true;
             this.m_holdPause = false;
             this.tsbtnYSJ.Enabled = false;
+            this.SendPauseTest();
+            m_fh.Visible = false;
         }
 
         //显示实时曲线界面
@@ -6896,9 +6898,9 @@ namespace HR_Test
 
         private void SendStartTest()
         {
-            lock (m_state)
-            {
-                Thread.Sleep(30);
+            //lock (m_state)
+            //{
+                Thread.Sleep(50);
                 byte[] buf = new byte[5];
                 int ret;
                 buf[0] = 0x04;									//命令字节
@@ -6907,8 +6909,8 @@ namespace HR_Test
                 buf[3] = 0x00;
                 buf[4] = 0x00;
                 ret = RwUsb.WriteData1582(1, buf, 5, 1000);				//发送写命令
-                Thread.Sleep(30);
-            }
+                Thread.Sleep(50);
+            //}
         }
 
         /// <summary>
@@ -7135,6 +7137,9 @@ namespace HR_Test
             this.lblUseExten.Text = "停用引伸计";
             this.lblUseExten.ForeColor = Color.DarkOrange;
             this.lblUseExten.Refresh();
+            this.lblUseExten2.Text = "停用引伸计";
+            this.lblUseExten2.ForeColor = Color.DarkOrange;
+            this.lblUseExten2.Refresh();
 
             //确认试验类型 ,写入试验结果
             string strContain = this.tvTestSample.SelectedNode.Name;
@@ -8530,8 +8535,8 @@ namespace HR_Test
                     {
                         if (!string.IsNullOrEmpty(m_TestSampleNo))
                         {
-                             bll3354 = new HR_Test.BLL.GBT3354_Samples();
-                             model3354 = bll3354.GetModel(m_TestSampleNo);
+                            bll3354 = new HR_Test.BLL.GBT3354_Samples();
+                            model3354 = bll3354.GetModel(m_TestSampleNo);
 
                             int index = this.tvTestSample.SelectedNode.Parent.Index;
 
@@ -8559,19 +8564,19 @@ namespace HR_Test
                                 m3354selE1t = m3354sel.ε1t;
                                 m3354selEt = m3354sel.Et;
                                 m3354selU12 = m3354sel.μ12;
-                            } 
+                            }
 
                             //计算数据 Fm ReL ReH
                             m_l = ReadOneListData(m_path, m_TestSampleNo);
-                            double Fmax=0;
-                            int FmaxIndex = 0; 
-                            int indexYb1=0;
-                            int indexYb2=0;
+                            double Fmax = 0;
+                            int FmaxIndex = 0;
+                            int indexYb1 = 0;
+                            int indexYb2 = 0;
                             if (m_l != null)
                             {
-                                TestStandard.GBT3354_2014.CalcResult(m_l, model3354.εz1.Value, model3354.εz2.Value, out Fmax, out FmaxIndex, out indexYb1, out indexYb2);
+                                TestStandard.GBT3354_2014.CalcResult(m_l, model3354.εz1.Value * 100.0, model3354.εz2.Value * 100.0, out Fmax, out FmaxIndex, out indexYb1, out indexYb2);
                                 m_FmaxIndex = FmaxIndex;
-                                m_Fmax = (float)Math.Round(Fmax, 2); 
+                                m_Fmax = (float)Math.Round(Fmax, 2);
                             }
 
                             //写入最大值 Fm Rm A Z
@@ -8582,8 +8587,8 @@ namespace HR_Test
                                 model3354.σt = Convert.ToDouble(m_l[m_FmaxIndex].YL1.ToString("f2"));
                             }
                             if (m3354sel.ε1t)
-                                model3354.ε1t = Convert.ToDouble(m_l[m_l.Count - 2].YB1.ToString("f2")); 
-                          
+                                model3354.ε1t = Convert.ToDouble(m_l[m_l.Count - 2].YB1.ToString("f2"));
+
                             //弹性模量   =    应力增量  /  应变增量
                             //计算弹性模量,取 05的点的 应力/应变   GPa
                             //double yl = (m_l[m_fr05index].YL1 - m_l[m_fr01index].YL1);
@@ -8591,19 +8596,19 @@ namespace HR_Test
                             //if (yb > 0)
                             //    mts.E = Math.Round(yl / (1000.0 * yb), 2);
 
-                            if(m3354sel.Et)
+                            if (m3354sel.Et)
                             {
                                 double yl = (m_l[indexYb2].YL1 - m_l[indexYb1].YL1);
                                 double yb = (m_l[indexYb2].YB1 - m_l[indexYb1].YB1) / 100.0;
                                 if (yb > 0)
-                                    model3354.Et = Math.Round(yl / (1000.0 * yb),4);
+                                    model3354.Et = Math.Round(yl / (1000.0 * yb), 4);
                                 else
                                     model3354.Et = 0;
                             }
-                               
-                                     
+
+
                             //泊松比
-                            if(m3354sel.μ12)
+                            if (m3354sel.μ12)
                                 model3354.μ12 = Math.Round((m_l[indexYb2].YB2 - m_l[indexYb1].YB2) / (m_l[indexYb2].YB1 - m_l[indexYb1].YB1), 3);
 
                             model3354.testCondition = "-";// this.lblTestMethod.Text; 
@@ -8611,7 +8616,7 @@ namespace HR_Test
                             model3354.isFinish = true;
 
                             if (bll3354.Update(model3354))
-                            { 
+                            {
                                 isShowResult = true;
                                 TestStandard.GBT3354_2014.readFinishSample(this.dataGridView, this.dataGridViewSum, m_TestNo, this.dateTimePicker, this.zedGraphControl);
                                 //无刷新左侧树形节点，直接修改imageindex;
@@ -9367,9 +9372,9 @@ namespace HR_Test
 
         private void SendStopTest()
         {
-            lock (m_state)
-            {
-                Thread.Sleep(30);
+            //lock (m_state)
+            //{
+                Thread.Sleep(50);
                 byte[] buf = new byte[5];
                 int ret;
                 buf[0] = 0x04;									//命令字节
@@ -9378,8 +9383,8 @@ namespace HR_Test
                 buf[3] = 0;
                 buf[4] = 0;
                 ret = RwUsb.WriteData1582(1, buf, 5, 1000);				//发送写命令
-                Thread.Sleep(30);
-            }
+                Thread.Sleep(50);
+            //}
         }
 
         public void tsbtn_Pause_Click(object sender, EventArgs e)
@@ -9390,9 +9395,9 @@ namespace HR_Test
         public void SendPauseTest()
         {
             m_pause = !m_pause;
-            lock (m_state)
-            {
-                Thread.Sleep(10);
+            //lock (m_state)
+            //{
+                Thread.Sleep(50);
                 byte[] buf = new byte[5];
                 int ret;
                 buf[0] = 0x04;									//命令字节
@@ -9405,8 +9410,8 @@ namespace HR_Test
                 m_hold_data.D1 = m_Displacement;
                 m_hold_data.F1 = m_Load;
                 ret = RwUsb.WriteData1582(1, buf, 5, 1000);	    //发送写命令
-                Thread.Sleep(10);
-            }
+                Thread.Sleep(50);
+            //}
         }
 
         private void btnChangeYL_Click_1(object sender, EventArgs e)
@@ -10028,9 +10033,9 @@ namespace HR_Test
                 MessageBox.Show(this, "未连接设备", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            lock (m_state)
-            {
-                Thread.Sleep(30);
+            //lock (m_state)
+            //{
+                Thread.Sleep(50);
                 byte[] buf = new byte[5];
                 int ret;
 
@@ -10041,8 +10046,8 @@ namespace HR_Test
                 buf[4] = 0;
 
                 ret = RwUsb.WriteData1582(1, buf, 5, 1000);		//发送写命令
-                Thread.Sleep(30);
-            }
+                Thread.Sleep(50);
+            //}
         }
 
         private void btnZeroS_Click(object sender, EventArgs e)
@@ -10053,9 +10058,9 @@ namespace HR_Test
                 return;
             }
             // TODO: 在此添加控件通知处理程序代码
-            lock (m_state)
-            {
-                Thread.Sleep(30);
+            //lock (m_state)
+            //{
+                Thread.Sleep(50);
                 byte[] buf = new byte[5];
                 int ret;
                 buf[0] = 0x04;									//命令字节
@@ -10064,8 +10069,8 @@ namespace HR_Test
                 buf[3] = 0;
                 buf[4] = 0;
                 ret = RwUsb.WriteData1582(1, buf, 5, 1000);				//发送写命令
-                Thread.Sleep(30);
-            }
+                Thread.Sleep(50);
+            //}
             //试验过程中使用引伸计
             _useExten = true;
             //画曲线标志
@@ -10093,9 +10098,9 @@ namespace HR_Test
                 return;
             }
 
-            lock (m_state)
-            {
-                Thread.Sleep(30);
+            //lock (m_state)
+            //{
+                Thread.Sleep(50);
                 byte[] buf = new byte[5];
                 int ret;
 
@@ -10106,8 +10111,8 @@ namespace HR_Test
                 buf[4] = 0;
 
                 ret = RwUsb.WriteData1582(1, buf, 5, 1000);				//发送写命令
-                Thread.Sleep(30);
-            }
+                Thread.Sleep(50);
+            //}
         }
 
         private void tsbtn_Return_Click(object sender, EventArgs e)
@@ -10119,8 +10124,8 @@ namespace HR_Test
                 return;
             }
 
-            lock (m_state)
-            {
+            //lock (m_state)
+            //{
                 Thread.Sleep(50);
                 // TODO: 在此添加控件通知处理程序代码
                 byte[] buf = new byte[5];// char buf[5];
@@ -10133,7 +10138,7 @@ namespace HR_Test
                 ret = RwUsb.WriteData1582(1, buf, 5, 1000);				//发送写命令
                 Thread.Sleep(50);
                 //m_IsReturn = true;
-            }
+            //}
         }
 
         private void tsbtnSetRealtimeCurve_Click(object sender, EventArgs e)
@@ -11731,9 +11736,9 @@ namespace HR_Test
                 readCurveName(this.zedGraphControl, this.m_SelectTestSampleNo, m_path);
         }
 
-        private void SaveCurveData(object tmpListData)
+        async Task SaveCurveData(object tmpListData)
         {
-            m_mutex.WaitOne();
+            // m_mutex.WaitOne();
 
             gdata[] list = (gdata[])tmpListData;
             string curveName = "E:\\衡新试验数据\\Curve\\" + m_path + "\\" + this.m_TestSampleNo + ".txt";
@@ -11753,7 +11758,7 @@ namespace HR_Test
                 fs.Dispose();
             }
             ReadTestingData();
-            m_mutex.ReleaseMutex();
+            // m_mutex.ReleaseMutex();
         }
 
         // Explicit predicate delegate. 
@@ -11779,8 +11784,8 @@ namespace HR_Test
 
         private void ChangeRealTimeXYChart()
         {
-            lock (m_state)
-            {
+            //lock (m_state)
+            //{
                 //读取曲线设定
                 ReadCurveSet();
                 c_axisPenDot.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
@@ -11791,7 +11796,7 @@ namespace HR_Test
                 initRealTimeChart();
                 InitChartLegend();
                 this.pbChart.Invalidate();
-            }
+            //}
         }
 
         /// <summary>
@@ -13010,21 +13015,21 @@ namespace HR_Test
                         break;
                     case "GBT3354-2014":
                         double Pmax = Convert.ToDouble(model3354.Pmax.Value.ToString("f2"));
-                        double σt = Convert.ToDouble(model3354.σt.Value.ToString("f2"));                         
+                        double σt = Convert.ToDouble(model3354.σt.Value.ToString("f2"));
                         if (Pmax < 1000.0d)
                             strResult.Append("Pmax:" + Pmax.ToString("f2") + " N\r\n");
                         if (Pmax >= 1000.0d)
                             strResult.Append("Pmax:" + (Pmax / 1000.0d).ToString("f3") + " kN\r\n");
-                        strResult.Append("σt:" + σt.ToString("f2") + " MPa\r\n");                        
-                         if (m3354selE1t)
-                             strResult.Append("ε1t:" + model3354.ε1t.Value.ToString("f2") + " \r\n");
-                            //弹性模量   =    应力增量  /  应变增量
-                            if( m3354selEt )
-                                 strResult.Append("Et:" + model3354.Et.Value.ToString("f4") + " GPa\r\n");                                      
-                            //泊松比
-                            if(m3354selU12)
-                                strResult.Append("μ12:" + model3354.μ12.Value.ToString("f3") + " \r\n"); 
-                      
+                        strResult.Append("σt:" + σt.ToString("f2") + " MPa\r\n");
+                        if (m3354selE1t)
+                            strResult.Append("ε1t:" + model3354.ε1t.Value.ToString("f2") + " \r\n");
+                        //弹性模量   =    应力增量  /  应变增量
+                        if (m3354selEt)
+                            strResult.Append("Et:" + model3354.Et.Value.ToString("f4") + " GPa\r\n");
+                        //泊松比
+                        if (m3354selU12)
+                            strResult.Append("μ12:" + model3354.μ12.Value.ToString("f3") + " \r\n");
+
                         break;
                 }
                 Rectangle rec = e.ClipRectangle;
@@ -13772,8 +13777,8 @@ namespace HR_Test
                 return;
             }
 
-            lock (m_state)
-            {
+            //lock (m_state)
+            //{
                 Thread.Sleep(50);
                 // TODO: 在此添加控件通知处理程序代码
                 byte[] buf = new byte[5];// char buf[5];
@@ -13785,7 +13790,7 @@ namespace HR_Test
                 buf[4] = 0;
                 ret = RwUsb.WriteData1582(1, buf, 5, 1000);				//发送写命令
                 Thread.Sleep(50);
-            }
+            //}
         }
 
         private void toolStrip1_MouseHover(object sender, EventArgs e)
@@ -13869,6 +13874,7 @@ namespace HR_Test
             btnZeroS.Enabled = false;
             //弹出取引伸计框
             //Thread.Sleep(50);
+            m_fh.Visible = true;
             m_fh.Show();
             m_fh.TopMost = true;
         }
@@ -13909,9 +13915,9 @@ namespace HR_Test
                 return;
             }
             // TODO: 在此添加控件通知处理程序代码
-            lock (m_state)
-            {
-                Thread.Sleep(30);
+            //lock (m_state)
+            //{
+                Thread.Sleep(50);
                 byte[] buf = new byte[5];
                 int ret;
                 buf[0] = 0x04;									//命令字节
@@ -13919,9 +13925,9 @@ namespace HR_Test
                 buf[2] = m_ESensorArray[1].SensorIndex;			//因为是简单测试程序，所以只取了零号索引。
                 buf[3] = 0;
                 buf[4] = 0;
-                ret = RwUsb.WriteData1582(1, buf, 5, 1000);				//发送写命令
-                Thread.Sleep(30);
-            }
+                ret = RwUsb.WriteData1582(1, buf, 5, 1000);	    //发送写命令
+                Thread.Sleep(50);
+            //}
             //试验过程中使用引伸计
             _useExten1 = true;
             //画曲线标志
@@ -13952,6 +13958,28 @@ namespace HR_Test
             {
                 this.btnAverayYB.BackColor = Color.DarkOrange;
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //double Fmax = 0;
+            //int FmaxIndex = 0;
+            //int indexYb1 = 0;
+            //int indexYb2 = 0;
+            //m_l = ReadOneListData(@"GBT3354-2014", "170319B-01");
+            //if (m_l != null)
+            //{
+            //    TestStandard.GBT3354_2014.CalcResult(m_l, 0.05, 0.15, out Fmax, out FmaxIndex, out indexYb1, out indexYb2);
+            //    m_FmaxIndex = FmaxIndex;
+            //    m_Fmax = (float)Math.Round(Fmax, 2);
+            //}
+
+            m_fh.Visible = true;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            m_fh.Visible = false;
         }
     }
 }

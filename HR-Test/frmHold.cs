@@ -32,7 +32,7 @@ namespace HR_Test
             //ftr.SendPauseTest();
             //ftr.m_holdContinue = true;
             //ftr.m_holdPause = false;
-            this.Hide();
+            //this.Hide();
         }
      
     }
