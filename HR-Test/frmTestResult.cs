@@ -11114,13 +11114,8 @@ namespace HR_Test
 
             if (e.RowIndex >= 0 && e.ColumnIndex != 2)
             {
-                //选择和取消选择
-                if (e.ColumnIndex != 4 && dataGridView.Tag.ToString() == "GBT3354-2014")
-                {
-                    this.dataGridView.Rows[e.RowIndex].Cells[0].Value = !Convert.ToBoolean(this.dataGridView.Rows[e.RowIndex].Cells[0].Value);
-                    this.dataGridView.Rows[e.RowIndex].Selected = Convert.ToBoolean(this.dataGridView.Rows[e.RowIndex].Cells[0].Value);
-                }
-                else
+                //GBT3354-2014弹出编辑失效模式对话框
+                if (e.ColumnIndex== 4 && dataGridView.Tag.ToString() == "GBT3354-2014")
                 {                   
                     //修改失效模式
                     frmFailureMode ffm = new frmFailureMode();
@@ -11136,6 +11131,12 @@ namespace HR_Test
                     }
                     return;
                 }
+                else
+                {
+                    this.dataGridView.Rows[e.RowIndex].Cells[0].Value = !Convert.ToBoolean(this.dataGridView.Rows[e.RowIndex].Cells[0].Value);
+                    this.dataGridView.Rows[e.RowIndex].Selected = Convert.ToBoolean(this.dataGridView.Rows[e.RowIndex].Cells[0].Value);
+                }
+
                 string selTestSampleNo = string.Empty;
                 _selTestSampleArray = GetSelSample();
                 //显示曲线 
@@ -13479,7 +13480,7 @@ namespace HR_Test
             isShowBX2 = !isShowBX2;
             if (isShowBX2)
             {
-                this.lbltime.Text = "变形μ";
+                this.lbltime.Text = "变形a";
                 this.btnBXShow2.Text = "时间";
                 this.lbltum.Text = "μm";
                 this.btnZeroBx2.Visible = true;
