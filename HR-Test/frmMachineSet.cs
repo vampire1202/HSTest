@@ -35,52 +35,23 @@ namespace HR_Test
             CreateSensorsTable(this.listViewCtlFH);
             CreateSensorsTable(this.listViewCtlWY);
             CreateSensorsTable(this.listViewCtlBX);
-            this.listViewCtlFH.Height = this.listViewCtlBX.Height = this.listViewCtlWY.Height = (this.btnSendSetControl.Bottom - this.listViewCtlFH.Top) / 3 -3; 
+            this.listViewCtlFH.Height = this.listViewCtlBX.Height = this.listViewCtlWY.Height = (this.btnSendSetControl.Bottom - this.listViewCtlFH.Top) / 3 - 3;
             this.listViewCtlWY.Top = this.listViewCtlFH.Height + this.listViewCtlFH.Top + 2;
-            this.listViewCtlBX.Top = this.listViewCtlWY.Height +this.listViewCtlWY.Top + 2;
+            this.listViewCtlBX.Top = this.listViewCtlWY.Height + this.listViewCtlWY.Top + 2;
             this.panel3.Left = (this.groupBox3.Width - this.panel3.Width) / 2;
             this.panel3.Top = (this.groupBox3.Height - this.panel3.Height) / 2;
             this.panel4.Left = (this.groupBox4.Width - this.panel4.Width) / 2;
             this.panel4.Top = (this.groupBox4.Height - this.panel4.Height) / 2;
+            this.palBXZengyi.Left = (this.panel5.Width - this.palBXZengyi.Width) / 2;
+            this.palBXZengyi.Top = (this.panel5.Height - this.palBXZengyi.Height) / 2;
+
             string machinetype = RWconfig.GetAppSettings("machineType");
             this.txtMinLoad.Text = RWconfig.GetAppSettings("minLoad");
+            this.txtBXZengyi.Text = RWconfig.GetAppSettings("BXZengyi");
             if (machinetype == "0")
                 this.rbtnSet1.Checked = true;
             else
-                this.rbtnSet2.Checked = true;
-
-            //CreateMyListView(this.listViewShow);
-            //CreateMyListView_C(this.listViewCtl);
-            //if (cmbDisplacementControlChl.Items.Count > 0)
-            //{
-            //    cmbDisplacementControlChl.SelectedIndex = 0;
-            //    this.lblDisplacementControl.Text = _DSensorDescribe[0];
-            //}
-            //if (cmbDisplacementShowChl.Items.Count > 0)
-            //{
-            //    cmbDisplacementShowChl.SelectedIndex = 0;
-            //    this.lblDisplacementShow.Text = _DSensorDescribe[0];
-            //}
-            //if (cmbLoadControlChl.Items.Count > 0)
-            //{
-            //    cmbLoadControlChl.SelectedIndex = 0;
-            //    this.lblLoadControl.Text = _LSensorDescribe[0];
-            //}
-            //if (cmbLoadShowChl.Items.Count > 0)
-            //{
-            //    cmbLoadShowChl.SelectedIndex = 0;
-            //    this.lblLoadShow.Text = _LSensorDescribe[0];
-            //}
-            //if (cmbElongateControlChl.Items.Count > 0)
-            //{
-            //    cmbElongateControlChl.SelectedIndex = 0;
-            //    this.lblElongateControl.Text = _ESensorDescribe[0];
-            //}
-            //if (cmbElongateShowChl.Items.Count > 0)
-            //{
-            //    cmbElongateShowChl.SelectedIndex = 0;
-            //    this.lblElongateShow.Text = _ESensorDescribe[0];
-            //} 
+                this.rbtnSet2.Checked = true; 
 
         }
 
@@ -92,12 +63,6 @@ namespace HR_Test
             int dSensorCount = 0;
             int lSensorCount = 0;
             int eSensorCount = 0;
-            //this.cmbDisplacementControlChl.Items.Clear();
-            //this.cmbDisplacementShowChl.Items.Clear();
-            //this.cmbElongateControlChl.Items.Clear();
-            //this.cmbElongateShowChl.Items.Clear();
-            //this.cmbLoadControlChl.Items.Clear();
-            //this.cmbLoadShowChl.Items.Clear();
             for (int i = 0; i < _fmMain.m_SensorCount; i++)
             {
                 m_index = i;
@@ -149,7 +114,6 @@ namespace HR_Test
                 }
 
                 AddSensorToListview(_arrSensors, this.listViewShow);
-                //AddSensorToListview(_arrSensors, this.listViewControl);
             }
         }
 
@@ -236,8 +200,7 @@ namespace HR_Test
             listView1.Columns.Add("参数描述", -2, HorizontalAlignment.Left);
 
             //Add the items to the ListView.
-            listView1.Items.AddRange(new ListViewItem[] { item1, item2, item3 });
- 
+            listView1.Items.AddRange(new ListViewItem[] { item1, item2, item3 }); 
         }
 
 
@@ -348,6 +311,40 @@ namespace HR_Test
             {
                 MessageBox.Show("请输入数字!");
                 this.txtMinLoad.Text = "0.1"; 
+            } 
+        }
+
+        private void btnSendSetControl_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnSaveBXZengyi_Click(object sender, EventArgs e)
+        {
+            if(txtBXZengyi.Text!=string.Empty)
+            {
+                if(double.Parse(txtBXZengyi.Text.Trim())!=0)
+                {
+                    RWconfig.SetAppSettings("BXZengyi", txtBXZengyi.Text);
+                    MessageBox.Show("保存成功!");
+                }
+                else
+                {
+                    MessageBox.Show("请输入不为0数字");
+                }
+            }
+            else
+            {
+                MessageBox.Show("请输入数字");
+            }
+        }
+
+        private void txtBXZengyi_TextChanged(object sender, EventArgs e)
+        {
+            if (!utils.IsNumeric(this.txtBXZengyi.Text))
+            {
+                MessageBox.Show("请输入数字!");
+                this.txtBXZengyi.Text = "1";
             } 
         } 
     }

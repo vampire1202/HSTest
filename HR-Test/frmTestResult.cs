@@ -208,6 +208,7 @@ namespace HR_Test
         //当力值超过量程的1/200,启动判断停止的标志
         private float m_CheckStopValue = 0f;
         private bool m_CheckStop = true;
+        private double m_BXZengyi = 1;
         //是否启动判断
         private bool m_Check = false;
 
@@ -220,22 +221,22 @@ namespace HR_Test
         //实时显示曲线线程
         Thread _threadShowCurve;
         //读取结果数据线程
-        Thread _threadReadCurve;
-        //当存储数据超过1k条，开启存储数据线程，而后清空采集的数据
-        Thread _threadSaveData;
+        Thread _threadReadCurve; 
         //lock标志
         //private static object m_state = new object();
 
         public string m_machineType = string.Empty;
         float m_minLoad = 0.1f;
+        double m_currentBX = 0f;
 
         //public ManualResetEvent manualReset;
 
         private static Mutex m_mutex = new Mutex();
 
+
         //显示值
         float m_Displacement = 0f;      //位移
-        float m_Elongate = 0f;          //变形
+        double m_Elongate = 0;          //变形
         float m_Elongate1 = 0f;         //变形1
         float m_Load = 0f;              //力
         float m_Time = 0f;              //时间
@@ -300,8 +301,14 @@ namespace HR_Test
 
         //负荷分辨率
         private double m_LoadResolutionValue = 0;
-        //变形分辨率
+        /// <summary>
+        /// 变形分辨率1
+        /// </summary>
+
         private double m_ElongateResolutionValue = 0;
+        /// <summary>
+        /// 变形分辨率2
+        /// </summary>
         private double m_ElongateResolutionValue1 = 0;
         byte[] buf;
         byte[] bufCommand;
@@ -494,8 +501,7 @@ namespace HR_Test
         public frmTestResult(frmMain fmain)
         {
             InitializeComponent();
-            _fmMain = fmain;
-            //Task t = tskReadSample();
+            _fmMain = fmain; 
         }
 
         void zedGraphControl_Invalidated(object sender, InvalidateEventArgs e)
@@ -706,9 +712,9 @@ namespace HR_Test
             }
             return strDisp;
         }
- 
- 
 
+
+        int m_evalueCode1 = 0;
         async Task TskReadData()
         {
             //Test
@@ -848,26 +854,28 @@ namespace HR_Test
 
                     if (m_ElongateSensorCount != 0)
                     {
-                        m_index = m_ESensorArray[0].SensorIndex * 4 + 3;
+                        //显示最后一个通道的变形
+                        m_index = m_ESensorArray[m_ElongateSensorCount-1].SensorIndex * 4 + 3;
                         m_evalue1 = buf[m_index];
 
                         m_evalue1 = m_evalue1 << 8;
-                        m_index = m_ESensorArray[0].SensorIndex * 4 + 2;
+                        m_index = m_ESensorArray[m_ElongateSensorCount - 1].SensorIndex * 4 + 2;
                         m_evalue1 |= buf[m_index];
 
                         m_evalue1 = m_evalue1 << 8;
-                        m_index = m_ESensorArray[0].SensorIndex * 4 + 1;
+                        m_index = m_ESensorArray[m_ElongateSensorCount - 1].SensorIndex * 4 + 1;
                         m_evalue1 |= buf[m_index];
 
                         m_evalue1 = m_evalue1 << 8;
-                        m_index = m_ESensorArray[0].SensorIndex * 4 + 0;
+                        m_index = m_ESensorArray[m_ElongateSensorCount - 1].SensorIndex * 4 + 0;
                         m_evalue1 |= buf[m_index];
 
                         if (m_machineType == "0" && (m_testType == "compress" || m_testType == "bend" || m_testType == "shear" || m_testType == "twist"))
                             m_evalue1 = -m_evalue1;
+                        m_evalueCode1 = m_evalue1;
 
                         //变形
-                        m_Elongate = (float)(m_evalue1 * m_ElongateResolutionValue);
+                        m_Elongate = (m_evalueCode1  - m_currentBX)*m_BXZengyi;
 
                         if (m_ESensorArray.Length > 1)
                         {
@@ -897,8 +905,20 @@ namespace HR_Test
                         {
                             this.BeginInvoke(new Action(() =>
                             {
-                                this.lblBXShow1.Text = FloatDisplay(m_evalue1, (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
-                                this.lblBXShow1.Invalidate();
+                                //this.lblBXShow1.Text = FloatDisplay(m_evalue1, (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
+                                //this.lblBXShow1.Invalidate();
+
+                                if (Math.Abs(m_Elongate) < 1000)
+                                {
+                                    this.lblBXShow1.Text = m_Elongate.ToString("f0"); //FloatDisplay((int)(m_Elongate / m_BXZengyi), (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
+                                    this.lblBXShow1.Invalidate();
+                                }
+                                else
+                                {
+                                    this.lblBXShow1.Text = (m_Elongate / 1000.0f).ToString("f3"); //FloatDisplay((int)(m_Elongate / m_BXZengyi), (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
+                                    this.lblBXShow1.Invalidate();
+                                }
+
                                 this.lblBXShow2.Text = FloatDisplay(m_evalue2, (ushort)m_SensorArray[m_ESensorArray[1].SensorIndex].scale, m_Resolution, 0x03);
                                 this.lblBXShow2.Invalidate();
                             }));
@@ -996,25 +1016,31 @@ namespace HR_Test
                     }
                     #endregion
 
-                    //取下引伸计后值的改变
-                    if (m_ElongateResolutionValue != 0)
-                    {
-                        this.BeginInvoke(new Action(() =>
+                    //取下引伸计后值的改变                   
+                    this.BeginInvoke(new Action(() =>
+                        { 
+                            if(Math.Abs(m_Elongate)<1000)
                             {
-                                this.lblBXShow1.Text = FloatDisplay((int)(m_Elongate / m_ElongateResolutionValue), (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
-                                this.lblBXShow1.Refresh();
-                                if (m_ElongateResolutionValue1 != 0)
-                                {
-                                    this.lblBXShow2.Text = FloatDisplay((int)(m_Elongate1 / m_ElongateResolutionValue1), (ushort)m_SensorArray[m_ESensorArray[1].SensorIndex].scale, m_Resolution, 0x03);
-                                    this.lblBXShow2.Refresh();
-                                }
-                            }));
-                    }                  
+                                this.lblBXShow1.Text = m_Elongate.ToString("f0"); //FloatDisplay((int)(m_Elongate / m_BXZengyi), (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
+                                this.lblBXShow1.Invalidate();
+                            }
+                            else
+                            {
+                                this.lblBXShow1.Text =(m_Elongate /1000.0f).ToString("f3"); //FloatDisplay((int)(m_Elongate / m_BXZengyi), (ushort)m_SensorArray[m_ESensorArray[0].SensorIndex].scale, m_Resolution, 0x03);
+                                this.lblBXShow1.Invalidate();
+                            }
+                                
+                            if (m_ElongateResolutionValue1 != 0)
+                            {
+                                this.lblBXShow2.Text = FloatDisplay((int)(m_Elongate1 / m_ElongateResolutionValue1), (ushort)m_SensorArray[m_ESensorArray[1].SensorIndex].scale, m_Resolution, 0x03);
+                                this.lblBXShow2.Invalidate();
+                            }
+                        }));   
 
                     //纵向应变百分比
                     if (m_Le != 0)
                     {
-                        m_YingBian = m_Elongate / (m_Le * 10.0f);
+                        m_YingBian = (float)m_Elongate / (m_Le * 10.0f);
                         m_YingBian1 = m_Elongate1 / (m_Le * 10.0f);
                     }
                     else
@@ -1122,36 +1148,36 @@ namespace HR_Test
                                     if (Math.Abs(m_Load) >= 1000)
                                     {
                                         lblkN.Text = "kN";
-                                        lblkN.Refresh();
+                                        lblkN.Invalidate();
                                     }
                                     else
                                     {
                                         lblkN.Text = "N";
-                                        lblkN.Refresh();
+                                        lblkN.Invalidate();
                                     }
 
                                     //位移
                                     if (Math.Abs(m_Displacement) >= 1000.0)
                                     {
                                         lblmm1.Text = "mm";
-                                        lblmm1.Refresh();
+                                        lblmm1.Invalidate();
                                     }
                                     else
                                     {
                                         lblmm1.Text = "μm";
-                                        lblmm1.Refresh();
+                                        lblmm1.Invalidate();
                                     }
 
                                     //变形1
                                     if (Math.Abs(m_Elongate) > 1000 && lblBXShow1.Visible == true)
                                     {
                                         lblmm2.Text = "mm";
-                                        lblmm2.Refresh();
+                                        lblmm2.Invalidate();
                                     }
                                     else
                                     {
                                         lblmm2.Text = "μm";
-                                        lblmm2.Refresh();
+                                        lblmm2.Invalidate();
                                     }
 
 
@@ -1161,31 +1187,31 @@ namespace HR_Test
                                         if (Math.Abs(m_Elongate1) > 1000)
                                         {
                                             lbltum.Text = "mm";
-                                            lbltum.Refresh();
+                                            lbltum.Invalidate();
                                         }
                                         else
                                         {
                                             lbltum.Text = "μm";
-                                            lbltum.Refresh();
+                                            lbltum.Invalidate();
                                         }
                                     }
                                     else
                                     {
                                         lbltum.Text = "s";
-                                        lbltum.Refresh();
+                                        lbltum.Invalidate();
                                     }
 
                                     //应变
                                     lblYBShow.Text = m_YingBian.ToString("f4");
-                                    lblYBShow.Refresh();
+                                    lblYBShow.Invalidate();
 
                                     //应力
                                     lblYLShow.Text = m_YingLi.ToString("f2");
-                                    lblYLShow.Refresh();
+                                    lblYLShow.Invalidate();
 
                                     //时间
                                     lblTimeShow.Text = m_Time.ToString("f2");
-                                    lblTimeShow.Refresh();
+                                    lblTimeShow.Invalidate();
 
                                     //弯曲百分比
                                     lblBy.Text = "Bymax:" + m_By.ToString("f2") + "% By:" + by.ToString("f2")+"%";
@@ -1228,6 +1254,7 @@ namespace HR_Test
                 m_minLoad = Convert.ToSingle(RWconfig.GetAppSettings("minLoad"));
                 m_CheckStopValue = GetScale((ushort)m_SensorArray[m_LSensorArray[0].SensorIndex].scale) * m_minLoad / 100.0f;
                 m_machineType = RWconfig.GetAppSettings("machineType");
+                m_BXZengyi = Convert.ToSingle(RWconfig.GetAppSettings("BXZengyi"));
             }
         }
 
@@ -8998,7 +9025,7 @@ namespace HR_Test
                 buf[2] = 0;
                 buf[3] = 0;
                 buf[4] = 0;
-                m_hold_data.BX1 = m_Elongate;
+                m_hold_data.BX1 = (float)m_Elongate;
                 m_hold_data.BX2 = m_Elongate1;
                 m_hold_data.D1 = m_Displacement;
                 m_hold_data.F1 = m_Load;
@@ -9650,9 +9677,9 @@ namespace HR_Test
                 MessageBox.Show(this, "未连接设备!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            // TODO: 在此添加控件通知处理程序代码
             //lock (m_state)
             //{
+            /*
                 Thread.Sleep(50);
                 byte[] buf = new byte[5];
                 int ret;
@@ -9663,7 +9690,10 @@ namespace HR_Test
                 buf[4] = 0;
                 ret = RwUsb.WriteData1582(1, buf, 5, 1000);				//发送写命令
                 Thread.Sleep(50);
+             * */
             //}
+            //变形清零
+            m_currentBX = m_evalueCode1;
             //试验过程中使用引伸计
             _useExten = true;
             //画曲线标志
@@ -12656,7 +12686,7 @@ namespace HR_Test
             //位移
             float D1value = m_Displacement;
             //变形
-            float BX1value = m_Elongate;
+            float BX1value = (float)m_Elongate;
             //应变
             float YB1value = m_YingBian;
 
