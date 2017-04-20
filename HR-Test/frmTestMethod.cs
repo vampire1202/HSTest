@@ -4873,6 +4873,18 @@ namespace HR_Test
             }
 
             string tag = this.tvTestMethod.SelectedNode.Tag.ToString();
+            string standard = string.Empty;
+            if(this.cmbTestStandard.SelectedItem!=null)
+            {
+                DataRowView drv = (DataRowView)this.cmbTestStandard.SelectedItem;
+                standard = drv["standardNo"].ToString();
+            }          
+
+            if(tag!=standard)
+            {
+                MessageBox.Show("试验标准不一致，不允许修改,可新增该标准的试验方法!");
+                return;
+            }
             if (!string.IsNullOrEmpty(tag))
             {
                 switch (tag)
